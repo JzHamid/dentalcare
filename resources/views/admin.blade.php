@@ -7,7 +7,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-        <title>DentalCare | User</title>
+        <title>DentalCare | Admin</title>
 
         <style>
             .text-default,
@@ -29,7 +29,7 @@
                 background-color: #345D95;
             }
 
-            .dropdown-toggle::after {
+            nav .dropdown-toggle::after {
                 content: none;
             }
 
@@ -42,7 +42,8 @@
 
     <body class="overflow-hidden vh-100">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
-        
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
         <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
                 <a class="navbar-brand text-default fw-bold" href="">DentalCare</a>
@@ -254,30 +255,96 @@
                         </button>
                     </div>
 
-                    <table class="table">
+                    <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Name of Service</th>
                                 <th scope="col">Duration</th>
                                 <th scope="col">Price Range</th>
-                                <th scope="col">Action</th>
+                                <th scope="col">Actions</th>
                             </tr>
                         </thead>
+
+                        <tbody>
+                            @foreach ($services as $service)
+                                <tr>
+                                    <th scope="row">{{ $service->id }}</th>
+                                    <td>{{ $service->name }}</td>
+                                    <td>{{ floor($service->duration / 60) . 'hr ' . ($service->duration % 60) . 'm' }}</td>
+                                    <td>{{ $service->price_start }} - {{ $service->price_end }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-service" onclick="get_service('{{ $service->id }}')">Edit</button>
+                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-service">Delete</button>
+
+                                        <form id="delete-service-form" action="{{ route('destroy.service', $service->id) }}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
 
                 <div class="tab-pane gap-5 p-3" id="tab-patients" role="tabpanel" aria-labelledby="tab-patients" tabindex="0">
                     <h1 class="mb-5">Patients</h1>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                        <h5 class="m-0">List of Patients</h5>
+
+                        <div class="d-flex">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-patient">
+                                <i class="bi-plus-lg"></i>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead class="table-primary">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Patient Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Email Address</th>
+                                <th scope="col">Address</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            <tr>
+
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="tab-pane gap-5 p-3" id="tab-listings" role="tabpanel" aria-labelledby="tab-listings" tabindex="0">
                     <h1 class="mb-5">Listings</h1>
 
+                    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                        <h5 class="m-0">Current Listings</h5>
+
+                        <div class="d-flex">
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-listing">
+                                <i class="bi-plus-lg"></i>
+                                Add
+                            </button>
+                        </div>
+                    </div>
+
                     <table class="table">
                         <thead class="table-primary">
                             <tr>
-
+                                <th scope="col">ID</th>
+                                <th scope="col">Clinic Name</th>
+                                <th scope="col">Email Address</th>
+                                <th scope="col">Contact No.</th>
+                                <th scope="col">Location</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                     </table>
@@ -354,28 +421,295 @@
             </div>
         </div>
 
-        <div class="modal fade" id="add-service" tabindex="-1">
+        <!-- Create Service Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="add-service" tabindex="-1">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Create Service</h5>
                     </div>
 
-                    <form class="modal-body">
+                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.service') }}" method="post" id="create-service">
                         @csrf
 
                         <div class="form-group">
-                            <label class="form-label" for="">Service Name</label>
-                            <input class="form-control" type="text">
+                            <label class="form-label" for="service_name">Service Name</label>
+                            <input class="form-control" type="text" name="service_name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="service_description">Description</label>
+                            <textarea class="form-control" name="service_description" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="duration">Duration</label>
+                            
+                            <div class="input-group" id="duration">
+                                <span class="input-group-text">Hours</span>
+                                <input class="form-control" type="number" min="0" name="service_hours" required>
+                                <span class="input-group-text">Minutes</span>
+                                <input class="form-control" type="number" max="60" min="0" name="service_minutes" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="">Price Range</label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">₱</span>
+                                <input class="form-control" type="number" min="0" name="service_price_start" required>
+                                <span class="input-group-text">To</span>
+                                <input class="form-control" type="number" min="0" name="service_price_end" required>
+                            </div>
                         </div>
                     </form>
 
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success">Create</button>
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-success w-25" type="button" onclick="document.getElementById('create-service').submit()">Create</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Edit Service Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="edit-service" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Service</h5>
+                    </div>
+
+                    <form class="modal-body d-flex flex-column gap-2" method="post" id="edit-service-form">
+                        @csrf
+
+                        <div class="form-group">
+                            <label class="form-label" for="eservice_name">Service Name</label>
+                            <input class="form-control" type="text" name="eservice_name" id="eservice-name" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="eservice_description">Description</label>
+                            <textarea class="form-control" name="eservice_description" id="eservice-description" required></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="duration">Duration</label>
+                            
+                            <div class="input-group" id="duration">
+                                <span class="input-group-text">Hours</span>
+                                <input class="form-control" type="number" min="0" name="eservice_hours" id="eservice-hours" required>
+                                <span class="input-group-text">Minutes</span>
+                                <input class="form-control" type="number" max="60" min="0" name="eservice_minutes" id="eservice-minutes" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="">Price Range</label>
+
+                            <div class="input-group">
+                                <span class="input-group-text">₱</span>
+                                <input class="form-control" type="number" min="0" name="eservice_price_start" id="eservice-price-start" required>
+                                <span class="input-group-text">To</span>
+                                <input class="form-control" type="number" min="0" name="eservice_price_end" id="eservice-price-end" required>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary w-25" type="button" onclick="document.getElementById('edit-service-form').submit()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Service Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="delete-service" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Service</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        Do you want to delete this service?
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">No</button>
+                        <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('delete-service-form').submit()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Patient Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="add-patient" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Patient</h5>
+                    </div>
+
+                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.service') }}" method="post" id="create-patient">
+                        @csrf
+
+                        
+                    </form>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-success w-25" type="button" onclick="document.getElementById('create-service').submit()">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Create Listing Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="add-listing" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Create Listing</h5>
+                    </div>
+
+                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.listing') }}" method="post" id="create-listing">
+                        @csrf
+
+                        <div class="d-flex gap-3">
+                            <img style="height: 100px; width: 100px;">
+                            <div class="d-flex flex-column gap-2">
+                                <h5 class="m-0">Listing Thumbnail</h5>
+                                <div class="d-flex gap-2">
+                                    <input class="visually-hidden" type="file" id="listing-thumbnail">
+                                    <button class="btn btn-primary btn-sm" type="button" onclick="document.getElementById('listing-thumbnail').click()">Upload</button>
+                                    <button class="btn btn-danger btn-sm">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group">
+                            <label class="form-label" for="listing-name">Clinic Name</label>
+                            <input class="form-control" type="text" name="listing-name" required>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <div class="form-group w-50">
+                                <label class="form-label" for="listing-email">Email Address</label>
+                                <input class="form-control" type="email" name="listing-email" required>
+                            </div>
+
+                            <div class="form-group w-50">
+                                <label class="form-label" for="listing-contact">Contact No.</label>
+                                <input class="form-control" type="tel" name="listing-contact" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="listing-location">Location</label>
+                            <input class="form-control" type="text" name="listing-location" required>
+                        </div>
+
+                        <div class="accordion" id="accordion-services">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#list-services" aria-expanded="false" aria-controls="list-services">Services</button>
+                                </h2>
+
+                                <div class="accordion-collapse collapse" id="list-services" data-bs-parent="#accordion-services">
+                                    <div class="accordion-body">
+                                        @foreach ($services as $service)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="" name="service{{ $service->id }}">
+                                                <label class="form-check-label" for="service{{ $service->id }}">{{ $service->name }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @php
+                            $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                        @endphp
+
+                        <div class="form-group d-flex flex-column gap-2">
+                            <label for="listing-schedule">Schedule</label>
+
+                            @foreach (array_chunk($days, 2) as $dayPair)
+                                <div class="d-flex gap-2">
+                                    @foreach ($dayPair as $day)
+                                        <div class="container-fluid rounded border border-tertiary p-3 w-50 ms-0">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="listing-{{ strtolower($day) }}">
+                                                <label class="form-check-label" for="listing-{{ strtolower($day) }}">{{ $day }}</label>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text">Starting Time</span>
+                                                <input class="form-control" type="time" name="{{ strtolower($day) }}-time-start">
+                                                <span class="input-group-text">Ending Time</span>
+                                                <input class="form-control" type="time" name="{{ strtolower($day) }}-time-end">
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="listing-about">About Us</label>
+                            <textarea class="form-control" name="listing-about"></textarea>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-success w-25" type="button" onclick="document.getElementById('create-listing').submit()">Create</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                switch (parseInt("{{ session('page') }}", 10)) {
+                    case 3:
+                        document.getElementById('nav-services').click();
+                        break;
+                
+                    default:
+                        break;
+                }
+            });
+
+            function get_service (id) {
+                fetch(`/get-service/${parseInt(id, 10)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    $('#edit-service-form').attr('action', `/edit-service/${data.service.id}`);
+                    $('#eservice-name').val(data.service.name);
+                    $('#eservice-description').text(data.service.description);
+
+                    let hours = Math.floor(data.service.duration / 60);
+                    let minutes = data.service.duration % 60;
+                    
+                    $('#eservice-hours').val(hours);
+                    $('#eservice-minutes').val(minutes);
+                    $('#eservice-price-start').val(data.service.price_start);
+                    $('#eservice-price-end').val(data.service.price_end);
+                });
+            }
+        </script>
     </body>
 </html>
