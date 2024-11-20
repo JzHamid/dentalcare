@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
         <title>DentalCare</title>
 
@@ -23,27 +24,63 @@
                 background-color: #345D95;
                 color: white;
             }
+
+            .dropdown-toggle::after {
+                content: none;
+            }
         </style>
     </head>
 
     <body class="overflow-x-hidden">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-        <div class="navbar bg-body-secondary">
+        <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
                 <a class="navbar-brand text-default fw-bold" href="">DentalCare</a>
 
-                @if (!session('logged'))
+                @auth
+                    <div class="d-flex gap-4">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi-bell-fill"></i>
+                            </button>
+
+                            <ul class="dropdown-menu">
+
+                            </ul>
+                        </div>
+
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi-person-circle"></i>
+                            </button>
+
+                            <ul class="dropdown-menu">
+                                <li>
+                                    Test
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                @endauth
+
+                @guest
                     <a class="text-default text-decoration-none" href="{{ route('login') }}">Login / Signup</a>
-                @endif
+                @endguest
             </div>
-        </div>
+        </nav>
 
         <div class="row" id="home">
-            <div class="col p-5">
+            <div class="col p-5 m-5">
                 <h1 class="display-4 text-default">SHINE YOUR SMILE<br>WITH US<br>YOUR REASON TO<br>SMILE</h1>
                 <p class="lead mb-5">Schedule your next dental visit with ease<br>using our online appointment system.</p>
-                <button class="btn btn-default">Book Now!</button>
+                
+                <form class="input-group">
+                    @csrf
+
+                    <input class="form-control rounded-start" type="search" placeholder="Search Doctors, Clinic, and Services">
+                    <button class="btn btn-default">Search</button>
+                </for>
             </div>
 
             <div class="col">
@@ -62,25 +99,25 @@
                 <div class="col rounded shadow-sm p-4">
                     <img style="height: 200px;">
                     <h5 class="text-center">Comprehensive Access</h5>
-                    <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis aperiam quaerat asperiores nemo corrupti, culpa ipsum, facere sapiente in magni eaque possimus quae nisi velit? Amet non aliquid libero dicta!</p>
+                    <p style="text-align: justify;">We connect you to a wide range of trusted dental clinics in downtown Zamboanga City. Whether you're looking for routine cleaning, orthodontics, or specialized treatments, you'll find the right clinic with just a few clicks</p>
                 </div>
 
                 <div class="col rounded shadow-sm p-4">
                     <img style="height: 200px;">
                     <h5 class="text-center">Realtime Availability</h5>
-                    <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis aperiam quaerat asperiores nemo corrupti, culpa ipsum, facere sapiente in magni eaque possimus quae nisi velit? Amet non aliquid libero dicta!</p>
+                    <p style="text-align: justify;">With our seamless booking system, you can see real-time appointment availability for each clinic. No need to call multiple places—schedule an appointment whenever it’s convenient for you, instantly.</p>
                 </div>
 
                 <div class="col rounded shadow-sm p-4">
                     <img style="height: 200px;">
                     <h5 class="text-center">Price Transparency</h5>
-                    <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis aperiam quaerat asperiores nemo corrupti, culpa ipsum, facere sapiente in magni eaque possimus quae nisi velit? Amet non aliquid libero dicta!</p>
+                    <p style="text-align: justify;">Compare prices across clinics before making a decision. We provide upfront information on costs for services like cleaning, fillings, crowns, and more, so there are no surprises when it comes time to pay.</p>
                 </div>
 
                 <div class="col rounded shadow-sm p-4">
                     <img style="height: 200px;">
                     <h5 class="text-center">Tailored For You</h5>
-                    <p style="text-align: justify;">Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis aperiam quaerat asperiores nemo corrupti, culpa ipsum, facere sapiente in magni eaque possimus quae nisi velit? Amet non aliquid libero dicta!</p>
+                    <p style="text-align: justify;">Whether you're booking for yourself, a family member, or even multiple people at once, our platform makes it easy to manage all your appointments in one place.</p>
                 </div>
             </div>
         </div>

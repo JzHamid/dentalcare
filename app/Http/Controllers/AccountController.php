@@ -24,7 +24,7 @@ class AccountController extends Controller
     }
 
     public function logout (Request $request) {
-
+        
     }
 
     public function signup (Request $request) {
