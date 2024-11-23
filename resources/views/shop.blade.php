@@ -116,7 +116,23 @@
                 <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="services">
                     <h4 class="text-center w-100">Services Offered</h4>
                     <hr>
-                    test
+
+                    <p class="lead m-0">Discover all that the clinic offers</p>
+                    
+                    <div class="container">
+                        @foreach ($availables->chunk(2) as $chunk)
+                            <div class="row mb-3">
+                                @foreach ($chunk as $available)
+                                    <div class="col-md-6 p-0">
+                                        <div class="d-flex flex-column">
+                                            <p class="fw-bold m-0 mb-1">{{ $available->service->name }}</p>
+                                            <p>{{ $available->service->description }}</p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endforeach
+                    </div>
                 </div>
 
                 <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="dentist">

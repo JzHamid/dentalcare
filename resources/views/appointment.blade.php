@@ -6,6 +6,7 @@
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 
         <title>DentalCare | Listing</title>
 
@@ -33,7 +34,8 @@
 
     <body class="overflow-x-hidden">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
-        
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
         <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
                 <a class="navbar-brand text-default fw-bold" href="">DentalCare</a>
@@ -73,53 +75,105 @@
         <div class="container-fluid p-4">
             <a class="btn btn-secondary" href="{{ URL::previous() }}">Return</a>
 
-            <form class="d-flex flex-column mx-auto w-50" action="" method="post">
+            <form class="d-flex flex-column mx-auto w-50" action="{{ route('create.appointment') }}" method="post">
                 @csrf
 
-                <h1 class="display-5 text-center">Appointment Form</h1>
+                <h1 class="display-5 text-center mb-4">Appointment Form</h1>
 
-                <div class="form-group mb-2">
+                <div class="form-group mb-4">
                     <label class="form-label" for="whofor">Who is this appointment for?</label>
                     <select class="form-select" name="whofor" required>
                         <option value="0">For Myself</option>
                         <option value="1">For Others</option>
+                        <option value="1">For Multiple People</option>
                     </select>
                 </div>
 
-                <div class="d-flex gap-2 mb-2">
-                    <div class="form-group w-100">
-                        <label class="form-label" for="fname">First Name</label>
-                        <input class="form-control" type="text" name="fname" required>
-                    </div>
+                <div class="d-flex flex-column gap-2" id="patient-list">
+                    <div class="d-flex flex-column rounded shadow p-4 mb-4 gap-3 box" id="patient-box">
+                        <button class="align-self-end btn btn-danger w-25" type="button" onclick="delete_patient(this)">X</button>
 
-                    <div class="form-group w-100">
-                        <label class="form-label" for="mname">Middle Name</label>
-                        <input class="form-control" type="text" name="mname">
-                    </div>
+                        <div class="d-flex gap-2 mb-2">
+                            <div class="form-group w-100">
+                                <label class="form-label" for="fname">First Name</label>
+                                <input class="form-control" type="text" name="fname" required>
+                            </div>
 
-                    <div class="form-group w-100">
-                        <label class="form-label" for="lname">Last Name</label>
-                        <input class="form-control" type="text" name="lname" required>
+                            <div class="form-group w-100">
+                                <label class="form-label" for="mname">Middle Name</label>
+                                <input class="form-control" type="text" name="mname">
+                            </div>
+
+                            <div class="form-group w-100">
+                                <label class="form-label" for="lname">Last Name</label>
+                                <input class="form-control" type="text" name="lname" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2 mb-2">
+                            <div class="form-group w-100">
+                                <label class="form-label" for="email">Email Address</label>
+                                <input class="form-control" type="email" name="email" required>
+                            </div>
+
+                            <div class="form-group w-100">
+                                <label class="form-label" for="contact">Contact No.</label>
+                                <input class="form-control" type="tel" name="contact" required>
+                            </div>
+
+                            <div class="form-group w-50">
+                                <label class="form-label" for="sex">Sexuality</label>
+                                <select class="form-select" name="sex">
+                                    <option selected disabled>-- Select --</option>
+                                    <option value="0">Male</option>
+                                    <option value="1">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="-group mb-2">
+                            <label class="form-label" for="service">Type of Service</label>
+
+                            <div class="input-group">
+                                <select class="form-select" name="service" required>
+                                    <option selected disabled>-- Select --</option>
+                                    @foreach ($availables as $available)
+                                        <option value="">{{ $available->service->name }}</option>
+                                    @endforeach
+                                </select>
+                                <input class="form-control" type="text" id="schedule" placeholder="Select a date">
+                            </div>
+
+                            @php
+                                $availableDays = $schedules->pluck('day')->map(function ($day) {
+                                    return strtolower($day);
+                                })->toArray();
+                            @endphp
+
+                            <script>
+                                flatpickr('#schedule', {
+                                dateFormat: 'Y-m-d',
+                                enable: [
+                                    function (date) {
+                                        const allowedDays = @json($availableDays);
+                                        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                                        const dayName = dayNames[date.getDay()];
+
+                                        return allowedDays.includes(dayName);
+                                    }
+                                ],
+                                minDate: 'today',
+                            });
+                            </script>
+                        </div>
                     </div>
                 </div>
 
-                <div class="d-flex gap-2 mb-2">
-                    <div class="form-group w-100">
-                        <label class="form-label" for="email">Email Address</label>
-                        <input class="form-control" type="email" name="email" required>
-                    </div>
-
-                    <div class="form-group w-100">
-                        <label class="form-label" for="contact">Contact No.</label>
-                        <input class="form-control" type="tel" name="contact" required>
-                    </div>
-                </div>
-
-                <div class="form-group mb-2">
-                    <label class="form-label" for="service">Type of Service</label>
-                    <select class="form-select" name="service" required>
-                        <option selected disabled>-- Select --</option>
-                    </select>
+                <div class="d-flex justify-content-center mb-4 w-100">
+                    <button class="btn btn-success w-50" type="button" onclick="add_patient()">
+                        <i class="bi-plus-lg"></i>
+                        Add Person
+                    </button>
                 </div>
                 
                 <div class="form-check mb-2">
@@ -158,5 +212,20 @@
                 <h5 class="text-center fw-bold">Follow Us</h5>
             </div>
         </footer>
+
+        <script>
+            function add_patient () {
+                const box = document.getElementById('patient-box');
+                const clone = box.cloneNode(true);
+
+                clone.id = 'patient-box' + (document.querySelector('.box').length + 1);
+                document.getElementById('patient-list').appendChild(clone);
+            }
+
+            function delete_patient (button) {
+                const box = button.closest('.box');
+                box.remove();
+            }
+        </script>
     </body>
 </html>

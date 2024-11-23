@@ -874,10 +874,10 @@
                         <div class="accordion" id="vaccordion-services">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vlist-services" aria-expanded="false" aria-controls="vlist-services">Services</button>
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#vlist-services" aria-expanded="false" aria-controls="vlist-services">Services</button>
                                 </h2>
 
-                                <div class="accordion-collapse collapse" id="vlist-services" data-bs-parent="#vaccordion-services">
+                                <div class="accordion-collapse collapse show" id="vlist-services" data-bs-parent="#vaccordion-services">
                                     <div class="accordion-body">
                                         @foreach ($services as $service)
                                             <div class="form-check">

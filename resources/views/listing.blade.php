@@ -103,9 +103,9 @@
             </div>
         </form>
 
-        <div class="d-flex flex-column p-5">
+        <div class="d-flex flex-column align-items-center p-5 gap-4">
             @foreach ($listings as $listing)
-                <a class="text-decoration-none text-black d-flex rounded shadow p-4 gap-3 mx-4" href="{{ route('shop', $listing->id) }}">
+                <a class="text-decoration-none text-black d-flex rounded shadow p-4 gap-3 w-75" href="{{ route('shop', $listing->id) }}">
                     <img src="{{ '/storage/' . $listing->image_path }}" style="height: 200px; width: 200px;">
                     
                     <div class="d-flex flex-column">

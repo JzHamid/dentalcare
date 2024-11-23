@@ -131,7 +131,7 @@ class AdminController extends Controller
         foreach ($toAdd as $toAddId) {
             $available = new Available();
 
-            $available->clinic_id = $listing->id;
+            $available->listing_id = $listing->id;
             $available->service_id = $toAddId;
 
             $available->save();
@@ -196,5 +196,9 @@ class AdminController extends Controller
         $user->save();
 
         return redirect('/admin')->with(['page' => 7]);
+    }
+
+    public function create_appointment () {
+        // $appointment = Appoinmen
     }
 }
