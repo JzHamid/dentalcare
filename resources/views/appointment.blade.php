@@ -70,61 +70,65 @@
             </div>
         </nav>
 
-        <a class="btn btn-secondary ms-4 mt-4" href="{{ route('listing') }}">Return</a>
+        <div class="container-fluid p-4">
+            <a class="btn btn-secondary" href="{{ URL::previous() }}">Return</a>
 
-        <div class="d-flex flex-column bg-white p-5">
-            <div class="d-flex justify-content-between align-items-center w-100">
-                <h1 class="display-4">{{ $shop->name }}</h1>
-                <a class="btn btn-default" style="height: fit-content;" href="{{ route('appointment', $shop->id) }}">Book Apppointment</a>
-            </div>
+            <form class="d-flex flex-column mx-auto w-50" action="" method="post">
+                @csrf
 
-            <p class="lead">{{ $shop->location }}</p>
+                <h1 class="display-5 text-center">Appointment Form</h1>
 
-            <div class="d-flex gap-2">
-                <a class="btn btn-light" href="#about">About</a>
-                <a class="btn btn-light" href="#services">Services</a>
-                <a class="btn btn-light" href="#dentist">Dentist</a>
-            </div>
+                <div class="form-group mb-2">
+                    <label class="form-label" for="whofor">Who is this appointment for?</label>
+                    <select class="form-select" name="whofor" required>
+                        <option value="0">For Myself</option>
+                        <option value="1">For Others</option>
+                    </select>
+                </div>
 
-            <hr>
+                <div class="d-flex gap-2 mb-2">
+                    <div class="form-group w-100">
+                        <label class="form-label" for="fname">First Name</label>
+                        <input class="form-control" type="text" name="fname" required>
+                    </div>
 
-            <div class="d-flex flex-column gap-5" id="about">  
-                <div class="d-flex mx-auto rounded shadow p-4 gap-3 w-75">
-                    <img src="{{ '/storage/' . ($shop->image_path) }}" style="height: 300px; width: 300px;">
-                    
-                    <div class="d-flex flex-column">
-                        <h3></h3>
+                    <div class="form-group w-100">
+                        <label class="form-label" for="mname">Middle Name</label>
+                        <input class="form-control" type="text" name="mname">
+                    </div>
 
-                        <h3 class="m-0">About Us:</h3>
-                        <div class="container-fluid p-0 mb-3">{{ $shop->description }}</div>
-
-                        <h3 class="mb-2">Contact Information:</h3>
-                        <div class="container-fluid d-flex flex-column p-0 ms-2 gap-2">
-                            <p class="m-0">
-                                <i class="bi-telephone-fill"></i>
-                                {{ $shop->contact }}
-                            </p>
-
-                            <p class="m-0">
-                                <i class="bi-envelope-fill"></i>
-                                {{ $shop->email }}
-                            </p>
-                        </div>
+                    <div class="form-group w-100">
+                        <label class="form-label" for="lname">Last Name</label>
+                        <input class="form-control" type="text" name="lname" required>
                     </div>
                 </div>
 
-                <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="services">
-                    <h4 class="text-center w-100">Services Offered</h4>
-                    <hr>
-                    test
+                <div class="d-flex gap-2 mb-2">
+                    <div class="form-group w-100">
+                        <label class="form-label" for="email">Email Address</label>
+                        <input class="form-control" type="email" name="email" required>
+                    </div>
+
+                    <div class="form-group w-100">
+                        <label class="form-label" for="contact">Contact No.</label>
+                        <input class="form-control" type="tel" name="contact" required>
+                    </div>
                 </div>
 
-                <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="dentist">
-                    <h4 class="text-center w-100">Meet our Dentists</h4>
-                    <hr>
-                    test
+                <div class="form-group mb-2">
+                    <label class="form-label" for="service">Type of Service</label>
+                    <select class="form-select" name="service" required>
+                        <option selected disabled>-- Select --</option>
+                    </select>
                 </div>
-            </div>
+                
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" name="terms" required>
+                    <label class="form-check-label" for="terms">By checking this box you agree to share your medical history with all clinic branches</label>
+                </div>
+
+                <button class="btn btn-primary" type="submit">Book</button>
+            </form>
         </div>
 
         <footer class="row bg-body-secondary bottom-0 p-4">

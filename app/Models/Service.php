@@ -13,4 +13,8 @@ class Service extends Model
         'duration',
         'price',
     ];
+
+    public function availabilities () {
+        return $this->hasMany(Available::class, 'service_id', 'id');
+    }
 }

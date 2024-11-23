@@ -16,6 +16,7 @@ return new class extends Migration
             $table->timestamp('birthdate');
             $table->string('phone');
             $table->mediumText('note')->nullable();
+            $table->string('image_path')->nullable();
         });
     }
 

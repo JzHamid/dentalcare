@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clinic', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name');
-            $table->string('location');
-            $table->string('contact');
+        Schema::table('service_available', function (Blueprint $table) {
+            $table->renameColumn('clinic_id', 'listing_id');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clinic');
+        Schema::table('service_available', function (Blueprint $table) {
+            $table->renameColumn('listing_id', 'clinic_id');
+        });
     }
 };

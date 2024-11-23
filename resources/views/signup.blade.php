@@ -61,9 +61,20 @@
                     </div>
                 </div>
 
-                <div class="form-group container-fluid p-0">
-                    <label class="form-label m-0" for="birth">Date of Birth</label>
-                    <input class="form-control" name="birth" type="date" required>
+                <div class="d-flex gap-2">
+                    <div class="form-group container-fluid p-0">
+                        <label class="form-label m-0" for="birth">Date of Birth</label>
+                        <input class="form-control" name="birth" type="date" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <label class="form-label m-0" for="sexuality">Sexuality</label>
+                        <select class="form-select" name="sexuality" required>
+                            <option selected disabled>-- Select --</option>
+                            <option value="0">Male</option>
+                            <option value="1">Female</option>
+                        </select>
+                    </div>
                 </div>
 
                 <div class="d-flex gap-2 w-100">

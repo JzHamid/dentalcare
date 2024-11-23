@@ -17,14 +17,24 @@ class AccountController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            $user = User::where('email', $request->email)->first();
+            $user->is_online = true;
+            $user->save();
+
             return redirect()->intended('/')->with('logged', true);
         }
 
         return back()->withErrors(['invalid' => 'Account not found.']);
     }
 
-    public function logout (Request $request) {
-        
+    public function logout () {
+        $user = User::find(Auth::user()->id);
+        $user->is_online = false;
+        $user->save();
+
+        Auth::logout();
+
+        return redirect('/login');
     }
 
     public function signup (Request $request) {
@@ -33,6 +43,7 @@ class AccountController extends Controller
             'mname' => 'nullable|string|max:255',
             'lname' => 'required|string|max:255',
             'birth' => 'required|date|before:today',
+            'sexuality' => 'required',
             'phone' => 'required|digits_between:10,15',
             'email' => 'required|email|unique:users,email',
             'address' => 'required|string|max:255',
@@ -44,6 +55,7 @@ class AccountController extends Controller
         $user->mname = $validData['mname'];
         $user->lname = $validData['lname'];
         $user->birthdate = $validData['birth'];
+        $user->gender = $validData['sexuality'];
         $user->phone = $validData['phone'];
         $user->email = $validData['email'];
         $user->address = $validData['address'];
@@ -52,5 +64,38 @@ class AccountController extends Controller
         $user->save();
 
         return redirect('login');
+    }
+
+    public function update (Request $request) {
+        $user = User::find(Auth::user()->id);
+
+        if ($request->hasFile('profile')) {
+            $file = $request->file('profile');
+            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
+            $user->image_path = $path;
+        }
+
+        $user->fname = $request->fname;
+        $user->mname = $request->mname;
+        $user->lname = $request->lname;
+        $user->birthdate = $request->birth;
+        $user->gender = $request->gender;
+        $user->phone = $request->phone;
+        $user->email = $request->email;
+        $user->address = $request->location;
+
+        $user->save();
+
+        return redirect('/admin')->with(['page' => 8]);
+    }
+
+    public function availability (Request $request) {
+        $user = User::find(Auth::user()->id);
+
+        $user->is_online = $request->online;
+
+        $user->save();
+
+        return redirect('/admin')->with(['is_online' => $request->online]);
     }
 }

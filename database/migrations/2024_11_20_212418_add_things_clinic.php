@@ -11,7 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::table('clinic', function (Blueprint $table) {
+            $table->string('email');
+            $table->mediumText('description');
+            $table->string('image_path')->nullable();
+        });
     }
 
     /**
@@ -19,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('clinic', function (Blueprint $table) {
+            $table->dropColumn(['email', 'description']);
+        });
     }
 };

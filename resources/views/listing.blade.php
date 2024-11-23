@@ -7,7 +7,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
-        <title>DentalCare | Listing</title>
+        <title>DentalCare | Browse</title>
 
         <style>
             .text-default,
@@ -70,61 +70,64 @@
             </div>
         </nav>
 
-        <a class="btn btn-secondary ms-4 mt-4" href="{{ route('listing') }}">Return</a>
+        <form class="container-fluid bg-body-tertiary align-items-center d-flex flex-column shadow p-5 gap-3">
+            @csrf
 
-        <div class="d-flex flex-column bg-white p-5">
-            <div class="d-flex justify-content-between align-items-center w-100">
-                <h1 class="display-4">{{ $shop->name }}</h1>
-                <a class="btn btn-default" style="height: fit-content;" href="{{ route('appointment', $shop->id) }}">Book Apppointment</a>
+            <div class="input-group w-50">
+                <span class="input-group-text">
+                    <i class="bi-person-fill"></i>
+                </span>
+                <input class="form-control" type="search" name="doctor" placeholder="Practitioner">
+
+                <span class="input-group-text">
+                    <i class="bi-geo-alt-fill"></i>
+                </span>
+                <input class="form-control" type="search" name="place" placeholder="Location">
+                <button class="btn btn-secondary" type="submit">Search</button>
             </div>
 
-            <p class="lead">{{ $shop->location }}</p>
+            <div class="d-flex w-50 gap-3">
+                <select class="form-select form-select-sm rounded-pill">
+                    <option selected disabled>Type of Service</option>
+                </select>
 
-            <div class="d-flex gap-2">
-                <a class="btn btn-light" href="#about">About</a>
-                <a class="btn btn-light" href="#services">Services</a>
-                <a class="btn btn-light" href="#dentist">Dentist</a>
+                <select class="form-select form-select-sm rounded-pill">
+                    <option selected disabled>Gender of Practitioner</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                </select>
+
+                <select class="form-select form-select-sm rounded-pill">
+                    <option selected disabled>Specialty</option>
+                </select>
             </div>
+        </form>
 
-            <hr>
-
-            <div class="d-flex flex-column gap-5" id="about">  
-                <div class="d-flex mx-auto rounded shadow p-4 gap-3 w-75">
-                    <img src="{{ '/storage/' . ($shop->image_path) }}" style="height: 300px; width: 300px;">
+        <div class="d-flex flex-column p-5">
+            @foreach ($listings as $listing)
+                <a class="text-decoration-none text-black d-flex rounded shadow p-4 gap-3 mx-4" href="{{ route('shop', $listing->id) }}">
+                    <img src="{{ '/storage/' . $listing->image_path }}" style="height: 200px; width: 200px;">
                     
                     <div class="d-flex flex-column">
-                        <h3></h3>
+                        <h3>{{ $listing->name }}</h3>
 
-                        <h3 class="m-0">About Us:</h3>
-                        <div class="container-fluid p-0 mb-3">{{ $shop->description }}</div>
+                        <p class="fw-bold m-0" style="font-size: medium;">Offered Services:</p>
+                        <div class="container-fluid p-0 mb-1">
+                            @foreach ($listing->availabilities as $available)
+                                {{ $available->service->name }}
+                            @endforeach
+                        </div>
 
-                        <h3 class="mb-2">Contact Information:</h3>
-                        <div class="container-fluid d-flex flex-column p-0 ms-2 gap-2">
-                            <p class="m-0">
-                                <i class="bi-telephone-fill"></i>
-                                {{ $shop->contact }}
-                            </p>
+                        <p class="fw-bold m-0" style="font-size: medium;">Location:</p>
+                        <div class="container-fluid p-0 mb-1">{{ $listing->location }}</div>
 
-                            <p class="m-0">
-                                <i class="bi-envelope-fill"></i>
-                                {{ $shop->email }}
-                            </p>
+                        <p class="fw-bold m-0" style="font-size: medium;">Availability:</p>
+                        <div class="container-fluid p-0">
+                            test
                         </div>
                     </div>
-                </div>
-
-                <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="services">
-                    <h4 class="text-center w-100">Services Offered</h4>
-                    <hr>
-                    test
-                </div>
-
-                <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="dentist">
-                    <h4 class="text-center w-100">Meet our Dentists</h4>
-                    <hr>
-                    test
-                </div>
-            </div>
+                </a>
+            @endforeach
         </div>
 
         <footer class="row bg-body-secondary bottom-0 p-4">

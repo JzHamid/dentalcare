@@ -82,22 +82,32 @@
 
         <div class="row m-0" style="height: 93%;">
             <div class="col-md-2 bg-default nav flex-column p-3 gap-1" role="tablist" aria-orientation="vertical" id="navbar">
-                <div class="container-fluid d-flex flex-column align-items-center py-2">
+                <div class="container-fluid d-flex flex-column align-items-center py-1">
                     <div class="position-relative d-flex justify-content-center">
-                        <img class="" style="height: 100px; width: 100px;">
+                        <img src="{{ '/storage/' . $log->image_path }}" class="mb-1" style="height: 100px; width: 100px;">
 
-                        <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle">
-                            <span class="visually-hidden">New alerts</span>
-                        </span>
+                        @if ( $is_online )
+                            <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle">
+                                <span class="visually-hidden">New alerts</span>
+                            </span>
+                        @else
+                            <span class="position-absolute top-0 start-100 translate-middle p-2 bg-secondary border border-light rounded-circle">
+                                <span class="visually-hidden">New alerts</span>
+                            </span>
+                        @endif
                     </div>
                     
-                    <p class="fs-5 fw-medium text-white m-0">Dentist Name</p>
+                    <h6 class="text-center text-white m-0">{{ $log->fname . ' ' . $log->mname . ' ' . $log->lname }}</h6>
                     <p class="fw-light text-white mb-2">Title</p>
 
-                    <select class="form-select form-select-sm w-75" style="font-size: x-small;">
-                        <option value="0">Available</option>
-                        <option value="1">Not Available</option>
-                    </select>
+                    <form class="w-100 d-flex justify-content-center" action="{{ route('availability') }}" method="post" id="availability">
+                        @csrf
+
+                        <select class="form-select form-select-sm w-75" style="font-size: x-small;" name="online" onchange="document.getElementById('availability').submit()">
+                            <option value="1" @selected($is_online == 1)>Available</option>
+                            <option value="0" @selected($is_online == 0)>Not Available</option>
+                        </select>
+                    </form>
                 </div>
 
                 <button class="nav-link text-white d-flex active gap-4" id="nav-dashboard" data-bs-toggle="pill" data-bs-target="#tab-dashboard" type="button" role="tab" aria-controls="tab-dashboard" aria-selected="true">
@@ -135,7 +145,7 @@
                     History
                 </button>
 
-                <hr class="m-2">
+                <!-- <hr class="m-2"> -->
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-collab" data-bs-toggle="pill" data-bs-target="#tab-collab" type="button" role="tab" aria-controls="tab-collab" aria-selected="false">
                     <i class="bi-person-fill-add"></i>
@@ -147,37 +157,59 @@
                     Profile
                 </button>
 
-                <button class="nav-link text-white d-flex gap-4 mt-auto" id="nav-transactions" type="button">
+                <a class="nav-link text-white d-flex gap-4 mt-auto" href="{{ route('logout') }}">
                     <i class="bi-box-arrow-right"></i>
                     Logout
-                </button>
+                </a>
             </div>
 
             <div class="col-md-10 bg-light tab-content p-0 overflow-y-scroll h-100">
                 <div class="tab-pane show active gap-5 p-3" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
-                    <h1>Dashboard</h1>
-
-                    <div class="d-flex flex-column p-5 gap-5">
-                        <div class="rounded bg-white shadow p-3">
-                            <h4>Health Record</h4>
-                            <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex flex-column">
+                            <h1 class="m-0">Welcome Dentist!</h1>
+                            <p class="text-secondary m-0">Dashboard</p>
                         </div>
 
-                        <div class="container-fluid d-flex p-0 gap-5">
-                            <div class="container-fluid rounded bg-white shadow p-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h4 class="m-0">Appointments</h4>
-                                    <button class="btn btn-primary d-flex gap-2">New</button>
-                                </div>
-                                <hr>
-                            </div>
+                        <button class="btn btn-default" style="height: fit-content;" data-bs-toggle="modal" data-bs-target="#add-collab">
+                            <i class="bi-plus-lg"></i>
+                            Add Secretary
+                        </button>
+                    </div>
 
-                            <div class="container-fluid rounded bg-white shadow p-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <h4 class="m-0">Notifications</h4>
-                                    <button class="btn btn-primary d-flex gap-2">View All</button>
+                    <hr>
+
+                    <div class="row m-0 d-flex gap-5">
+                        <div class="col bg-white rounded shadow p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-column">
+                                    <img src="" style="height: 100px; width: 100px;">
+                                    <p class="lead text-center m-0">Patients</p>
                                 </div>
-                                <hr>
+
+                                <p class="display-5">{{ $users->count() }}</p>
+                            </div>
+                        </div>
+
+                        <div class="col bg-white rounded shadow p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-column">
+                                    <img src="" style="height: 100px; width: 100px;">
+                                    <p class="lead text-center m-0">Appointments</p>
+                                </div>
+
+                                <p class="display-5">0</p>
+                            </div>
+                        </div>
+
+                        <div class="col bg-white rounded shadow p-4">
+                            <div class="d-flex justify-content-between">
+                                <div class="d-flex flex-column">
+                                    <img src="" style="height: 100px; width: 100px;">
+                                    <p class="lead text-center m-0">Procedures</p>
+                                </div>
+
+                                <p class="display-5">0</p>
                             </div>
                         </div>
                     </div>
@@ -207,39 +239,52 @@
                 <div class="tab-pane gap-5 p-3" id="tab-appointments" role="tabpanel" aria-labelledby="tab-appointments" tabindex="0">
                     <h1 class="mb-5">Appointments</h1>
 
-                    <table class="table">
+                    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                        <h5 class="m-0">Appointment History</h5>
+
+                        <div class="d-flex gap-2">
+                            <select class="form-select" name="filter" style="width: 200px;">
+                                <option value="0">All</option>
+                                <option value="1">Upcoming</option>
+                                <option value="2">Pending</option>
+                                <option value="3">Rescheduled</option>
+                                <option value="4">Cancelled</option>
+                            </select>
+
+                            <div class="input-group">
+                                <input class="form-control" type="search">
+                                <button class="btn btn-secondary">Search</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th scope="col">ID</th>
-                                <th scope="col">Dentist Name</th>
+                                <th class="text-center" scope="col">ID</th>
                                 <th scope="col">Patient Name</th>
-                                <th scope="col">Location</th>
                                 <th scope="col">Services</th>
-                                <th scope="col">Time</th>
-                                <th scope="col">Action</th>
+                                <th scope="col">Set By</th>
+                                <th scope="col">Appointment Time</th>
+                                <th scope="col">Status</th>
+                                <th class="text-center" scope="col">Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             <tr>
-                                <th scope="row">1</th>
+                                <th class="text-center" scope="row">1</th>
                                 <td>Juan Dela Cruz</td>
                                 <td>Juan Dela Cruz</td>
                                 <td>Zamboanga City</td>
                                 <td>Cleaning</td>
                                 <td>10:00-11:30</td>
-                                <td>View</td>
-                            </tr>
-
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Juan Dela Cruz</td>
-                                <td>Juan Dela Cruz</td>
-                                <td>Zamboanga City</td>
-                                <td>Cleaning</td>
-                                <td>10:00-11:30</td>
-                                <td>View</td>
-                            </tr>
+                                <td class="d-flex justify-content-center">
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="bi-eye-fill"></i>
+                                    </button>
+                                </td>
+                            </tr>   
                         </tbody>
                     </table>
                 </div>
@@ -258,24 +303,29 @@
                     <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th scope="col">ID</th>
+                                <th class="text-center" scope="col">ID</th>
                                 <th scope="col">Name of Service</th>
                                 <th scope="col">Duration</th>
                                 <th scope="col">Price Range</th>
-                                <th scope="col">Actions</th>
+                                <th class="text-center" scope="col">Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
                             @foreach ($services as $service)
                                 <tr>
-                                    <th scope="row">{{ $service->id }}</th>
+                                    <th class="text-center" scope="row">{{ $service->id }}</th>
                                     <td>{{ $service->name }}</td>
                                     <td>{{ floor($service->duration / 60) . 'hr ' . ($service->duration % 60) . 'm' }}</td>
                                     <td>{{ $service->price_start }} - {{ $service->price_end }}</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-service" onclick="get_service('{{ $service->id }}')">Edit</button>
-                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-service">Delete</button>
+                                    <td class="d-flex justify-content-center gap-2">
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-service" onclick="get_service('{{ $service->id }}')">
+                                            <i class="bi-pencil-square"></i>
+                                        </button>
+
+                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-service">
+                                            <i class="bi-trash-fill"></i>
+                                        </button>
 
                                         <form id="delete-service-form" action="{{ route('destroy.service', $service->id) }}" method="post">
                                             @csrf
@@ -305,12 +355,12 @@
                     <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th scope="col">ID</th>
+                                <th class="text-center" scope="col">ID</th>
                                 <th scope="col">Patient Name</th>
                                 <th scope="col">Age</th>
                                 <th scope="col">Email Address</th>
                                 <th scope="col">Address</th>
-                                <th scope="col">Action</th>
+                                <th class="text-center" scope="col">Action</th>
                             </tr>
                         </thead>
 
@@ -336,17 +386,43 @@
                         </div>
                     </div>
 
-                    <table class="table">
+                    <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th scope="col">ID</th>
+                                <th class="text-center" scope="col">ID</th>
                                 <th scope="col">Clinic Name</th>
                                 <th scope="col">Email Address</th>
                                 <th scope="col">Contact No.</th>
                                 <th scope="col">Location</th>
-                                <th scope="col">Action</th>
+                                <th class="text-center" scope="col">Actions</th>
                             </tr>
                         </thead>
+
+                        <tbody>
+                            @foreach ($listings as $listing)
+                                <tr>
+                                    <th class="text-center" scope="row">{{ $listing->id }}</th>
+                                    <td>{{ $listing->name }}</td>
+                                    <td>{{ $listing->email }}</td>
+                                    <td>{{ $listing->contact }}</td>
+                                    <td>{{ $listing->location }}</td>
+                                    <td class="d-flex justify-content-center gap-2" >
+                                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#view-listing" onclick="get_listing('{{ $listing->id }}')">
+                                            <i class="bi-pencil-square"></i>
+                                        </button>
+
+                                        <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-listing">
+                                            <i class="bi-trash-fill"></i>
+                                        </button>
+
+                                        <form id="delete-listing-form" action="{{ route('destroy.listing', $listing->id) }}" method="post">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
                     </table>
                 </div>
 
@@ -356,21 +432,80 @@
 
                 <div class="tab-pane gap-5 p-3" id="tab-collab" role="tabpanel" aria-labelledby="tab-collab" tabindex="0">
                     <h1 class="mb-5">Collaborators</h1>
+
+                    <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
+                        <h5 class="m-0">List of Collaborators</h5>
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-collab">
+                            <i class="bi-plus-lg"></i>
+                            Add
+                        </button>
+                    </div>
+
+                    <table class="table table-bordered">
+                        <thead class="table-primary">
+                            <tr>
+                                <th class="text-center" scope="col">ID</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Contact No.</th>
+                                <th scope="col">Date Added</th>
+                                <th scope="col">Position</th>
+                                <th scope="col">Status</th>
+                                <th class="text-center" scope="col">Actions</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($users as $user)
+                                @if ($user->status > 0)
+                                    <tr>
+                                        <th class="text-center" scope="row">{{ $user->id }}</th>
+                                        <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
+                                        <td>{{ $user->phone }}</td>
+                                        <td></td>
+                                        <td>
+                                            @if ($user->status == 1)
+                                                Secretary
+                                            @elseif ($user->status == 2)
+                                                Dentist
+                                            @endif
+                                        </td>
+                                        <td>
+                                            {{ $user->is_online ? 'Online' : 'Offline' }}
+                                        </td>
+                                        <td class="d-flex justify-content-center gap-2">
+                                            <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#edit-collab" onclick="get_collab('{{ $user->id }}')">
+                                                <i class="bi-pencil-square"></i>
+                                            </button>
+
+                                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#delete-collab">
+                                                <i class="bi-trash-fill"></i>
+                                            </button>
+
+                                            <form id="delete-collab-form" action="{{ route('destroy.collab', $user->id) }}" method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endif
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="tab-pane gap-5 p-3" id="tab-profile" role="tabpanel" aria-labelledby="tab-profile" tabindex="0">
                     <h1 class="mb-5">Profile</h1>
 
-                    <form class="rounded shadow p-5" action="">
+                    <form class="rounded shadow p-5" action="{{ route('update.account') }}" method="post" enctype="multipart/form-data">
                         @csrf
 
                         <div class="border border-tertiary rounded d-flex gap-3 p-4 mb-4">
-                            <img style="height: 150px; width: 150px;">
+                            <img src="{{ '/storage/' . $log->image_path }}" style="height: 150px; width: 150px;" id="profile-img">
 
                             <div class="d-flex flex-column p-0">
                                 <h5>Profile Image</h5>
                                 <div class="d-flex gap-3">
-                                    <input class="visually-hidden" type="file" name="profile" id="profile">
+                                    <input class="visually-hidden" type="file" name="profile" id="profile" onchange="previewListing(this, 3)">
                                     <button class="btn btn-primary btn-sm" type="button" onclick="document.getElementById('profile').click()">Upload</button>
                                     <button class="btn btn-danger btn-sm" type="button">Remove</button>
                                 </div>
@@ -381,37 +516,51 @@
                         <div class="d-flex gap-3 w-100 mb-2">
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="fname">First Name</label>
-                                <input class="form-control" type="text" name="fname">
+                                <input class="form-control" type="text" name="fname" value="{{ $log->fname }}">
                             </div>
 
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="mname">Middle Name</label>
-                                <input class="form-control" type="text" name="mname">
+                                <input class="form-control" type="text" name="mname" value="{{ $log->mname }}">
                             </div>
 
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="lname">Last Name</label>
-                                <input class="form-control" type="text" name="lname">
+                                <input class="form-control" type="text" name="lname" value="{{ $log->lname }}">
                             </div>
                         </div>
 
-                        <label class="form-label" for="birth">Birthdate</label>
-                        <input class="form-control mb-2" type="date" name="birth">
+                        <div class="d-flex container-fluid p-0 gap-3">
+                            <div class="form-group w-100">
+                                <label class="form-label" for="birth">Birthdate</label>
+                                <input class="form-control mb-2" type="date" name="birth" value="{{ Carbon\Carbon::parse($log->birthdate)->format('Y-m-d') }}">
+                            </div>
+
+                            <div class="form-group w-100">
+                                <label class="form-label" for="gender">Sexuality</label>
+                                <select class="form-select" name="gender">
+                                    <option value="0" @selected($log->gender == 0)>Male</option>
+                                    <option value="1" @selected($log->gender == 1)>Female</option>
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="d-flex gap-3 w-100 mb-2">
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="phone">Contact No.</label>
-                                <input class="form-control" type="tel" name="phone">
+                                <input class="form-control" type="tel" name="phone" value="{{ $log->phone }}">
                             </div>
 
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="email">Email Address</label>
-                                <input class="form-control" type="email" name="email">
+                                <input class="form-control" type="email" name="email" value="{{ $log->email }}">
                             </div>
                         </div>
 
-                        <label class="form-label" for="location">Location</label>
-                        <input class="form-control mb-4" type="text" name="location">
+                        <div class="form-group mb-4">
+                            <label class="form-label" for="location">Location</label>
+                            <input class="form-control" type="text" name="location" value="{{ $log->address }}">
+                        </div>
 
                         <div class="d-flex w-100 justify-content-end">
                             <button class="btn btn-primary w-25" type="submit">Save Profile</button>
@@ -575,15 +724,15 @@
                         <h5 class="modal-title">Create Listing</h5>
                     </div>
 
-                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.listing') }}" method="post" id="create-listing">
+                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.listing') }}" method="post" enctype="multipart/form-data" id="create-listing">
                         @csrf
 
                         <div class="d-flex gap-3">
-                            <img style="height: 100px; width: 100px;">
+                            <img class="border border-2" style="height: 150px; width: 150px;" id="listing-thumbnail-img">
                             <div class="d-flex flex-column gap-2">
                                 <h5 class="m-0">Listing Thumbnail</h5>
                                 <div class="d-flex gap-2">
-                                    <input class="visually-hidden" type="file" id="listing-thumbnail">
+                                    <input class="visually-hidden" type="file" name="listing-thumbnail" onchange="previewListing(this, 1)" accept="image/*" id="listing-thumbnail">
                                     <button class="btn btn-primary btn-sm" type="button" onclick="document.getElementById('listing-thumbnail').click()">Upload</button>
                                     <button class="btn btn-danger btn-sm">Remove</button>
                                 </div>
@@ -624,7 +773,7 @@
                                     <div class="accordion-body">
                                         @foreach ($services as $service)
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="" name="service{{ $service->id }}">
+                                                <input class="form-check-input" type="checkbox" value="{{ $service->id }}" name="service[]">
                                                 <label class="form-check-label" for="service{{ $service->id }}">{{ $service->name }}</label>
                                             </div>
                                         @endforeach
@@ -675,13 +824,232 @@
             </div>
         </div>
 
+        <!-- View / Edit Listing Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="view-listing" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="view-listing-name">View Listing</h5>
+                    </div>
+
+                    <form class="modal-body d-flex flex-column gap-2" method="post" enctype="multipart/form-data" id="view-listing-form">
+                        @csrf
+
+                        <div class="d-flex gap-3">
+                            <img class="border border-2" style="height: 150px; width: 150px;" id="vlisting-thumbnail-img">
+                            <div class="d-flex flex-column gap-2">
+                                <h5 class="m-0">Listing Thumbnail</h5>
+                                <div class="d-flex gap-2">
+                                    <input class="visually-hidden" type="file" name="vlisting-thumbnail" onchange="previewListing(this, 2)" accept="image/*" id="vlisting-thumbnail">
+                                    <button class="btn btn-primary btn-sm" type="button" onclick="document.getElementById('vlisting-thumbnail').click()">Upload</button>
+                                    <button class="btn btn-danger btn-sm">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="form-group">
+                            <label class="form-label" for="vlisting-name">Clinic Name</label>
+                            <input class="form-control" type="text" name="vlisting-name" id="vlisting-name" required>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <div class="form-group w-50">
+                                <label class="form-label" for="vlisting-email">Email Address</label>
+                                <input class="form-control" type="email" name="vlisting-email" id="vlisting-email" required>
+                            </div>
+
+                            <div class="form-group w-50">
+                                <label class="form-label" for="vlisting-contact">Contact No.</label>
+                                <input class="form-control" type="tel" name="vlisting-contact" id="vlisting-contact" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="vlisting-location">Location</label>
+                            <input class="form-control" type="text" name="vlisting-location" id="vlisting-location" required>
+                        </div>
+
+                        <div class="accordion" id="vaccordion-services">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#vlist-services" aria-expanded="false" aria-controls="vlist-services">Services</button>
+                                </h2>
+
+                                <div class="accordion-collapse collapse" id="vlist-services" data-bs-parent="#vaccordion-services">
+                                    <div class="accordion-body">
+                                        @foreach ($services as $service)
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" value="{{ $service->id }}" id="vservice{{ $service->id }}" name="vservice[]">
+                                                <label class="form-check-label" for="vservice{{ $service->id }}">{{ $service->name }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @php
+                            $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                        @endphp
+
+                        <div class="form-group d-flex flex-column gap-2">
+                            <label for="listing-schedule">Schedule</label>
+
+                            @foreach (array_chunk($days, 2) as $dayPair)
+                                <div class="d-flex gap-2">
+                                    @foreach ($dayPair as $day)
+                                        <div class="container-fluid rounded border border-tertiary p-3 w-50 ms-0">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" name="vlisting-{{ strtolower($day) }}">
+                                                <label class="form-check-label" for="vlisting-{{ strtolower($day) }}">{{ $day }}</label>
+                                            </div>
+
+                                            <div class="input-group">
+                                                <span class="input-group-text">Starting Time</span>
+                                                <input class="form-control" type="time" name="v{{ strtolower($day) }}-time-start">
+                                                <span class="input-group-text">Ending Time</span>
+                                                <input class="form-control" type="time" name="v{{ strtolower($day) }}-time-end">
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="vlisting-about">About Us</label>
+                            <textarea class="form-control" name="vlisting-about" id="vlisting-about"></textarea>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary w-25" type="button" onclick="document.getElementById('view-listing-form').submit()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Delete Listing Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="delete-listing" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Listing</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        Do you want to delete this listing?
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">No</button>
+                        <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('delete-listing-form').submit()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Collaborator Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="add-collab" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Collaborator</h5>
+                    </div>
+
+                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.collab') }}" method="post" id="create-collab">
+                        @csrf
+                        
+                        <div class="form-group w-100">
+                            <label class="form-label" for="collab-email">Email Address</label>
+                            <input class="form-control" type="email" name="collab-email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="collab-position">Position</label>
+                            <select class="form-select" name="collab-position" required>
+                                <option value="0" selected disabled>-- Select --</option>
+                                <option value="1">Secretary</option>
+                                <option value="2">Dentist</option>
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-success w-25" type="button" onclick="document.getElementById('create-collab').submit()">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Collaborator Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="edit-collab" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Collaborator</h5>
+                    </div>
+
+                    <form class="modal-body d-flex flex-column gap-2" method="post" id="edit-collab-form">
+                        @csrf
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="ecollab-position">Position</label>
+                            <select class="form-select" name="ecollab-position" id="ecollab-position">
+                                <option selected disabled>-- Select --</option>
+                                <option value="1">Secretary</option>
+                                <option value="2">Dentist</option>
+                            </select>
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-primary w-25" type="button" onclick="document.getElementById('edit-collab-form').submit()">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Remove Collaborator -->
+        <div class="modal fade" data-bs-backdrop="static" id="delete-collab" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Remove Collaborator</h5>
+                    </div>
+
+                    <div class="modal-body">
+                        Do you want to remove this collaborator?
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">No</button>
+                        <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('delete-collab-form').submit()">Yes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 switch (parseInt("{{ session('page') }}", 10)) {
                     case 3:
                         document.getElementById('nav-services').click();
                         break;
-                
+                    case 5:
+                        document.getElementById('nav-listings').click();
+                        break;
+                    case 7:
+                        document.getElementById('nav-collab').click();
+                        break;
+                    case 8:
+                        document.getElementById('nav-profile').click();
+                        break;
                     default:
                         break;
                 }
@@ -709,6 +1077,77 @@
                     $('#eservice-price-start').val(data.service.price_start);
                     $('#eservice-price-end').val(data.service.price_end);
                 });
+            }
+
+            function get_listing (id) {
+                fetch(`/get-listing/${parseInt(id, 10)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    $('#view-listing-form').attr('action', `/edit-listing/${data.listing.id}`);
+
+                    $('#vlisting-thumbnail-img').attr('src', '/storage/' + data.listing.image_path);
+                    $('#vlisting-name').val(data.listing.name);
+                    $('#vlisting-email').val(data.listing.email);
+                    $('#vlisting-contact').val(data.listing.contact);
+                    $('#vlisting-location').val(data.listing.location);
+
+                    data.services.forEach(service => {
+                        $(`#vservice${service.id}`).prop('checked', true);
+                    });
+
+                    data.schedules.forEach(schedule => {
+                        const day = schedule.day.toLowerCase();
+
+                        $(`input[name="vlisting-${day}"]`).prop('checked', true);
+                        $(`input[name="v${day}-time-start"]`).val(schedule.start);
+                        $(`input[name="v${day}-time-end"]`).val(schedule.end);
+                    });
+
+                    $('#vlisting-about').val(data.listing.description);
+                });
+            }
+
+            function get_collab (id) {
+                fetch(`/get-collab/${parseInt(id, 10)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    $('#ecollab-position').val(data.user.status);
+                });
+            }
+
+            function previewListing (input, type) {
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        let previewer;
+
+                        if (type == 1) {
+                            previewer = document.getElementById('listing-thumbnail-img');
+                        } else if (type == 2) {
+                            previewer = document.getElementById('vlisting-thumbnail-img');
+                        } else if (type == 3) {
+                            previewer = document.getElementById('profile-img');
+                        }
+
+                        previewer.src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(file);
+                }
             }
         </script>
     </body>

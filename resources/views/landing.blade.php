@@ -75,6 +75,8 @@
                 <h1 class="display-4 text-default">SHINE YOUR SMILE<br>WITH US<br>YOUR REASON TO<br>SMILE</h1>
                 <p class="lead mb-5">Schedule your next dental visit with ease<br>using our online appointment system.</p>
                 
+                <a class="btn btn-default mb-4 w-25" href="{{ route('listing') }}">Book Now!</a>
+
                 <form class="input-group">
                     @csrf
 

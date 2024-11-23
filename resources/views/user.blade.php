@@ -80,15 +80,15 @@
         </nav>
 
         <div class="row m-0" style="height: 93%;">
-            <div class="col-md-3 bg-default nav flex-column p-3 gap-2" role="tablist" aria-orientation="vertical" id="navbar">
-                <div class="container-fluid d-flex flex-column align-items-center py-5">
-                    <img class="mb-2" style="height: 100px; width: 100px;">
-                    <p class="fs-5 fw-medium text-white m-0">Patient Name</p>
-                    <p class="fw-light text-white mb-1">Patient ID: 000</p>
+            <div class="col-md-2 bg-default nav flex-column p-3 gap-2" role="tablist" aria-orientation="vertical" id="navbar">
+                <div class="container-fluid d-flex flex-column align-items-center py-4">
+                    <img src="{{ asset('storage/images/profile_empty.jpg') }}" class="mb-2" style="height: 100px; width: 100px;">
+                    <p class="fs-5 text-center fw-medium text-white m-0 mb-2">{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</p>
+                    <p class="fw-light text-white mb-1">Patient ID: {{ $user->id }}</p>
 
                     <div class="text-white d-flex align-items-center p-0 gap-2">
-                        <p class="fw-light text-white">Male</p>
-                        <p class="fw-light text-white">Age</p>
+                        <p class="fw-light text-white">{{ $user->gender ? 'Male' : 'Female' }}</p>
+                        <p class="fw-light text-white">{{ Carbon\Carbon::parse($user->birthdate)->age }}</p>
                     </div>
                 </div>
 
@@ -117,13 +117,13 @@
                     Profile
                 </button>
 
-                <button class="nav-link text-white d-flex gap-4 mt-auto" id="nav-transactions" type="button">
+                <a class="nav-link text-white d-flex gap-4 mt-auto" href="{{ route('logout') }}">
                     <i class="bi-box-arrow-right"></i>
                     Logout
-                </button>
+                </a>
             </div>
 
-            <div class="col-md-9 bg-light tab-content p-0 overflow-y-scroll h-100">
+            <div class="col-md-10 bg-light tab-content p-0 overflow-y-scroll h-100">
                 <div class="tab-pane show active gap-5 p-3" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
                     <h1>Dashboard</h1>
 
@@ -145,7 +145,7 @@
                             <div class="container-fluid rounded bg-white shadow p-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h4 class="m-0">Notifications</h4>
-                                    <button class="btn btn-primary d-flex gap-2">View All</button>
+                                    <button class="btn btn-primary d-flex gap-2" onclick="document.getElementById('nav-notifications').click()">View All</button>
                                 </div>
                                 <hr>
                             </div>
@@ -238,16 +238,16 @@
                 <div class="tab-pane gap-5 p-3" id="tab-profile" role="tabpanel" aria-labelledby="tab-profile" tabindex="0">
                     <h1 class="mb-5">Profile</h1>
 
-                    <form class="rounded shadow p-5" action="">
+                    <form class="rounded shadow p-5" action="" method="post">
                         @csrf
 
                         <div class="border border-tertiary rounded d-flex gap-3 p-4 mb-4">
-                            <img style="height: 150px; width: 150px;">
+                            <img class="border border-2 border-tertiary" src="{{ $user->image_path ?? asset('images/profile_empty.jpg') }}" style="height: 150px; width: 150px;" id="profile-thumbnail-img">
 
                             <div class="d-flex flex-column p-0">
                                 <h5>Profile Image</h5>
                                 <div class="d-flex gap-3">
-                                    <input class="visually-hidden" type="file" name="profile" id="profile">
+                                    <input class="visually-hidden" type="file" name="profile" onchange="previewThumbnail(this)" id="profile">
                                     <button class="btn btn-primary btn-sm" type="button" onclick="document.getElementById('profile').click()">Upload</button>
                                     <button class="btn btn-danger btn-sm" type="button">Remove</button>
                                 </div>
@@ -258,37 +258,37 @@
                         <div class="d-flex gap-3 w-100 mb-2">
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="fname">First Name</label>
-                                <input class="form-control" type="text" name="fname">
+                                <input class="form-control" type="text" name="fname" value="{{ $user->fname }}">
                             </div>
 
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="mname">Middle Name</label>
-                                <input class="form-control" type="text" name="mname">
+                                <input class="form-control" type="text" name="mname" value="{{ $user->mname }}">
                             </div>
 
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="lname">Last Name</label>
-                                <input class="form-control" type="text" name="lname">
+                                <input class="form-control" type="text" name="lname" value="{{ $user->lname }}">
                             </div>
                         </div>
 
                         <label class="form-label" for="birth">Birthdate</label>
-                        <input class="form-control mb-2" type="date" name="birth">
+                        <input class="form-control mb-2" type="date" name="birth" value="{{ Carbon\Carbon::parse($user->birthdate)->format('Y-m-d') }}">
 
                         <div class="d-flex gap-3 w-100 mb-2">
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="phone">Contact No.</label>
-                                <input class="form-control" type="tel" name="phone">
+                                <input class="form-control" type="tel" name="phone" value="{{ $user->phone }}">
                             </div>
 
                             <div class="form-group d-flex flex-column flex-fill">
                                 <label class="form-label" for="email">Email Address</label>
-                                <input class="form-control" type="email" name="email">
+                                <input class="form-control" type="email" name="email" value="{{ $user->email }}">
                             </div>
                         </div>
 
-                        <label class="form-label" for="location">Location</label>
-                        <input class="form-control mb-4" type="text" name="location">
+                        <label class="form-label" for="location">Address</label>
+                        <input class="form-control mb-4" type="text" name="location" value="{{ $user->address }}">
 
                         <div class="d-flex w-100 justify-content-end">
                             <button class="btn btn-primary w-25" type="submit">Save Profile</button>
@@ -297,5 +297,21 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            function previewThumbnail (input) {
+                if (input.files && input.files[0]) {
+                    const file = input.files[0];
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        const previewer = document.getElementById('profile-thumbnail-img');
+                        previewer.src = e.target.result;
+                    }
+
+                    reader.readAsDataURL(file);
+                }
+            }
+        </script>
     </body>
 </html>

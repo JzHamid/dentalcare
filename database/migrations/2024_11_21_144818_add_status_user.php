@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clinic', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('name');
-            $table->string('location');
-            $table->string('contact');
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('is_online')->default(false);
+            $table->integer('status')->default(0);
+            $table->boolean('gender')->after('lname');
         });
     }
 
@@ -25,6 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clinic');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['is_online', 'status']);
+        });
     }
 };
