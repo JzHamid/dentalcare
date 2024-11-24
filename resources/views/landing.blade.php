@@ -39,33 +39,32 @@
                 <a class="navbar-brand text-default fw-bold" href="">DentalCare</a>
 
                 @auth
-                    <div class="d-flex gap-4">
+                    <div class="d-flex gap-4" style="margin-right: 100px;">
                         <div class="dropdown">
                             <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi-bell-fill"></i>
                             </button>
 
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-end">
 
                             </ul>
                         </div>
 
-                        <div class="dropdown">
+                        <div class="dropdown d-flex">
                             <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi-person-circle"></i>
                             </button>
 
-                            <ul class="dropdown-menu">
-                                <li>
-                                    Test
-                                </li>
+                            <ul class="dropdown-menu dropdown-end">
+                                <li><a class="dropdown-item" href="{{ route('user') }}">My Profile</a></li>
+                                <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
                     </div>
                 @endauth
 
                 @guest
-                    <a class="text-default text-decoration-none" href="{{ route('login') }}">Login / Signup</a>
+                    <a class="text-default text-decoration-none" style="margin-right: 100px;" href="{{ route('login') }}">Login / Signup</a>
                 @endguest
             </div>
         </nav>

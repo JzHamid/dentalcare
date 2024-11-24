@@ -50,9 +50,10 @@ class PageController extends Controller
 
     public function appointment ($id) {
         $shop = Listing::find($id);
+        $user = Auth::user();
         $available = Available::where('listing_id', $shop->id)->get();
         $schedules = Schedule::where('clinic_id', $shop->id)->get();
 
-        return view('appointment')->with(['shop' => $shop, 'availables' => $available,'schedules' => $schedules]);
+        return view('appointment')->with(['shop' => $shop, 'user' => $user, 'availables' => $available, 'schedules' => $schedules]);
     }
 }

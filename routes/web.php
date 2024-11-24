@@ -12,27 +12,33 @@ Route::post('/update-availability', [AccountController::class, 'availability'])-
 Route::get('/login-account', [AccountController::class, 'login'])->name('login.account');
 Route::get('/search', [PageController::class, 'listing'])->name('listing');
 Route::get('/clinic/{id}', [PageController::class, 'shop'])->name('shop');
-Route::get('/clinic/{id}/appointment', [PageController::class, 'appointment'])->name('appointment');
-Route::get('/user-profile', [PageController::class, 'user'])->name('user');
-Route::get('/admin', [PageController::class, 'admin'])->name('admin');
+Route::get('/clinic/{id}/appointment', [PageController::class, 'appointment'])->name('appointment')->middleware('auth');
+Route::get('/user-profile', [PageController::class, 'user'])->name('user')->middleware('auth');
 
-// Service
-Route::post('/create-service', [AdminController::class, 'create_service'])->name('create.service');
-Route::post('/edit-service/{id}', [AdminController::class, 'edit_service'])->name('edit.service');
-Route::get('/get-service/{id}', [AdminController::class, 'get_service'])->name('get.service');
-Route::delete('/delete-service/{id}', [AdminController::class, 'delete_service'])->name('destroy.service');
+// Appointment
+Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
 
-// Listing
-Route::post('/create-listing', [AdminController::class, 'create_listing'])->name('create.listing');
-Route::post('/edit-listing/{id}', [AdminController::class, 'edit_listing'])->name('edit.listing');
-Route::get('/get-listing/{id}', [AdminController::class, 'get_listing'])->name('get.listing');
-Route::delete('/delete-listing/{id}', [AdminController::class, 'delete_listing'])->name('destroy.listing');
+Route::group(['middleware' => 'auth', 'admin'], function() {
+    Route::get('/admin', [PageController::class, 'admin'])->name('admin');
 
-// Collaborator
-Route::post('/create-collab', [AdminController::class, 'create_collab'])->name('create.collab');
-Route::post('/edit-collab/{id}', [AdminController::class, 'edit_collab'])->name('edit.collab');
-Route::get('/get-collab/{id}', [AdminController::class, 'get_collab'])->name('get.collab');
-Route::delete('/delete-collab/{id}', [AdminController::class, 'remove_collab'])->name('destroy.collab');
+    // Service
+    Route::post('/create-service', [AdminController::class, 'create_service'])->name('create.service');
+    Route::post('/edit-service/{id}', [AdminController::class, 'edit_service'])->name('edit.service');
+    Route::get('/get-service/{id}', [AdminController::class, 'get_service'])->name('get.service');
+    Route::delete('/delete-service/{id}', [AdminController::class, 'delete_service'])->name('destroy.service');
+
+    // Listing
+    Route::post('/create-listing', [AdminController::class, 'create_listing'])->name('create.listing');
+    Route::post('/edit-listing/{id}', [AdminController::class, 'edit_listing'])->name('edit.listing');
+    Route::get('/get-listing/{id}', [AdminController::class, 'get_listing'])->name('get.listing');
+    Route::delete('/delete-listing/{id}', [AdminController::class, 'delete_listing'])->name('destroy.listing');
+
+    // Collaborator
+    Route::post('/create-collab', [AdminController::class, 'create_collab'])->name('create.collab');
+    Route::post('/edit-collab/{id}', [AdminController::class, 'edit_collab'])->name('edit.collab');
+    Route::get('/get-collab/{id}', [AdminController::class, 'get_collab'])->name('get.collab');
+    Route::delete('/delete-collab/{id}', [AdminController::class, 'remove_collab'])->name('destroy.collab');
+});
 
 Route::get('/', [PageController::class, 'index'])->name('landing');
 Route::get('/login', function () {return view('login');})->name('login');

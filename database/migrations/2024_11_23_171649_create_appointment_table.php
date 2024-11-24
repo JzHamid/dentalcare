@@ -14,6 +14,12 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignId('service_id')->references('id')->on('services')->onDelete('cascade');
+            $table->foreignId('listing_id')->references('id')->on('clinic')->onDelete('cascade');
+            $table->timestamp('appointment_time');
+            $table->timestamp('rescheduled_time')->nullable();
+            $table->string('status');
         });
     }
 

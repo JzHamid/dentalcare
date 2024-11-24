@@ -75,14 +75,14 @@
         <div class="container-fluid p-4">
             <a class="btn btn-secondary" href="{{ URL::previous() }}">Return</a>
 
-            <form class="d-flex flex-column mx-auto w-50" action="{{ route('create.appointment') }}" method="post">
+            <form class="d-flex flex-column mx-auto w-50" action="{{ route('create.appointment', $shop->id) }}" method="post">
                 @csrf
 
                 <h1 class="display-5 text-center mb-4">Appointment Form</h1>
 
                 <div class="form-group mb-4">
                     <label class="form-label" for="whofor">Who is this appointment for?</label>
-                    <select class="form-select" name="whofor" required>
+                    <select class="form-select" name="whofor" id="whofor" onchange="show_button()" required>
                         <option value="0">For Myself</option>
                         <option value="1">For Others</option>
                         <option value="1">For Multiple People</option>
@@ -96,37 +96,37 @@
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="fname">First Name</label>
-                                <input class="form-control" type="text" name="fname" required>
+                                <input class="form-control" type="text" name="fname" value="{{ $user->fname }}" required>
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="mname">Middle Name</label>
-                                <input class="form-control" type="text" name="mname">
+                                <input class="form-control" type="text" name="mname" value="{{ $user->mname ?? '' }}">
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="lname">Last Name</label>
-                                <input class="form-control" type="text" name="lname" required>
+                                <input class="form-control" type="text" name="lname" value="{{ $user->lname }}" required>
                             </div>
                         </div>
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="email">Email Address</label>
-                                <input class="form-control" type="email" name="email" required>
+                                <input class="form-control" type="email" name="email" value="{{ $user->email }}" required>
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="contact">Contact No.</label>
-                                <input class="form-control" type="tel" name="contact" required>
+                                <input class="form-control" type="tel" name="contact" value="{{ $user->phone }}" required>
                             </div>
 
                             <div class="form-group w-50">
                                 <label class="form-label" for="sex">Sexuality</label>
                                 <select class="form-select" name="sex">
                                     <option selected disabled>-- Select --</option>
-                                    <option value="0">Male</option>
-                                    <option value="1">Female</option>
+                                    <option value="0" @selected($user->gender == 0)>Male</option>
+                                    <option value="1" @selected($user->gender == 1)>Female</option>
                                 </select>
                             </div>
                         </div>
@@ -138,10 +138,10 @@
                                 <select class="form-select" name="service" required>
                                     <option selected disabled>-- Select --</option>
                                     @foreach ($availables as $available)
-                                        <option value="">{{ $available->service->name }}</option>
+                                        <option value="{{ $available->service->id }}">{{ $available->service->name }}</option>
                                     @endforeach
                                 </select>
-                                <input class="form-control" type="text" id="schedule" placeholder="Select a date">
+                                <input class="form-control" type="text" id="schedule" name="time" placeholder="Select a date">
                             </div>
 
                             @php
@@ -153,6 +153,7 @@
                             <script>
                                 flatpickr('#schedule', {
                                 dateFormat: 'Y-m-d',
+                                enableTime: true,
                                 enable: [
                                     function (date) {
                                         const allowedDays = @json($availableDays);
@@ -163,13 +164,14 @@
                                     }
                                 ],
                                 minDate: 'today',
+                                maxDate: new Date(new Date().getFullYear(), 11, 31),
                             });
                             </script>
                         </div>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-center mb-4 w-100">
+                <div class="justify-content-center mb-4 w-100" style="display: none;" id="btn-add">
                     <button class="btn btn-success w-50" type="button" onclick="add_patient()">
                         <i class="bi-plus-lg"></i>
                         Add Person
@@ -214,6 +216,17 @@
         </footer>
 
         <script>
+            function show_button() {
+                const select = document.getElementById('whofor');
+                const buttonDiv = document.getElementById('btn-add');
+
+                if (select.value === '1' || select.value === '2') {
+                    buttonDiv.style.display = 'flex';
+                } else {
+                    buttonDiv.style.display = 'none';
+                }
+            }
+
             function add_patient () {
                 const box = document.getElementById('patient-box');
                 const clone = box.cloneNode(true);

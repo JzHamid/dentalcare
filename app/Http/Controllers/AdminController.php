@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointments;
 use App\Models\Available;
 use App\Models\Listing;
 use App\Models\Service;
@@ -198,7 +199,15 @@ class AdminController extends Controller
         return redirect('/admin')->with(['page' => 7]);
     }
 
-    public function create_appointment () {
-        // $appointment = Appoinmen
+    public function create_appointment (Request $request, $id) {
+        $appointment = new Appointments();
+
+        $appointment->user_id = User::where('fname', $request->fname)->where('lname', $request->lname)->first()->id;
+        $appointment->service_id = Service::where('id', $request->service)->first()->id;
+        $appointment->listing_id = Listing::where('id', $id)->first()->id;
+        $appointment->appointment_time = $request->time;
+        $appointment->status = 'Pending';
+
+        $appointment->save();
     }
 }
