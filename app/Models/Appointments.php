@@ -14,4 +14,20 @@ class Appointments extends Model
         'rescheduled_time',
         'status'
     ];
+
+    protected $casts = [
+        'appointment_time' => 'datetime',
+    ];
+
+    public function user () {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function service () {
+        return $this->belongsTo(Service::class, 'service_id', 'id');
+    }
+
+    public function clinic () {
+        return $this->belongsTo(Listing::class, 'listing_id', 'id');
+    }
 }

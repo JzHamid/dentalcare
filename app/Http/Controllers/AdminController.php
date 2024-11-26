@@ -8,6 +8,7 @@ use App\Models\Listing;
 use App\Models\Service;
 use App\Models\Schedule;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -167,6 +168,7 @@ class AdminController extends Controller
 
         if ($user) {
             $user->status = $request->input('collab-position');
+            $user->date_collab = Carbon::now();
             $user->save();
         }
 
@@ -209,5 +211,19 @@ class AdminController extends Controller
         $appointment->status = 'Pending';
 
         $appointment->save();
+    }
+
+    public function appointment_status (Request $request, $id) {
+        $appointment = Appointments::find($id);
+        $allappoints = Appointments::all();
+
+        $appointment->status = $request->status;
+        $appointment->save();
+
+        return view('record')->with(['appointments' => $allappoints]);
+    }
+
+    public function record_user (Request $request, $id) {
+        return view('record_user');
     }
 }

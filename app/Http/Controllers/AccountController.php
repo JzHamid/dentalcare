@@ -20,7 +20,7 @@ class AccountController extends Controller
             $user = User::where('email', $request->email)->first();
             $user->is_online = true;
             $user->save();
-
+            
             return redirect()->intended('/')->with('logged', true);
         }
 
@@ -86,7 +86,11 @@ class AccountController extends Controller
 
         $user->save();
 
-        return redirect('/admin')->with(['page' => 8]);
+        if (Auth::user()->status == 0) {
+            return redirect('/user-profile')->with(['page' => 4]);
+        } else{
+            return redirect('/admin')->with(['page' => 8]);
+        }
     }
 
     public function availability (Request $request) {

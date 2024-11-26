@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Appointments;
 use App\Models\Available;
 use App\Models\Listing;
 use App\Models\Schedule;
@@ -22,17 +23,23 @@ class PageController extends Controller
 
     public function user () {
         $user = Auth::user();
+        $appointments = Appointments::where(['user_id' => $user->id])->get();
 
-        return view('user')->with(['logged' => true, 'user' => $user]);
+        if ($user->status == 0) {
+            return view('user')->with(['logged' => true, 'user' => $user, 'appointments' => $appointments]);
+        } else {
+            return view('admin');
+        }
     }
 
     public function admin () {
+        $log = Auth::user();
+        $appointments = Appointments::all();
         $services = Service::all();
         $listings = Listing::all();
         $users = User::all();
-        $log = Auth::user();
 
-        return view('admin')->with(['services' => $services, 'listings' => $listings, 'users' => $users, 'log' => $log, 'is_online' => $log->is_online]);
+        return view('admin')->with(['appointments' => $appointments, 'services' => $services, 'listings' => $listings, 'users' => $users, 'log' => $log, 'is_online' => $log->is_online]);
     }
 
     public function listing () {
@@ -55,5 +62,11 @@ class PageController extends Controller
         $schedules = Schedule::where('clinic_id', $shop->id)->get();
 
         return view('appointment')->with(['shop' => $shop, 'user' => $user, 'availables' => $available, 'schedules' => $schedules]);
+    }
+
+    public function record ($id) {
+        $appointment = Appointments::find($id);
+
+        return view('record')->with(['appointment' => $appointment]);
     }
 }

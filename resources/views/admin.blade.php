@@ -46,7 +46,7 @@
 
         <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
-                <a class="navbar-brand text-default fw-bold" href="">DentalCare</a>
+                <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
 
                 <div class="d-flex gap-4" style="margin-right: 100px;">
                     <div class="dropdown">
@@ -55,7 +55,7 @@
                         </button>
 
                         <ul class="dropdown-menu">
-
+                            
                         </ul>
                     </div>
 
@@ -79,7 +79,7 @@
                     <div class="position-relative d-flex justify-content-center">
                         <img src="{{ '/storage/' . $log->image_path }}" class="mb-1" style="height: 100px; width: 100px;">
 
-                        @if ( $is_online )
+                        @if ($is_online)
                             <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle">
                                 <span class="visually-hidden">New alerts</span>
                             </span>
@@ -118,27 +118,29 @@
                     Appointments
                 </button>
 
-                <button class="nav-link text-white d-flex gap-4" id="nav-services" data-bs-toggle="pill" data-bs-target="#tab-services" type="button" role="tab" aria-controls="tab-services" aria-selected="false">
-                    <i class="bi-clipboard-plus-fill"></i>
-                    Services
-                </button>
+                @if ($log->status > 1)
+                    <button class="nav-link text-white d-flex gap-4" id="nav-services" data-bs-toggle="pill" data-bs-target="#tab-services" type="button" role="tab" aria-controls="tab-services" aria-selected="false">
+                        <i class="bi-clipboard-plus-fill"></i>
+                        Services
+                    </button>
+                @endif
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-patients" data-bs-toggle="pill" data-bs-target="#tab-patients" type="button" role="tab" aria-controls="tab-patients" aria-selected="false">
                     <i class="bi-people-fill"></i>
                     Patients
                 </button>
 
-                <button class="nav-link text-white d-flex gap-4" id="nav-listings" data-bs-toggle="pill" data-bs-target="#tab-listings" type="button" role="tab" aria-controls="tab-listings" aria-selected="false">
-                    <i class="bi-building-fill"></i>
-                    Listings
-                </button>
+                @if ($log->status > 1)
+                    <button class="nav-link text-white d-flex gap-4" id="nav-listings" data-bs-toggle="pill" data-bs-target="#tab-listings" type="button" role="tab" aria-controls="tab-listings" aria-selected="false">
+                        <i class="bi-building-fill"></i>
+                        Listings
+                    </button>
+                @endif
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-history" data-bs-toggle="pill" data-bs-target="#tab-history" type="button" role="tab" aria-controls="tab-history" aria-selected="false">
                     <i class="bi-clock-history"></i>
                     History
                 </button>
-
-                <!-- <hr class="m-2"> -->
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-collab" data-bs-toggle="pill" data-bs-target="#tab-collab" type="button" role="tab" aria-controls="tab-collab" aria-selected="false">
                     <i class="bi-person-fill-add"></i>
@@ -160,14 +162,25 @@
                 <div class="tab-pane show active gap-5 p-3" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex flex-column">
-                            <h1 class="m-0">Welcome Dentist!</h1>
+                            <h1 class="m-0">
+                                @switch ($log->status)
+                                    @case (1)
+                                        Welcome Secretary!
+                                        @break
+                                    @case (2)
+                                        Welcome Dentist!
+                                        @break
+                                @endswitch
+                            </h1>
                             <p class="text-secondary m-0">Dashboard</p>
                         </div>
 
-                        <button class="btn btn-default" style="height: fit-content;" data-bs-toggle="modal" data-bs-target="#add-collab">
-                            <i class="bi-plus-lg"></i>
-                            Add Secretary
-                        </button>
+                        @if ($log->status > 1)
+                            <button class="btn btn-default" style="height: fit-content;" data-bs-toggle="modal" data-bs-target="#add-collab">
+                                <i class="bi-plus-lg"></i>
+                                Add Secretary
+                            </button>
+                        @endif
                     </div>
 
                     <hr>
@@ -176,7 +189,7 @@
                         <div class="col bg-white rounded shadow p-4">
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-column">
-                                    <img src="" style="height: 100px; width: 100px;">
+                                    <img src="{{ asset('images/patient_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
                                     <p class="lead text-center m-0">Patients</p>
                                 </div>
 
@@ -187,18 +200,18 @@
                         <div class="col bg-white rounded shadow p-4">
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-column">
-                                    <img src="" style="height: 100px; width: 100px;">
+                                    <img src="{{ asset('images/event_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
                                     <p class="lead text-center m-0">Appointments</p>
                                 </div>
 
-                                <p class="display-5">0</p>
+                                <p class="display-5">{{ $appointments->count() }}</p>
                             </div>
                         </div>
 
                         <div class="col bg-white rounded shadow p-4">
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-column">
-                                    <img src="" style="height: 100px; width: 100px;">
+                                    <img src="{{ asset('images/procedure_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
                                     <p class="lead text-center m-0">Procedures</p>
                                 </div>
 
@@ -238,7 +251,6 @@
                         <div class="d-flex gap-2">
                             <select class="form-select" name="filter" style="width: 200px;">
                                 <option value="0">All</option>
-                                <option value="1">Upcoming</option>
                                 <option value="2">Pending</option>
                                 <option value="3">Rescheduled</option>
                                 <option value="4">Cancelled</option>
@@ -265,19 +277,30 @@
                         </thead>
 
                         <tbody>
-                            <tr>
-                                <th class="text-center" scope="row">1</th>
-                                <td>Juan Dela Cruz</td>
-                                <td>Juan Dela Cruz</td>
-                                <td>Zamboanga City</td>
-                                <td>Cleaning</td>
-                                <td>10:00-11:30</td>
-                                <td class="d-flex justify-content-center">
-                                    <button class="btn btn-primary btn-sm">
-                                        <i class="bi-eye-fill"></i>
-                                    </button>
-                                </td>
-                            </tr>   
+                            @foreach ($appointments as $appointment)
+                                <tr>
+                                    <th class="text-center" scope="row">1</th>
+                                    <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
+                                    <td>{{ $appointment->service->name }}</td>
+                                    <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
+                                    <td>{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</td>
+                                    <td>
+                                        @switch ( $appointment->status )
+                                            @case ('Pending')
+                                                <span class="badge text-bg-primary">Pending</span>
+                                                @break
+                                            @case ('Upcoming')
+                                                <span class="badge text-bg-success">Upcoming</span>
+                                                @break
+                                        @endswitch
+                                    </td>
+                                    <td class="d-flex justify-content-center">
+                                        <a class="btn btn-primary btn-sm" href="{{ route('record.appointment', $appointment->id) }}">
+                                            <i class="bi-calendar-event-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -454,7 +477,7 @@
                                         <th class="text-center" scope="row">{{ $user->id }}</th>
                                         <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
                                         <td>{{ $user->phone }}</td>
-                                        <td></td>
+                                        <td>{{ Carbon\Carbon::parse($user->date_collab)->format('F j, Y') }}</td>
                                         <td>
                                             @if ($user->status == 1)
                                                 Secretary
@@ -1045,6 +1068,13 @@
                         break;
                     default:
                         break;
+                }
+
+                const url = new URL(window.location.href);
+                const page = url.searchParams.get('page');
+
+                if (page === '2') {
+                    document.getElementById('nav-appointments').click();
                 }
             });
 

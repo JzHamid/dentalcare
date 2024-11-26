@@ -91,7 +91,7 @@
 
                 <div class="d-flex flex-column gap-2" id="patient-list">
                     <div class="d-flex flex-column rounded shadow p-4 mb-4 gap-3 box" id="patient-box">
-                        <button class="align-self-end btn btn-danger w-25" type="button" onclick="delete_patient(this)">X</button>
+                        <!-- <button class="align-self-end btn btn-danger w-25" type="button" onclick="delete_patient(this)">X</button> -->
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">

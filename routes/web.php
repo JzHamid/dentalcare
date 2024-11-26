@@ -14,6 +14,7 @@ Route::get('/search', [PageController::class, 'listing'])->name('listing');
 Route::get('/clinic/{id}', [PageController::class, 'shop'])->name('shop');
 Route::get('/clinic/{id}/appointment', [PageController::class, 'appointment'])->name('appointment')->middleware('auth');
 Route::get('/user-profile', [PageController::class, 'user'])->name('user')->middleware('auth');
+Route::get('/user-record/{id}', [AdminController::class, 'record_user'])->name('user.record')->middleware('auth');
 
 // Appointment
 Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
@@ -38,6 +39,10 @@ Route::group(['middleware' => 'auth', 'admin'], function() {
     Route::post('/edit-collab/{id}', [AdminController::class, 'edit_collab'])->name('edit.collab');
     Route::get('/get-collab/{id}', [AdminController::class, 'get_collab'])->name('get.collab');
     Route::delete('/delete-collab/{id}', [AdminController::class, 'remove_collab'])->name('destroy.collab');
+
+    // Record
+    Route::get('/record/{id}', [PageController::class, 'record'])->name('record.appointment');
+    Route::post('/update-status/{id}', [AdminController::class, 'appointment_status'])->name('update.status');
 });
 
 Route::get('/', [PageController::class, 'index'])->name('landing');

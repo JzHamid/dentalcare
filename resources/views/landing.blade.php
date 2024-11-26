@@ -36,7 +36,7 @@
 
         <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
-                <a class="navbar-brand text-default fw-bold" href="">DentalCare</a>
+                <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
 
                 @auth
                     <div class="d-flex gap-4" style="margin-right: 100px;">
@@ -56,7 +56,12 @@
                             </button>
 
                             <ul class="dropdown-menu dropdown-end">
-                                <li><a class="dropdown-item" href="{{ route('user') }}">My Profile</a></li>
+                                @if (Auth::user()->status == 0)
+                                    <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
+                                @else
+                                    <li><a class="dropdown-item" href="{{ route('admin' ) }}">My Profile</a></li>
+                                @endif
+                                
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>

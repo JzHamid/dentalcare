@@ -39,13 +39,13 @@
             }
         </style>
     </head>
-
+`
     <body class="overflow-hidden vh-100">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
         
         <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
-                <a class="navbar-brand text-default fw-bold" href="">DentalCare</a>
+                <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
 
                 <div class="d-flex gap-4" style="margin-right: 100px;">
                     <div class="dropdown">
@@ -75,11 +75,11 @@
         <div class="row m-0" style="height: 93%;">
             <div class="col-md-2 bg-default nav flex-column p-3 gap-2" role="tablist" aria-orientation="vertical" id="navbar">
                 <div class="container-fluid d-flex flex-column align-items-center py-4">
-                    <img src="{{ asset('storage/images/profile_empty.jpg') }}" class="mb-2" style="height: 100px; width: 100px;">
+                    <img src="{{ asset('storage/' . $user->image_path) }}" class="mb-2" style="height: 100px; width: 100px;">
                     <p class="fs-5 text-center fw-medium text-white m-0 mb-2">{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</p>
 
                     <div class="text-white d-flex align-items-center p-0 gap-2">
-                        <p class="fw-light text-white">{{ $user->gender ? 'Male' : 'Female' }}</p>
+                        <p class="fw-light text-white">{{ $user->gender ? 'Female' : 'Male' }}</p>
                         <p class="fw-light text-white">{{ Carbon\Carbon::parse($user->birthdate)->age }}</p>
                     </div>
                 </div>
@@ -129,9 +129,23 @@
                             <div class="container-fluid rounded bg-white shadow p-3">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h4 class="m-0">Appointments</h4>
-                                    <button class="btn btn-primary d-flex gap-2">New</button>
+                                    <a class="btn btn-primary d-flex gap-2" href="{{ route('listing') }}">New</a>
                                 </div>
                                 <hr>
+
+                                <div class="d-flex flex-column gap-2">
+                                    @foreach ($appointments as $appointment)
+                                        <div class="container-fluid d-flex shadow rounded p-4 gap-3">
+                                            <img style="height: 100px; min-width: 100px;">
+
+                                            <div class="d-flex flex-column gap-2 w-100">
+                                                <p class="fw-bold m-0">Service: <span class="fw-light">{{ $appointment->service->name }}</span></p>
+                                                <p class="fw-bold m-0">Appointment Time: <span class="fw-light">{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</span></p>
+                                                <button class="btn btn-link btn-sm text-center align-self-end">View</button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
 
                             <div class="container-fluid rounded bg-white shadow p-3">
@@ -169,39 +183,33 @@
                 <div class="tab-pane gap-5 p-3" id="tab-appointments" role="tabpanel" aria-labelledby="tab-appointments" tabindex="0">
                     <h1 class="mb-5">Appointments</h1>
 
-                    <table class="table">
+                    <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th scope="col">ID</th>
                                 <th scope="col">Dentist Name</th>
                                 <th scope="col">Patient Name</th>
                                 <th scope="col">Location</th>
                                 <th scope="col">Services</th>
                                 <th scope="col">Time</th>
-                                <th scope="col">Action</th>
+                                <th class="text-center" scope="col">Action</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            <tr>
-                                <th scope="row">1</th>
-                                <td>Juan Dela Cruz</td>
-                                <td>Juan Dela Cruz</td>
-                                <td>Zamboanga City</td>
-                                <td>Cleaning</td>
-                                <td>10:00-11:30</td>
-                                <td>View</td>
-                            </tr>
-
-                            <tr>
-                                <th scope="row">2</th>
-                                <td>Juan Dela Cruz</td>
-                                <td>Juan Dela Cruz</td>
-                                <td>Zamboanga City</td>
-                                <td>Cleaning</td>
-                                <td>10:00-11:30</td>
-                                <td>View</td>
-                            </tr>
+                            @foreach ($appointments as $appointment)
+                                <tr>
+                                    <td>Test</td>
+                                    <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
+                                    <td>{{ $appointment->clinic->location }}</td>
+                                    <td>{{ $appointment->service->name }}</td>
+                                    <td>{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</td>
+                                    <td class="d-flex justify-content-center gap-2">
+                                        <a class="btn btn-primary btn-sm" href="{{ route('user.record', $appointment->id) }}">
+                                            <i class="bi-eye-fill"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -230,11 +238,11 @@
                 <div class="tab-pane gap-5 p-3" id="tab-profile" role="tabpanel" aria-labelledby="tab-profile" tabindex="0">
                     <h1 class="mb-5">Profile</h1>
 
-                    <form class="rounded shadow p-5" action="" method="post">
+                    <form class="rounded shadow p-5" action="{{ route('update.account') }}" method="post" enctype="multipart/form-data">
                         @csrf
 
                         <div class="border border-tertiary rounded d-flex gap-3 p-4 mb-4">
-                            <img class="border border-2 border-tertiary" src="{{ $user->image_path ?? asset('images/profile_empty.jpg') }}" style="height: 150px; width: 150px;" id="profile-thumbnail-img">
+                            <img class="border border-2 border-tertiary" src="{{ '/storage/' . $user->image_path }}" style="height: 150px; width: 150px;" id="profile-thumbnail-img">
 
                             <div class="d-flex flex-column p-0">
                                 <h5>Profile Image</h5>
@@ -264,8 +272,20 @@
                             </div>
                         </div>
 
-                        <label class="form-label" for="birth">Birthdate</label>
-                        <input class="form-control mb-2" type="date" name="birth" value="{{ Carbon\Carbon::parse($user->birthdate)->format('Y-m-d') }}">
+                        <div class="d-flex container-fluid p-0 gap-3">
+                            <div class="form-group w-100">
+                                <label class="form-label" for="birth">Birthdate</label>
+                                <input class="form-control mb-2" type="date" name="birth" value="{{ Carbon\Carbon::parse($user->birthdate)->format('Y-m-d') }}">
+                            </div>
+
+                            <div class="form-group w-100">
+                                <label class="form-label" for="gender">Sexuality</label>
+                                <select class="form-select" name="gender">
+                                    <option value="0" @selected($user->gender == 0)>Male</option>
+                                    <option value="1" @selected($user->gender == 1)>Female</option>
+                                </select>
+                            </div>
+                        </div>
 
                         <div class="d-flex gap-3 w-100 mb-2">
                             <div class="form-group d-flex flex-column flex-fill">
@@ -291,6 +311,16 @@
         </div>
 
         <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                switch (parseInt("{{ session('page') }}", 10)) {
+                    case 4:
+                        document.getElementById('nav-profile').click();
+                        break;
+                    default:
+                        break;
+                }
+            });
+
             function previewThumbnail (input) {
                 if (input.files && input.files[0]) {
                     const file = input.files[0];
