@@ -46,7 +46,7 @@
 
         <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
-                <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare <span class="fw-normal" style="font-size: small;">Superadmin</span></a>
+                <a class="navbar-brand text-default fw-bold">DentalCare <span class="fw-normal" style="font-size: small;">Superadmin</span></a>
 
                 <div class="d-flex gap-4" style="margin-right: 100px;">
                     <div class="dropdown">
