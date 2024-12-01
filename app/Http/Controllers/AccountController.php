@@ -21,7 +21,10 @@ class AccountController extends Controller
             $user->is_online = true;
             $user->save();
             
-            return redirect()->intended('/')->with('logged', true);
+            if($user->status > 0) {
+                return redirect()->intended('/admin');
+            } else
+                return redirect()->intended('/')->with('logged', true);
         }
 
         return back()->withErrors(['invalid' => 'Account not found.']);

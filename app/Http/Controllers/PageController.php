@@ -42,6 +42,14 @@ class PageController extends Controller
         return view('admin')->with(['appointments' => $appointments, 'services' => $services, 'listings' => $listings, 'users' => $users, 'log' => $log, 'is_online' => $log->is_online]);
     }
 
+    public function superadmin() {
+        $appointments = Appointments::all();
+        $dentist = User::where('status', 3)->get();
+        $users = User::where('status', 0)->get();
+        
+        return view('superadmin')->with(['dentist' => $dentist, 'users' => $users, 'appointments' => $appointments]);
+    }
+
     public function listing () {
         $listings = Listing::with('availabilities.service')->get();
 

@@ -57,9 +57,8 @@
                         </button>
 
                         <ul class="dropdown-menu">
-                            <li>
-                                Test
-                            </li>
+                            <li><a class="dropdown-item" href="">Dashboard</a></li>
+                            <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                         </ul>
                     </div>
                 </div>

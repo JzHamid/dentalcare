@@ -16,6 +16,8 @@ Route::get('/clinic/{id}/appointment', [PageController::class, 'appointment'])->
 Route::get('/user-profile', [PageController::class, 'user'])->name('user')->middleware('auth');
 Route::get('/user-record/{id}', [AdminController::class, 'record_user'])->name('user.record')->middleware('auth');
 
+Route::get('/superadmin', [PageController::class, 'superadmin'])->name('superadmin');
+
 // Appointment
 Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
 

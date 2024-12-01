@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
 
         <title>DentalCare | Login</title>
 
@@ -55,7 +56,19 @@
 
                 <hr class="btn-default w-100">
 
-                <a class="btn btn-default w-100" href="{{ route('signup') }}">Create Account</a>
+                <div class="d-flex flex-column gap-2">
+                    <a class="btn btn-default w-100" href="{{ route('signup') }}">Create Account</a>
+
+                    <div class="d-flex gap-2 w-100">
+                        <button class="btn btn-danger w-100">
+                            <i class="bi-google"></i>
+                        </button>
+
+                        <button class="btn btn-default w-100">
+                            <i class="bi-facebook"></i>
+                        </button>
+                    </div>
+                </div>
             </form>
         </div>
 
