@@ -37,10 +37,11 @@ class PageController extends Controller
         $log = Auth::user();
         $appointments = Appointments::all();
         $services = Service::all();
-        $listings = Listing::where();
+        $assign = Assign::where('user_id', $log->id)->get();
+
         $users = User::all();
 
-        return view('admin')->with(['appointments' => $appointments, 'services' => $services, 'listings' => $listings, 'users' => $users, 'log' => $log, 'is_online' => $log->is_online]);
+        return view('admin')->with(['appointments' => $appointments, 'services' => $services, 'listings' => $assign, 'users' => $users, 'log' => $log, 'is_online' => $log->is_online]);
     }
 
     public function superadmin() {
