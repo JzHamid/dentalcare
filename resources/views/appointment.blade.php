@@ -96,34 +96,34 @@
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][fname]">First Name</label>
-                                <input class="form-control" type="text" name="appointments[0][fname]" value="{{ $user->fname }}" required>
+                                <input class="form-control" type="text" name="fname" value="{{ $user->fname }}" required>
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][mname]">Middle Name</label>
-                                <input class="form-control" type="text" name="appointments[0][mname]" value="{{ $user->mname ?? '' }}">
+                                <input class="form-control" type="text" name="mname" value="{{ $user->mname ?? '' }}">
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][lname]">Last Name</label>
-                                <input class="form-control" type="text" name="appointments[0][lname]" value="{{ $user->lname }}" required>
+                                <input class="form-control" type="text" name="lname" value="{{ $user->lname }}" required>
                             </div>
                         </div>
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][email]">Email Address</label>
-                                <input class="form-control" type="email" name="appointments[0][email]" value="{{ $user->email }}" required>
+                                <input class="form-control" type="email" name="email" value="{{ $user->email }}" required>
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][contact]">Contact No.</label>
-                                <input class="form-control" type="tel" name="appointments[0][contact]" value="{{ $user->phone }}" required>
+                                <input class="form-control" type="tel" name="contact" value="{{ $user->phone }}" required>
                             </div>
 
                             <div class="form-group w-50">
                                 <label class="form-label" for="appointments[0][sex]">Sexuality</label>
-                                <select class="form-select" name="appointments[0][sex]">
+                                <select class="form-select" name="sex">
                                     <option selected disabled>-- Select --</option>
                                     <option value="0" @selected($user->gender == 0)>Male</option>
                                     <option value="1" @selected($user->gender == 1)>Female</option>
@@ -135,13 +135,13 @@
                             <label class="form-label" for="appointments[0][service]">Type of Service</label>
 
                             <div class="input-group">
-                                <select class="form-select" name="appointments[0][service]" required>
+                                <select class="form-select" name="service" required>
                                     <option selected disabled>-- Select --</option>
                                     @foreach ($availables as $available)
                                         <option value="{{ $available->service->id }}">{{ $available->service->name }}</option>
                                     @endforeach
                                 </select>
-                                <input class="form-control" type="text" id="schedule" name="appointments[0][time]" placeholder="Select a date">
+                                <input class="form-control" type="text" id="schedule" name="time" placeholder="Select a date">
                             </div>
 
                             @php

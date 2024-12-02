@@ -672,12 +672,14 @@
 
                                 <div class="accordion-collapse collapse" id="list-services" data-bs-parent="#accordion-services">
                                     <div class="accordion-body">
-                                        @foreach ($services as $service)
+                                        @forelse ($services as $service)
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value="{{ $service->id }}" name="service[]">
                                                 <label class="form-check-label" for="service{{ $service->id }}">{{ $service->name }}</label>
                                             </div>
-                                        @endforeach
+                                        @empty
+                                            <h6 class="m-0">No services yet</h6>
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>
@@ -691,12 +693,14 @@
 
                                 <div class="accordion-collapse collapse" id="list-dentist" data-bs-parent="#accordion-dentist">
                                     <div class="accordion-body">
-                                        @foreach ($dentist as $dent)
+                                        @forelse ($dentist as $dent)
                                             <div class="form-check">
                                                 <input class="form-check-input" type="checkbox" value="{{ $dent->id }}" name="dent[]">
                                                 <label class="form-check-label" for="dent{{ $dent->id }}">{{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</label>
                                             </div>
-                                        @endforeach
+                                        @empty
+                                            <h6 class="m-0">No dentists yet</h6>
+                                        @endforelse
                                     </div>
                                 </div>
                             </div>

@@ -262,6 +262,8 @@ class AdminController extends Controller
         $appointment->status = 'Pending';
 
         $appointment->save();
+
+        return redirect('/');
     }
 
     public function appointment_status (Request $request, $id) {
