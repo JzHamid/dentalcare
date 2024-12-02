@@ -418,10 +418,10 @@
                             @foreach ($listings as $listing)
                                 <tr>
                                     <th class="text-center" scope="row">{{ $listing->id }}</th>
-                                    <td>{{ $listing->name }}</td>
-                                    <td>{{ $listing->email }}</td>
-                                    <td>{{ $listing->contact }}</td>
-                                    <td>{{ $listing->location }}</td>
+                                    <td>{{ $listing->clinic->name }}</td>
+                                    <td>{{ $listing->clinic->email }}</td>
+                                    <td>{{ $listing->clinic->contact }}</td>
+                                    <td>{{ $listing->clinic->location }}</td>
                                     <td class="d-flex justify-content-center gap-2" >
                                         <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#view-listing" onclick="get_listing('{{ $listing->id }}')">
                                             <i class="bi-pencil-square"></i>
