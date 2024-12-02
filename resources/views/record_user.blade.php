@@ -40,29 +40,39 @@
             <div class="container-fluid px-4">
                 <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
 
-                <div class="d-flex gap-4" style="margin-right: 100px;">
-                    <div class="dropdown">
-                        <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi-bell-fill"></i>
-                        </button>
+                @auth
+                    <div class="d-flex gap-4" style="margin-right: 100px;">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi-bell-fill"></i>
+                            </button>
 
-                        <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-end">
 
-                        </ul>
+                            </ul>
+                        </div>
+
+                        <div class="dropdown d-flex">
+                            <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi-person-circle"></i>
+                            </button>
+
+                            <ul class="dropdown-menu dropdown-end">
+                                @if (Auth::user()->status == 0)
+                                    <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
+                                @else
+                                    <li><a class="dropdown-item" href="{{ route('admin' ) }}">My Profile</a></li>
+                                @endif
+                                
+                                <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
+                            </ul>
+                        </div>
                     </div>
+                @endauth
 
-                    <div class="dropdown">
-                        <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi-person-circle"></i>
-                        </button>
-
-                        <ul class="dropdown-menu">
-                            <li>
-                                Test
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+                @guest
+                    <a class="text-default text-decoration-none" style="margin-right: 100px;" href="{{ route('login') }}">Login / Signup</a>
+                @endguest
             </div>
         </nav>
 
@@ -97,23 +107,23 @@
                     <div class="container-fluid d-flex flex-column">
                         <h5>Appointment Details</h5>
 
-                        <div class="container-fluid d-flex flex-column p-0 gap-2">
+                        <div class="container-fluid d-flex flex-column p-0 gap-2 h-100">
                             <div class="form-group">
                                 <label class="form-label" for="schedule">Schedule</label>
-                                <input class="form-control" type="date" name="schedule" value="{{ Carbon\Carbon::parse($appointment->appointment_time)->format('Y-m-d') }}">
+                                <input class="form-control" type="date" name="schedule" value="{{ Carbon\Carbon::parse($appointment->appointment_time)->format('Y-m-d') }}" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="dentist">Dentist</label>
-                                <input class="form-control" type="text" name="dentist">
+                                <input class="form-control" type="text" name="dentist" value="{{ $dentist->fname }}" disabled>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="service">Service</label>
-                                <input class="form-control" type="text" name="service">
+                                <input class="form-control" type="text" name="service" value="{{ $appointment->service->name }}" disabled>
                             </div>
 
-                            <button class="btn btn-primary" type="submit">Save Record</button>
+                            <button class="btn btn-primary mt-auto" type="submit">Save Record</button>
                         </div>
                     </div>
                 </div>

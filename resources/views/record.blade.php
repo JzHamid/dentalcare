@@ -72,7 +72,7 @@
                 <div class="d-flex justify-content-between">
                     <h3>Patient Info</h3>
 
-                    <div class="d-flex gap-3 w-50">
+                    <div class="d-flex gap-3">
                         @if ($appointment->status == 'Pending')
                             <button class="btn btn-primary" onclick="change_status('Upcoming')">Confirm</button>
                             <button class="btn btn-danger" onclick="change_status('Deny')">Deny</button>
@@ -118,7 +118,7 @@
                     <div class="container-fluid d-flex flex-column">
                         <h5>Appointment Details</h5>
 
-                        <div class="container-fluid d-flex flex-column p-0 gap-2">
+                        <div class="container-fluid d-flex flex-column p-0 gap-2 h-100">
                             <div class="form-group">
                                 <label class="form-label" for="schedule">Schedule</label>
                                 <input class="form-control" type="date" name="schedule" value="{{ Carbon\Carbon::parse($appointment->appointment_time)->format('Y-m-d') }}">
@@ -134,7 +134,7 @@
                                 <input class="form-control" type="text" name="service">
                             </div>
 
-                            <button class="btn btn-primary" type="submit">Save Record</button>
+                            <button class="btn btn-primary mt-auto" type="submit">Save Record</button>
                         </div>
                     </div>
                 </div>

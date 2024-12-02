@@ -280,8 +280,9 @@ class AdminController extends Controller
     }
 
     public function record_user ($id) {
-        $appointment = Appointments::where('user_id', $id)->first();
+        $appointment = Appointments::where('id', $id)->first();
+        $dentist = User::where('id', $appointment->dentist_id)->first();
 
-        return view('record_user')->with(['appointment' => $appointment]);
+        return view('record_user')->with(['appointment' => $appointment, 'dentist' => $dentist]);
     }
 }

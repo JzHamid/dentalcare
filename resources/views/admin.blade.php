@@ -279,7 +279,7 @@
                         <tbody>
                             @foreach ($appointments as $appointment)
                                 <tr>
-                                    <th class="text-center" scope="row">1</th>
+                                    <th class="text-center" scope="row">{{ $appointment->id }}</th>
                                     <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                                     <td>{{ $appointment->service->name }}</td>
                                     <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
@@ -381,8 +381,7 @@
                         </thead>
 
                         <tbody>
-                            @foreach ()
-                            @endforeach
+                            
                         </tbody>
                     </table>
                 </div>

@@ -15,10 +15,12 @@ use Illuminate\Support\Facades\Auth;
 class PageController extends Controller
 {
     public function index () {
+        $services = Service::all();
+
         if (Auth::check()) {
-            return view('landing')->with('logged', true);
+            return view('landing')->with(['logged' => true, 'services' => $services]);
         } else {
-            return view('landing');
+            return view('landing')->with(['services' => $services]);
         }
     }
 
@@ -80,6 +82,7 @@ class PageController extends Controller
 
     public function record ($id) {
         $appointment = Appointments::find($id);
+        $dentist = User::where('id', $appointment->dentist_id)->first();
 
         return view('record')->with(['appointment' => $appointment]);
     }

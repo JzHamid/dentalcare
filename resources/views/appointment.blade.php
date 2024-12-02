@@ -175,8 +175,9 @@
 
                         <div class="form-group">
                             <label class="form-label" for="dentist">Dentist</label>
-                            <select class="form-select" name="dentist">
+                            <select class="form-select" name="dentist" required>
                                 <option selected disabled>-- Select Dentist --</option>
+                                <option value="0">Any</option>
                                 
                                 @foreach ($assign as $assi)
                                     <option value="{{ $assi->user->id }}">{{ $assi->user->fname }}</option>

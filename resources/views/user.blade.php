@@ -136,9 +136,9 @@
                                 </div>
                                 <hr>
 
-                                <div class="d-flex flex-column gap-2">
+                                <div class="d-flex flex-column gap-2 overflow-y-scroll p-4" style="max-height: 300px;">
                                     @foreach ($appointments as $appointment)
-                                        <div class="container-fluid d-flex shadow rounded p-4 gap-3">
+                                        <div class="container-fluid d-flex shadow-sm rounded p-4 gap-3">
                                             <img style="height: 100px; min-width: 100px;">
 
                                             <div class="d-flex flex-column gap-2 w-100">
