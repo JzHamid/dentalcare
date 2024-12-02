@@ -75,7 +75,7 @@
         <div class="container-fluid p-4">
             <a class="btn btn-secondary" href="{{ URL::previous() }}">Return</a>
 
-            <form class="d-flex flex-column mx-auto w-50" action="{{ route('create.appointment', $shop->id) }}" method="post">
+            <form class="d-flex flex-column mx-auto w-50" action="{{ route('create.appointment', $shop->id) }}" method="post" id="app-form">
                 @csrf
 
                 <h1 class="display-5 text-center mb-4">Appointment Form</h1>
@@ -85,13 +85,13 @@
                     <select class="form-select" name="whofor" id="whofor" onchange="show_button()" required>
                         <option value="0">For Myself</option>
                         <option value="1">For Others</option>
-                        <option value="1">For Multiple People</option>
+                        <option value="2">For Multiple People</option>
                     </select>
                 </div>
 
                 <div class="d-flex flex-column gap-2" id="patient-list">
                     <div class="d-flex flex-column rounded shadow p-4 mb-4 gap-3 box" id="patient-box">
-                        <!-- <button class="align-self-end btn btn-danger w-25" type="button" onclick="delete_patient(this)">X</button> -->
+                        <button class="btn btn-close align-self-end visually-hidden" onclick="delete_patient(this)" id="btn-close"></button>
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
@@ -219,11 +219,14 @@
             function show_button() {
                 const select = document.getElementById('whofor');
                 const buttonDiv = document.getElementById('btn-add');
+                const xButton = document.getElementById('btn-close');
 
-                if (select.value === '1' || select.value === '2') {
+                if (select.value === '2') {
                     buttonDiv.style.display = 'flex';
+                    xButton.classList.remove('visually-hidden');
                 } else {
                     buttonDiv.style.display = 'none';
+                    xButton.classList.add('visually-hidden');
                 }
             }
 

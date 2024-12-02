@@ -121,7 +121,10 @@
 
                     <div class="d-flex flex-column p-5 gap-5">
                         <div class="rounded bg-white shadow p-3">
-                            <h4>Health Record</h4>
+                            <div class="d-flex justify-content-between">
+                                <h4>Health Record</h4>
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-record">Add</button>
+                            </div>
                             <hr>
                         </div>
 
@@ -306,6 +309,26 @@
                             <button class="btn btn-primary w-25" type="submit">Save Profile</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Health Record -->
+        <div class="modal fade" data-bs-backdrop="static" id="create-record" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Health Record</h5>
+                    </div>
+
+                    <form class="modal-body" id="add-record-form">
+                        
+                    </for>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">No</button>
+                        <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('add-record-form').submit()">Yes</button>
+                    </div>
                 </div>
             </div>
         </div>

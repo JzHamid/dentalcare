@@ -69,7 +69,55 @@
         <div class="container-fluid p-4">
             <a class="btn btn-secondary" href="{{ '/user-profile' }}">Return</a>
             
-            
+            <div class="d-flex flex-column mx-auto w-75 gap-3">
+                <h3>Patient Info</h3>
+
+                <div class="d-flex rounded shadow p-4 gap-4">
+                    <div class="d-flex flex-column gap-1">
+                        <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</p>
+                        <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}</p>
+                        <p class="fw-light m-0"><span class="fw-bold">Address: </span>{{ $appointment->user->address }}</p>
+                        <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $appointment->user->email }}</p>
+                        <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $appointment->user->phone }}</p>
+                        <p class="fw-light m-0"><span class="fw-bold">Medical Records: </span>{{ $appointment->user->notes }}</p>
+                    </div>
+
+                    <div class="d-flex align-items-center mx-auto">
+                        <img class="d-flex align-self-center" src="{{ asset('/storage/' . $appointment->user->image_path) }}" style="height: 100px; width: 100px;">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <h3>Procedures</h3>
+                </div>
+
+                <div class="d-flex rounded shadow p-4 gap-4">
+                    <img style="height: 500px; min-width: 500px;">
+
+                    <div class="container-fluid d-flex flex-column">
+                        <h5>Appointment Details</h5>
+
+                        <div class="container-fluid d-flex flex-column p-0 gap-2">
+                            <div class="form-group">
+                                <label class="form-label" for="schedule">Schedule</label>
+                                <input class="form-control" type="date" name="schedule" value="{{ Carbon\Carbon::parse($appointment->appointment_time)->format('Y-m-d') }}">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="dentist">Dentist</label>
+                                <input class="form-control" type="text" name="dentist">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="service">Service</label>
+                                <input class="form-control" type="text" name="service">
+                            </div>
+
+                            <button class="btn btn-primary" type="submit">Save Record</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script>

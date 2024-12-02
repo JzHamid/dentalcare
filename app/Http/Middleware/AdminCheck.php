@@ -18,7 +18,7 @@ class AdminCheck
     {
         $user = Auth::user();
 
-        if ($user && in_array($user->status, [1, 2])) {
+        if ($user && in_array($user->status, [1, 2, 3])) {
             return $next($request);
         }
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointments;
+use App\Models\Assign;
 use App\Models\Available;
 use App\Models\Listing;
 use App\Models\Schedule;
@@ -36,7 +37,7 @@ class PageController extends Controller
         $log = Auth::user();
         $appointments = Appointments::all();
         $services = Service::all();
-        $listings = Listing::all();
+        $listings = Listing::where();
         $users = User::all();
 
         return view('admin')->with(['appointments' => $appointments, 'services' => $services, 'listings' => $listings, 'users' => $users, 'log' => $log, 'is_online' => $log->is_online]);
@@ -44,10 +45,12 @@ class PageController extends Controller
 
     public function superadmin() {
         $appointments = Appointments::all();
-        $dentist = User::where('status', 3)->get();
+        $dentist = User::where('status', 2)->get();
         $users = User::where('status', 0)->get();
+        $services = Service::all();
+        $listings = Listing::all();
         
-        return view('superadmin')->with(['dentist' => $dentist, 'users' => $users, 'appointments' => $appointments]);
+        return view('superadmin')->with(['dentist' => $dentist, 'users' => $users, 'appointments' => $appointments, 'services' => $services, 'listings' => $listings]);
     }
 
     public function listing () {
@@ -59,8 +62,9 @@ class PageController extends Controller
     public function shop ($id) {
         $shop = Listing::find($id);
         $available = Available::where('listing_id', $shop->id)->get();
+        $assign = Assign::where('clinic_id', $shop->id)->get();
 
-        return view('shop')->with(['shop' => $shop, 'availables' => $available]);
+        return view('shop')->with(['shop' => $shop, 'availables' => $available, 'assigns' => $assign]);
     }
 
     public function appointment ($id) {

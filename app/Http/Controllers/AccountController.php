@@ -21,8 +21,10 @@ class AccountController extends Controller
             $user->is_online = true;
             $user->save();
             
-            if($user->status > 0) {
+            if($user->status > 0 && $user->status < 3) {
                 return redirect()->intended('/admin');
+            } else if($user->status == 3) {
+                return redirect()->intended('/superadmin');
             } else
                 return redirect()->intended('/')->with('logged', true);
         }

@@ -142,7 +142,17 @@
                 <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="dentist">
                     <h4 class="text-center w-100">Meet our Dentists</h4>
                     <hr>
-                    test
+                    
+                    @foreach ($assigns as $assign)
+                        <div class="d-flex shadow rounded gap-4 p-4">
+                            <img src="{{ '/storage/' . $assign->user->image_path }}" style="height: 300px; width: 300px;">
+
+                            <div class="d-flex flex-column">
+                                <h1>{{ $assign->user->fname . ' ' . $assign->user->mname . ' ' . $assign->user->lname }}</h1>
+                                <p class="lead">Expertise</p>
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

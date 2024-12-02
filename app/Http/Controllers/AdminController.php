@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointments;
+use App\Models\Assign;
 use App\Models\Available;
 use App\Models\Listing;
 use App\Models\Service;
@@ -10,6 +11,7 @@ use App\Models\Schedule;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -59,6 +61,37 @@ class AdminController extends Controller
         return redirect('/admin')->with(['page' => 3]);
     }
 
+    public function create_dentist(Request $request) {
+        $validData = $request->validate([
+            'fnamed' => 'required|string|max:255',
+            'mnamed' => 'nullable|string|max:255',
+            'lnamed' => 'required|string|max:255',
+            'birthdated' => 'required|date|before:today',
+            'sexd' => 'required',
+            'phoned' => 'required|digits_between:10,15',
+            'emaild' => 'required|email|unique:users,email',
+            'addressd' => 'required|string|max:255',
+            'passwordd' => 'required|string|min:8',
+        ]);
+
+        $user = new User();
+
+        $user->fname = $validData['fnamed'];
+        $user->mname = $validData['mnamed'];
+        $user->lname = $validData['lnamed'];
+        $user->birthdate = $validData['birthdated'];
+        $user->gender = $validData['sexd'];
+        $user->phone = $validData['phoned'];
+        $user->email = $validData['emaild'];
+        $user->address = $validData['addressd'];
+        $user->password = bcrypt($validData['passwordd']);
+        $user->status = 2;
+
+        $user->save();
+
+        return redirect('superadmin')->with(['page' => 4]);
+    }
+
     public function create_listing (Request $request) {
         $listing = new Listing();
 
@@ -76,17 +109,31 @@ class AdminController extends Controller
 
         $listing->save();
 
+        // Add services
         $services = $request->input('service', []);
         foreach ($services as $service) {
             $available = new Available();
             $dservice = Service::find($service);
 
-            $available->clinic_id = $listing->id;
+            $available->listing_id = $listing->id;
             $available->service_id = $dservice->id;
 
             $available->save();
         }
 
+        // Add dentists
+        $dentist = $request->input('dent', []);
+        foreach ($dentist as $dent) {
+            $assign = new Assign();
+            $user = User::find($dent);
+            
+            $assign->clinic_id = $listing->id;
+            $assign->user_id = $user->id;
+
+            $assign->save();
+        }
+
+        // Add schedule time
         $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
         foreach ($days as $day) {
             if ($request->has('listing-' . $day)) {
@@ -102,7 +149,11 @@ class AdminController extends Controller
             }
         }
 
-        return redirect('/admin')->with(['page' => 5]);
+        if (Auth::user()->status == 2) {
+            return redirect('/admin')->with(['page' => 5]);
+        } else if (Auth::user()->status == 3) {
+            return redirect('/superadmin')->with(['page' => 5]);
+        }
     }
 
     public function edit_listing (Request $request, $id) {
@@ -223,7 +274,9 @@ class AdminController extends Controller
         return view('record')->with(['appointments' => $allappoints]);
     }
 
-    public function record_user (Request $request, $id) {
-        return view('record_user');
+    public function record_user ($id) {
+        $appointment = Appointments::where('user_id', $id)->first();
+
+        return view('record_user')->with(['appointment' => $appointment]);
     }
 }

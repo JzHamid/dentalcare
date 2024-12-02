@@ -15,8 +15,7 @@ Route::get('/clinic/{id}', [PageController::class, 'shop'])->name('shop');
 Route::get('/clinic/{id}/appointment', [PageController::class, 'appointment'])->name('appointment')->middleware('auth');
 Route::get('/user-profile', [PageController::class, 'user'])->name('user')->middleware('auth');
 Route::get('/user-record/{id}', [AdminController::class, 'record_user'])->name('user.record')->middleware('auth');
-
-Route::get('/superadmin', [PageController::class, 'superadmin'])->name('superadmin');
+Route::get('/superadmin', [PageController::class, 'superadmin'])->name('superadmin')->middleware('auth');
 
 // Appointment
 Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
@@ -29,6 +28,9 @@ Route::group(['middleware' => 'auth', 'admin'], function() {
     Route::post('/edit-service/{id}', [AdminController::class, 'edit_service'])->name('edit.service');
     Route::get('/get-service/{id}', [AdminController::class, 'get_service'])->name('get.service');
     Route::delete('/delete-service/{id}', [AdminController::class, 'delete_service'])->name('destroy.service');
+
+    // Dentist
+    Route::post('/create-dentist', [AdminController::class, 'create_dentist'])->name('create.dentist');
 
     // Listing
     Route::post('/create-listing', [AdminController::class, 'create_listing'])->name('create.listing');

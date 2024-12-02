@@ -41,7 +41,7 @@
             <form class="d-flex flex-column position-absolute w-50 gap-2" style="top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; padding: 20px;" action="{{ route('create.account') }}" method="post">
                 @csrf
 
-                <h2 class="text-default text-center m-0">SIGNUP</h2>
+                <h2 class="text-default text-center m-0 mt-5">SIGNUP</h2>
                 <h5 class="lead text-center mb-3">CREATE YOUR PERSONAL ACCOUNT</h5>
 
                 <div class="d-flex gap-2">
