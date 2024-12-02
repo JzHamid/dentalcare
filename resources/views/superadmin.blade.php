@@ -923,6 +923,30 @@
                 }
             }
 
+            function get_service (id) {
+                fetch(`/get-service/${parseInt(id, 10)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    $('#edit-service-form').attr('action', `/edit-service/${data.service.id}`);
+                    $('#eservice-name').val(data.service.name);
+                    $('#eservice-description').text(data.service.description);
+
+                    let hours = Math.floor(data.service.duration / 60);
+                    let minutes = data.service.duration % 60;
+                    
+                    $('#eservice-hours').val(hours);
+                    $('#eservice-minutes').val(minutes);
+                    $('#eservice-price-start').val(data.service.price_start);
+                    $('#eservice-price-end').val(data.service.price_end);
+                });
+            }
+
             function get_listing (id) {
                 fetch(`/get-listing/${parseInt(id, 10)}`, {
                     method: 'GET',

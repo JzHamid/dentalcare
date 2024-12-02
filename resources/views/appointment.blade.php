@@ -89,7 +89,7 @@
                     <select class="form-select" name="whofor" id="whofor" onchange="show_button()" required>
                         <option value="0">For Myself</option>
                         <option value="1">For Others</option>
-                        <option value="2" disabled>For Multiple People</option>
+                        <option value="2">For Multiple People</option>
                     </select>
                 </div>
 
@@ -100,39 +100,44 @@
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][fname]">First Name</label>
-                                <input class="form-control" type="text" name="fname" value="{{ $user->fname }}" required>
+                                <input class="form-control" type="text" name="fname" value="{{ $user->fname }}" id="fname" required>
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][mname]">Middle Name</label>
-                                <input class="form-control" type="text" name="mname" value="{{ $user->mname ?? '' }}">
+                                <input class="form-control" type="text" name="mname" value="{{ $user->mname ?? '' }}" id="mname">
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][lname]">Last Name</label>
-                                <input class="form-control" type="text" name="lname" value="{{ $user->lname }}" required>
+                                <input class="form-control" type="text" name="lname" value="{{ $user->lname }}" required id="lname">
                             </div>
                         </div>
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][email]">Email Address</label>
-                                <input class="form-control" type="email" name="email" value="{{ $user->email }}" required>
+                                <input class="form-control" type="email" name="email" value="{{ $user->email }}" required id="email">
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][contact]">Contact No.</label>
-                                <input class="form-control" type="tel" name="contact" value="{{ $user->phone }}" required>
+                                <input class="form-control" type="tel" name="contact" value="{{ $user->phone }}" required id="phone">
                             </div>
 
                             <div class="form-group w-50">
                                 <label class="form-label" for="appointments[0][sex]">Sexuality</label>
-                                <select class="form-select" name="sex">
+                                <select class="form-select" name="sex" id="sex">
                                     <option selected disabled>-- Select --</option>
                                     <option value="0" @selected($user->gender == 0)>Male</option>
                                     <option value="1" @selected($user->gender == 1)>Female</option>
                                 </select>
                             </div>
+                        </div>
+
+                        <div class="form-group visually-hidden" id="birthdate">
+                            <label class="form-label" for="birthdate">Birthdate</label>
+                            <input class="form-control" type="date" name="birthdate">
                         </div>
 
                         <div class="form-group mb-2">
@@ -156,7 +161,7 @@
 
                             <script>
                                 flatpickr('#schedule', {
-                                    dateFormat: 'Y-m-d',
+                                    dateFormat: 'Y-m-d H:i',
                                     enableTime: true,
                                     enable: [
                                         function (date) {
@@ -243,6 +248,19 @@
                 } else {
                     buttonDiv.style.display = 'none';
                     xButton.classList.add('visually-hidden');
+
+                    if (select.value == 1) {
+                        document.getElementById('fname').value = '';
+                        document.getElementById('mname').value = '';
+                        document.getElementById('lname').value = '';
+                        document.getElementById('email').value = '';
+                        document.getElementById('phone').value = '';
+                        document.getElementById('sex').value = '';
+
+                        document.getElementById('birthdate').classList.remove('visually-hidden');
+                    } else {
+                        document.getElementById('birthdate').classList.add('visually-hidden');
+                    }
                 }
             }
 

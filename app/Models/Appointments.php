@@ -17,10 +17,15 @@ class Appointments extends Model
 
     protected $casts = [
         'appointment_time' => 'datetime',
+        'temporary' => 'array',
     ];
 
     public function user () {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public function dentist () {
+        return $this->belongsTo(User::class, 'dentist_id', 'id');
     }
 
     public function service () {

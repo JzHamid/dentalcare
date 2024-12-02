@@ -8,6 +8,7 @@ use App\Models\Available;
 use App\Models\Listing;
 use App\Models\Service;
 use App\Models\Schedule;
+use App\Models\Temporary;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -31,7 +32,7 @@ class AdminController extends Controller
         $service->price_end = $request->service_price_end;
         $service->save();
 
-        return redirect('/admin')->with(['page' => 3]);
+        return redirect('/superadmin')->with(['page' => 3]);
     }
 
     public function edit_service (Request $request, $id) {
@@ -63,7 +64,7 @@ class AdminController extends Controller
         return redirect('/admin')->with(['page' => 3]);
     }
 
-    public function create_dentist(Request $request) {
+    public function create_dentist (Request $request) {
         $validData = $request->validate([
             'fnamed' => 'required|string|max:255',
             'mnamed' => 'nullable|string|max:255',
@@ -281,16 +282,27 @@ class AdminController extends Controller
     public function create_appointment (Request $request, $id) {
         $appointment = new Appointments();
 
-        $appointment->user_id = User::where('fname', $request->fname)->where('lname', $request->lname)->first()->id;
+        $appointment->user_id = Auth::user()->id;
         $appointment->service_id = Service::where('id', $request->service)->first()->id;
         $appointment->listing_id = Listing::where('id', $id)->first()->id;
         $appointment->appointment_time = $request->time;
         $appointment->dentist_id = $request->dentist;
         $appointment->status = 'Pending';
 
+        if ($request->whofor == 1) {
+            $appointment->temporary = json_encode([
+                'fname' => $request->fname,
+                'mname' => $request->mname,
+                'lname' => $request->lname,
+                'email' => $request->email,
+                'phone' => $request->contact,
+                'birth' => $request->birthdate,
+            ]);
+        }
+
         $appointment->save();
 
-        return view('/user-profile/');
+        return redirect('/user-profile');
     }
 
     public function appointment_status (Request $request, $id) {

@@ -144,7 +144,7 @@
                                             <div class="d-flex flex-column gap-2 w-100">
                                                 <p class="fw-bold m-0">Service: <span class="fw-light">{{ $appointment->service->name }}</span></p>
                                                 <p class="fw-bold m-0">Appointment Time: <span class="fw-light">{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</span></p>
-                                                <button class="btn btn-link btn-sm text-center align-self-end">View</button>
+                                                <a class="btn btn-link btn-sm text-center align-self-end" href="{{ route('user.record', $appointment->id) }}">View</a>
                                             </div>
                                         </div>
                                     @endforeach
@@ -201,8 +201,17 @@
                         <tbody>
                             @foreach ($appointments as $appointment)
                                 <tr>
-                                    <td>Test</td>
-                                    <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
+                                    <td>{{ $appointment->dentist->fname . ' ' . $appointment->dentist->mname . ' ' . $appointment->dentist->lname }}</td>
+                                    @if ($appointment->temporary)
+                                        @php
+                                            $temp = json_decode($appointment->temporary, true);
+                                        @endphp
+                                        
+                                        <td>{{ $temp['fname'] . ' ' . $temp['mname'] . ' ' . $temp['lname'] }}</td>
+                                    @else
+                                        <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
+                                    @endif
+        
                                     <td>{{ $appointment->clinic->location }}</td>
                                     <td>{{ $appointment->service->name }}</td>
                                     <td>{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</td>

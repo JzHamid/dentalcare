@@ -84,12 +84,24 @@
 
                 <div class="d-flex rounded shadow p-4 gap-4">
                     <div class="d-flex flex-column gap-1">
-                        <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</p>
-                        <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}</p>
-                        <p class="fw-light m-0"><span class="fw-bold">Address: </span>{{ $appointment->user->address }}</p>
-                        <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $appointment->user->email }}</p>
-                        <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $appointment->user->phone }}</p>
-                        <p class="fw-light m-0"><span class="fw-bold">Medical Records: </span>{{ $appointment->user->notes }}</p>
+                        @if ($appointment->temporary)
+                            @php
+                                $temp = json_decode($appointment->temporary, true);
+                            @endphp
+
+                            <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ $temp['fname'] . ' ' . $temp['mname'] . ' ' . $temp['lname'] }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ Carbon\Carbon::parse($temp['birth'])->format('F j, Y') }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $temp['email'] }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $temp['phone'] }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Set By: </span>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</p>
+                        @else
+                            <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Address: </span>{{ $appointment->user->address }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $appointment->user->email }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $appointment->user->phone }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Medical Records: </span>{{ $appointment->user->notes }}</p>
+                        @endif
                     </div>
 
                     <div class="d-flex align-items-center mx-auto">
@@ -123,7 +135,9 @@
                                 <input class="form-control" type="text" name="service" value="{{ $appointment->service->name }}" disabled>
                             </div>
 
-                            <button class="btn btn-primary mt-auto" type="submit">Save Record</button>
+                            @if (Auth::user()->status > 0)
+                                <button class="btn btn-primary mt-auto" type="submit">Save Record</button>
+                            @endif
                         </div>
                     </div>
                 </div>
