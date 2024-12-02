@@ -109,7 +109,7 @@
 
         <div class="d-flex flex-column align-items-center p-5 gap-4">
             @foreach ($listings as $listing)
-                <a class="text-decoration-none text-black d-flex rounded shadow p-4 gap-3 w-75" href="{{ route('shop', $listing->id) }}">
+                <!-- <a class="text-decoration-none text-black d-flex rounded shadow p-4 gap-3 w-75" href="{{ route('shop', $listing->id) }}">
                     <img src="{{ '/storage/' . $listing->image_path }}" style="height: 200px; width: 200px;">
                     
                     <div class="d-flex flex-column">
@@ -130,11 +130,11 @@
                             test
                         </div>
                     </div>
-                </a>
+                </a> -->
             @endforeach
         </div>
 
-        <footer class="row bg-body-secondary bottom-0 p-4">
+        <footer class="row bg-body-secondary bottom-0 p-4 position-absolute">
             <div class="col">
                 <h5 class="text-default">DentalCare</h5>
                 <p style="text-align: justify;">Your health is our mission partner with us for exceptional healthcare, Schedule your appointment today and experience the difference of exceptional healthcare.</p>
