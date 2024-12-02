@@ -73,8 +73,9 @@ class PageController extends Controller
         $user = Auth::user();
         $available = Available::where('listing_id', $shop->id)->get();
         $schedules = Schedule::where('clinic_id', $shop->id)->get();
+        $assign = Assign::where('clinic_id', $id)->get();
 
-        return view('appointment')->with(['shop' => $shop, 'user' => $user, 'availables' => $available, 'schedules' => $schedules]);
+        return view('appointment')->with(['shop' => $shop, 'user' => $user, 'availables' => $available, 'schedules' => $schedules, 'assign' => $assign]);
     }
 
     public function record ($id) {

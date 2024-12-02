@@ -127,14 +127,14 @@
 
                         <p class="fw-bold m-0" style="font-size: medium;">Availability:</p>
                         <div class="container-fluid p-0">
-                            test
+                            
                         </div>
                     </div>
                 </a>
             @endforeach
         </div>
 
-        <footer class="row bg-body-secondary bottom-0 p-4 position-absolute">
+        <footer class="row bg-body-secondary bottom-0 p-4 position-relative">
             <div class="col">
                 <h5 class="text-default">DentalCare</h5>
                 <p style="text-align: justify;">Your health is our mission partner with us for exceptional healthcare, Schedule your appointment today and experience the difference of exceptional healthcare.</p>

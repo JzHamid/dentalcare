@@ -38,36 +38,40 @@
 
         <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
-                <a class="navbar-brand text-default fw-bold" href="">DentalCare</a>
+                <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
 
                 @auth
-                    <div class="d-flex gap-4">
+                    <div class="d-flex gap-4" style="margin-right: 100px;">
                         <div class="dropdown">
                             <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi-bell-fill"></i>
                             </button>
 
-                            <ul class="dropdown-menu">
+                            <ul class="dropdown-menu dropdown-end">
 
                             </ul>
                         </div>
 
-                        <div class="dropdown">
+                        <div class="dropdown d-flex">
                             <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi-person-circle"></i>
                             </button>
 
-                            <ul class="dropdown-menu">
-                                <li>
-                                    Test
-                                </li>
+                            <ul class="dropdown-menu dropdown-end">
+                                @if (Auth::user()->status == 0)
+                                    <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
+                                @else
+                                    <li><a class="dropdown-item" href="{{ route('admin' ) }}">My Profile</a></li>
+                                @endif
+                                
+                                <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
                     </div>
                 @endauth
 
                 @guest
-                    <a class="text-default text-decoration-none" href="{{ route('login') }}">Login / Signup</a>
+                    <a class="text-default text-decoration-none" style="margin-right: 100px;" href="{{ route('login') }}">Login / Signup</a>
                 @endguest
             </div>
         </nav>
@@ -96,34 +100,34 @@
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][fname]">First Name</label>
-                                <input class="form-control" type="text" name="appointments[0][fname]" value="{{ $user->fname }}" required>
+                                <input class="form-control" type="text" name="fname" value="{{ $user->fname }}" required>
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][mname]">Middle Name</label>
-                                <input class="form-control" type="text" name="appointments[0][mname]" value="{{ $user->mname ?? '' }}">
+                                <input class="form-control" type="text" name="mname" value="{{ $user->mname ?? '' }}">
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][lname]">Last Name</label>
-                                <input class="form-control" type="text" name="appointments[0][lname]" value="{{ $user->lname }}" required>
+                                <input class="form-control" type="text" name="lname" value="{{ $user->lname }}" required>
                             </div>
                         </div>
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][email]">Email Address</label>
-                                <input class="form-control" type="email" name="appointments[0][email]" value="{{ $user->email }}" required>
+                                <input class="form-control" type="email" name="email" value="{{ $user->email }}" required>
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][contact]">Contact No.</label>
-                                <input class="form-control" type="tel" name="appointments[0][contact]" value="{{ $user->phone }}" required>
+                                <input class="form-control" type="tel" name="contact" value="{{ $user->phone }}" required>
                             </div>
 
                             <div class="form-group w-50">
                                 <label class="form-label" for="appointments[0][sex]">Sexuality</label>
-                                <select class="form-select" name="appointments[0][sex]">
+                                <select class="form-select" name="sex">
                                     <option selected disabled>-- Select --</option>
                                     <option value="0" @selected($user->gender == 0)>Male</option>
                                     <option value="1" @selected($user->gender == 1)>Female</option>
@@ -135,13 +139,13 @@
                             <label class="form-label" for="appointments[0][service]">Type of Service</label>
 
                             <div class="input-group">
-                                <select class="form-select" name="appointments[0][service]" required>
+                                <select class="form-select" name="service" required>
                                     <option selected disabled>-- Select --</option>
                                     @foreach ($availables as $available)
                                         <option value="{{ $available->service->id }}">{{ $available->service->name }}</option>
                                     @endforeach
                                 </select>
-                                <input class="form-control" type="text" id="schedule" name="appointments[0][time]" placeholder="Select a date">
+                                <input class="form-control" type="text" id="schedule" name="time" placeholder="Select a date">
                             </div>
 
                             @php
@@ -167,6 +171,17 @@
                                     maxDate: new Date(new Date().getFullYear(), 11, 31),
                                 });
                             </script>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="dentist">Dentist</label>
+                            <select class="form-select" name="dentist">
+                                <option selected disabled>-- Select Dentist --</option>
+                                
+                                @foreach ($assign as $assi)
+                                    <option value="{{ $assi->user->id }}">{{ $assi->user->fname }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                 </div>

@@ -381,9 +381,8 @@
                         </thead>
 
                         <tbody>
-                            <tr>
-
-                            </tr>
+                            @foreach ()
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
