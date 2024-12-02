@@ -56,12 +56,7 @@
                             </button>
 
                             <ul class="dropdown-menu dropdown-end">
-                                @if (Auth::user()->status == 0)
-                                    <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
-                                @else
-                                    <li><a class="dropdown-item" href="{{ route('admin' ) }}">My Profile</a></li>
-                                @endif
-                                
+                                <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>

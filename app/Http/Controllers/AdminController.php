@@ -12,6 +12,8 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Psy\Command\WhereamiCommand;
+use Ramsey\Uuid\Type\Integer;
 
 class AdminController extends Controller
 {
@@ -259,6 +261,7 @@ class AdminController extends Controller
         $appointment->service_id = Service::where('id', $request->service)->first()->id;
         $appointment->listing_id = Listing::where('id', $id)->first()->id;
         $appointment->appointment_time = $request->time;
+        $appointment->dentist_id = $request->dentist;
         $appointment->status = 'Pending';
 
         $appointment->save();
