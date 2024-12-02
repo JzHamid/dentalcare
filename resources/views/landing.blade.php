@@ -90,7 +90,7 @@
             </div>
 
             <div class="col">
-
+            <img src="/public/images/side pic landing.jpg" class="img-fluid" alt="Responsive image">
             </div>
         </div>
 
