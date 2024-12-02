@@ -33,7 +33,10 @@
 
     <body class="overflow-x-hidden">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
-        
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
+        <script src="/js/mapInput.js"></script>
+
+
         <nav class="navbar bg-body-secondary">
             <div class="container-fluid px-4">
                 <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
@@ -56,12 +59,7 @@
                             </button>
 
                             <ul class="dropdown-menu dropdown-end">
-                                @if (Auth::user()->status == 0)
-                                    <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
-                                @else
-                                    <li><a class="dropdown-item" href="{{ route('admin' ) }}">My Profile</a></li>
-                                @endif
-                                
+                                <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
                         </div>
@@ -116,6 +114,8 @@
                         </div>
                     </div>
                 </div>
+
+                <div id="map"></div>
 
                 <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="services">
                     <h4 class="text-center w-100">Services Offered</h4>
@@ -184,5 +184,23 @@
                 <h5 class="text-center fw-bold">Follow Us</h5>
             </div>
         </footer>
+
+        <script type="text/javascript">
+            function initMap() {
+            const myLatLng = { lat: 22.2734719, lng: 70.7512559 };
+
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 5,
+                center: myLatLng,
+            });
+
+            new google.maps.Marker({
+                position: myLatLng,
+                map,
+            });
+            }
+
+            window.initMap = initMap;
+        </script>
     </body>
 </html>

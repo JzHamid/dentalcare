@@ -6,7 +6,7 @@
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
 
         <title>DentalCare | Listing</title>
 
@@ -85,7 +85,7 @@
                     <select class="form-select" name="whofor" id="whofor" onchange="show_button()" required>
                         <option value="0">For Myself</option>
                         <option value="1">For Others</option>
-                        <option value="2">For Multiple People</option>
+                        <option value="2" disabled>For Multiple People</option>
                     </select>
                 </div>
 
@@ -95,35 +95,35 @@
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
-                                <label class="form-label" for="fname">First Name</label>
-                                <input class="form-control" type="text" name="fname" value="{{ $user->fname }}" required>
+                                <label class="form-label" for="appointments[0][fname]">First Name</label>
+                                <input class="form-control" type="text" name="appointments[0][fname]" value="{{ $user->fname }}" required>
                             </div>
 
                             <div class="form-group w-100">
-                                <label class="form-label" for="mname">Middle Name</label>
-                                <input class="form-control" type="text" name="mname" value="{{ $user->mname ?? '' }}">
+                                <label class="form-label" for="appointments[0][mname]">Middle Name</label>
+                                <input class="form-control" type="text" name="appointments[0][mname]" value="{{ $user->mname ?? '' }}">
                             </div>
 
                             <div class="form-group w-100">
-                                <label class="form-label" for="lname">Last Name</label>
-                                <input class="form-control" type="text" name="lname" value="{{ $user->lname }}" required>
+                                <label class="form-label" for="appointments[0][lname]">Last Name</label>
+                                <input class="form-control" type="text" name="appointments[0][lname]" value="{{ $user->lname }}" required>
                             </div>
                         </div>
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
-                                <label class="form-label" for="email">Email Address</label>
-                                <input class="form-control" type="email" name="email" value="{{ $user->email }}" required>
+                                <label class="form-label" for="appointments[0][email]">Email Address</label>
+                                <input class="form-control" type="email" name="appointments[0][email]" value="{{ $user->email }}" required>
                             </div>
 
                             <div class="form-group w-100">
-                                <label class="form-label" for="contact">Contact No.</label>
-                                <input class="form-control" type="tel" name="contact" value="{{ $user->phone }}" required>
+                                <label class="form-label" for="appointments[0][contact]">Contact No.</label>
+                                <input class="form-control" type="tel" name="appointments[0][contact]" value="{{ $user->phone }}" required>
                             </div>
 
                             <div class="form-group w-50">
-                                <label class="form-label" for="sex">Sexuality</label>
-                                <select class="form-select" name="sex">
+                                <label class="form-label" for="appointments[0][sex]">Sexuality</label>
+                                <select class="form-select" name="appointments[0][sex]">
                                     <option selected disabled>-- Select --</option>
                                     <option value="0" @selected($user->gender == 0)>Male</option>
                                     <option value="1" @selected($user->gender == 1)>Female</option>
@@ -131,17 +131,17 @@
                             </div>
                         </div>
 
-                        <div class="-group mb-2">
-                            <label class="form-label" for="service">Type of Service</label>
+                        <div class="form-group mb-2">
+                            <label class="form-label" for="appointments[0][service]">Type of Service</label>
 
                             <div class="input-group">
-                                <select class="form-select" name="service" required>
+                                <select class="form-select" name="appointments[0][service]" required>
                                     <option selected disabled>-- Select --</option>
                                     @foreach ($availables as $available)
                                         <option value="{{ $available->service->id }}">{{ $available->service->name }}</option>
                                     @endforeach
                                 </select>
-                                <input class="form-control" type="text" id="schedule" name="time" placeholder="Select a date">
+                                <input class="form-control" type="text" id="schedule" name="appointments[0][time]" placeholder="Select a date">
                             </div>
 
                             @php
@@ -152,20 +152,20 @@
 
                             <script>
                                 flatpickr('#schedule', {
-                                dateFormat: 'Y-m-d',
-                                enableTime: true,
-                                enable: [
-                                    function (date) {
-                                        const allowedDays = @json($availableDays);
-                                        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                                        const dayName = dayNames[date.getDay()];
+                                    dateFormat: 'Y-m-d',
+                                    enableTime: true,
+                                    enable: [
+                                        function (date) {
+                                            const allowedDays = @json($availableDays);
+                                            const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                                            const dayName = dayNames[date.getDay()];
 
-                                        return allowedDays.includes(dayName);
-                                    }
-                                ],
-                                minDate: 'today',
-                                maxDate: new Date(new Date().getFullYear(), 11, 31),
-                            });
+                                            return allowedDays.includes(dayName);
+                                        }
+                                    ],
+                                    minDate: 'today',
+                                    maxDate: new Date(new Date().getFullYear(), 11, 31),
+                                });
                             </script>
                         </div>
                     </div>

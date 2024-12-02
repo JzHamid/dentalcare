@@ -90,7 +90,7 @@
             </div>
 
             <div class="col">
-            <img src="/public/images/side pic landing.jpg" class="img-fluid" alt="Responsive image">
+                <img src="{{ asset('images/side_pic_landing.jpg') }}" style="box-sizing: cover;" alt="Responsive image">
             </div>
         </div>
 
