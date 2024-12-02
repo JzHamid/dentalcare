@@ -199,7 +199,7 @@
                     <label class="form-check-label" for="terms">By checking this box you agree to share your medical history with all clinic branches</label>
                 </div>
 
-                <button class="btn btn-primary" type="submit">Book</button>
+                <button class="btn btn-primary mb-5" type="submit">Book</button>
             </form>
         </div>
 

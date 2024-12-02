@@ -160,6 +160,7 @@ class AdminController extends Controller
 
     public function edit_listing (Request $request, $id) {
         $listing = Listing::find($id);
+        $assign = Assign::where('clinic_id', $id)->first();
 
         $listing->name = $request->input('vlisting-name');
         $listing->email = $request->input('vlisting-email');
@@ -192,12 +193,29 @@ class AdminController extends Controller
             $available->save();
         }
 
-        return redirect('/admin')->with(['page' => 5]);
+        $dentistIds = $request->input('vdent', []);
+
+        $currentDentists = Assign::where('clinic_id', $id)->pluck('user_id')->toArray();
+
+        $dentistsToAdd = array_diff($dentistIds, $currentDentists);
+        $dentistsToRemove = array_diff($currentDentists, $dentistIds);
+
+        Assign::where('clinic_id', $id)->whereIn('user_id', $dentistsToRemove)->delete();
+
+        foreach ($dentistsToAdd as $dentistId) {
+            Assign::create([
+                'clinic_id' => $id,
+                'user_id' => $dentistId,
+            ]);
+        }
+
+        return redirect('/superadmin')->with(['page' => 5]);
     }
 
     public function get_listing ($id) {
         $listing = Listing::find($id);
         $available = Available::where('listing_id', $id)->first();
+        $assign = Assign::where('clinic_id', $id)->first();
         
         if ($available) {
             $services = $available->service_id ? Service::where('id', $available->service_id)->get() : collect();
@@ -205,15 +223,21 @@ class AdminController extends Controller
             $services = collect();
         }
 
+        if ($assign) {
+            $assigns = $assign->user_id ? User::where('id', $assign->user_id)->get() : collect();
+        } else {
+            $assigns = collect();
+        }
+
         $schedule = Schedule::where('clinic_id', $id)->get();
 
-        return response()->json(['listing' => $listing, 'services' => $services, 'schedules' => $schedule]);
+        return response()->json(['listing' => $listing, 'services' => $services, 'schedules' => $schedule, 'assign' => $assigns]);
     }
 
     public function delete_listing ($id) {
         Listing::where('id', $id)->delete();
 
-        return redirect('/admin')->with(['page' => 5]);
+        return redirect('/superadmin')->with(['page' => 5]);
     }
 
     public function create_collab (Request $request) {
@@ -266,7 +290,7 @@ class AdminController extends Controller
 
         $appointment->save();
 
-        return redirect('/');
+        return view('/user-profile/');
     }
 
     public function appointment_status (Request $request, $id) {

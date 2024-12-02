@@ -105,11 +105,6 @@
                     Listing
                 </button>
 
-                <button class="nav-link text-white d-flex gap-4" id="nav-profile" data-bs-toggle="pill" data-bs-target="#tab-profile" type="button" role="tab" aria-controls="tab-profile" aria-selected="false">
-                    <i class="bi-gear-fill"></i>
-                    Profile
-                </button>
-
                 <a class="nav-link text-white d-flex gap-4 mt-auto" href="{{ route('logout') }}">
                     <i class="bi-box-arrow-right"></i>
                     Logout
@@ -410,10 +405,6 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
-
-                <div class="tab-pane gap-5 p-3" id="tab-profile" role="tabpanel" aria-labelledby="tab-profile" tabindex="0">
-                    <h1 class="mb-5">Profile</h1>
                 </div>
             </div>
         </div>
@@ -814,18 +805,18 @@
                             </div>
                         </div>
 
-                        <div class="accordion" id="accordion-dentist">
+                        <div class="accordion" id="vaccordion-dentist">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#list-dentist" aria-expanded="false" aria-controls="list-dentist">Dentist</button>
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#vlist-dentist" aria-expanded="false" aria-controls="vlist-dentist">Dentist</button>
                                 </h2>
 
-                                <div class="accordion-collapse collapse" id="list-dentist" data-bs-parent="#accordion-dentist">
+                                <div class="accordion-collapse collapse show" id="vlist-dentist" data-bs-parent="#vaccordion-dentist">
                                     <div class="accordion-body">
                                         @foreach ($dentist as $dent)
                                             <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" value="{{ $dent->id }}" name="dent[]">
-                                                <label class="form-check-label" for="dent{{ $dent->id }}">{{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</label>
+                                                <input class="form-check-input" type="checkbox" value="{{ $dent->id }}" id="vdent{{ $dent->id }}" name="vdent[]">
+                                                <label class="form-check-label" for="vdent{{ $dent->id }}">{{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</label>
                                             </div>
                                         @endforeach
                                     </div>
@@ -930,6 +921,44 @@
 
                     reader.readAsDataURL(file);
                 }
+            }
+
+            function get_listing (id) {
+                fetch(`/get-listing/${parseInt(id, 10)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    $('#view-listing-form').attr('action', `/edit-listing/${data.listing.id}`);
+
+                    $('#vlisting-thumbnail-img').attr('src', '/storage/' + data.listing.image_path);
+                    $('#vlisting-name').val(data.listing.name);
+                    $('#vlisting-email').val(data.listing.email);
+                    $('#vlisting-contact').val(data.listing.contact);
+                    $('#vlisting-location').val(data.listing.location);
+
+                    data.services.forEach(service => {
+                        $(`#vservice${service.id}`).prop('checked', true);
+                    });
+
+                    data.assign.forEach(assign => {
+                        $(`#vdent${assign.id}`).prop('checked', true);
+                    });
+
+                    data.schedules.forEach(schedule => {
+                        const day = schedule.day.toLowerCase();
+
+                        $(`input[name="vlisting-${day}"]`).prop('checked', true);
+                        $(`input[name="v${day}-time-start"]`).val(schedule.start);
+                        $(`input[name="v${day}-time-end"]`).val(schedule.end);
+                    });
+
+                    $('#vlisting-about').val(data.listing.description);
+                });
             }
         </script>
     </body>
