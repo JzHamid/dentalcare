@@ -202,12 +202,13 @@
                             @foreach ($appointments as $appointment)
                                 <tr>
                                     <td>{{ $appointment->dentist->fname . ' ' . $appointment->dentist->mname . ' ' . $appointment->dentist->lname }}</td>
+                                        
                                     @if ($appointment->temporary)
                                         @php
                                             $temp = json_decode($appointment->temporary, true);
                                         @endphp
                                         
-                                        <td>{{ $temp['fname'] . ' ' . $temp['mname'] . ' ' . $temp['lname'] }}</td>
+                                        <td></td>
                                     @else
                                         <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                                     @endif

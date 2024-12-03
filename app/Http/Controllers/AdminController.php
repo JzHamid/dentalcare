@@ -95,6 +95,12 @@ class AdminController extends Controller
         return redirect('superadmin')->with(['page' => 4]);
     }
 
+    public function get_dentist ($id) {
+        $user = User::find($id);
+        
+        return response()->json(['user' => $user]);
+    }
+
     public function create_listing (Request $request) {
         $listing = new Listing();
 
@@ -280,29 +286,66 @@ class AdminController extends Controller
     }
 
     public function create_appointment (Request $request, $id) {
-        $appointment = new Appointments();
+        if ($request->whofor != 2) {
+            $appointment = new Appointments();
 
-        $appointment->user_id = Auth::user()->id;
-        $appointment->service_id = Service::where('id', $request->service)->first()->id;
-        $appointment->listing_id = Listing::where('id', $id)->first()->id;
-        $appointment->appointment_time = $request->time;
-        $appointment->dentist_id = $request->dentist;
-        $appointment->status = 'Pending';
+            $appointment->user_id = Auth::user()->id;
+            $appointment->service_id = Service::where('id', $request->service)->first()->id;
+            $appointment->listing_id = Listing::where('id', $id)->first()->id;
+            $appointment->appointment_time = $request->time;
+            $appointment->dentist_id = $request->dentist;
+            $appointment->status = 'Pending';
 
-        if ($request->whofor == 1) {
-            $appointment->temporary = json_encode([
-                'fname' => $request->fname,
-                'mname' => $request->mname,
-                'lname' => $request->lname,
-                'email' => $request->email,
-                'phone' => $request->contact,
-                'birth' => $request->birthdate,
-            ]);
+            if ($request->whofor == 1) {
+                $appointment->temporary = json_encode([
+                    'fname' => $request->fname,
+                    'mname' => $request->mname,
+                    'lname' => $request->lname,
+                    'email' => $request->email,
+                    'phone' => $request->contact,
+                    'birth' => $request->birthdate,
+                ]);
+            }
+
+            $appointment->save();
+
+            return redirect('/user-profile');
+        } else {
+            foreach ($request->appointments as $appointmentData) {
+                $appointment = new Appointments();
+                
+                $existing = User::where('fname', $appointmentData['fname'])->where('lname', $appointmentData['lname'])->first();
+
+                if ($existing) {
+                    $appointment->user_id = Auth::user()->id;
+                    $appointment->service_id = Service::where('id', $appointmentData['service'])->first()->id;
+                    $appointment->listing_id = Listing::where('id', $id)->first()->id;
+                    $appointment->appointment_time = $appointmentData['time'];
+                    $appointment->dentist_id = $appointmentData['dentist'];
+                    $appointment->status = 'Pending';
+                } else {
+                    $appointment->user_id = Auth::user()->id;
+                    $appointment->service_id = Service::where('id', $appointmentData['service'])->first()->id;
+                    $appointment->listing_id = Listing::where('id', $id)->first()->id;
+                    $appointment->appointment_time = $appointmentData['time'];
+                    $appointment->dentist_id = $appointmentData['dentist'];
+                    $appointment->status = 'Pending';
+                
+                    $appointment->temporary = json_encode([
+                        'fname' => $appointmentData['fname'],
+                        'mname' => $appointmentData['mname'],
+                        'lname' => $appointmentData['lname'],
+                        'email' => $appointmentData['email'],
+                        'phone' => $appointmentData['contact'],
+                        'birth' => $appointmentData['birthdate'],
+                    ]);
+                }
+            
+                $appointment->save();
+            }            
         }
 
-        $appointment->save();
-
-        return redirect('/user-profile');
+        return redirect('user-profile');
     }
 
     public function appointment_status (Request $request, $id) {
@@ -320,5 +363,9 @@ class AdminController extends Controller
         $dentist = User::where('id', $appointment->dentist_id)->first();
 
         return view('record_user')->with(['appointment' => $appointment, 'dentist' => $dentist]);
+    }
+
+    public function forget_password () {
+        
     }
 }

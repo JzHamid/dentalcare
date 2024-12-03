@@ -339,11 +339,11 @@
                                     <td>{{ $dent->address }}</td>
                                     <td></td>
                                     <td class="d-flex justify-content-center gap-2">
-                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-service">
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-dentist" onclick="get_dentist('{{ $dent->id }}')">
                                             <i class="bi-pencil-square"></i>
                                         </button>
 
-                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-service">
+                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-dentist">
                                             <i class="bi-trash-fill"></i>
                                         </button>
                                     </td>
@@ -603,6 +603,76 @@
                     <div class="modal-footer">
                         <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
                         <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('add-dentist-form').submit()">Add</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Dentist -->
+        <div class="modal fade" data-bs-backdrop="static" id="edit-dentist" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Dentist</h5>
+                    </div>
+
+                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.dentist') }}" method="post" id="edit-dentist-form">
+                        @csrf
+
+                        <div class="d-flex gap-2">
+                            <div class="form-group container-fluid p-0">
+                                <label class="form-label" for="fnamed">First Name</label>
+                                <input class="form-control" type="text" name="fnamee" id="fnamee">
+                            </div>
+
+                            <div class="form-group container-fluid p-0">
+                                <label class="form-label" for="mnamed">Middle Name</label>
+                                <input class="form-control" type="text" name="mnamee" id="mnamee">
+                            </div>
+
+                            <div class="form-group container-fluid p-0">
+                                <label class="form-label" for="lnamed">Last Name</label>
+                                <input class="form-control" type="text" name="lnamee" id="lnamee">
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <div class="form-group container-fluid p-0">
+                                <label class="form-label" for="birthdated">Date of Birth</label>
+                                <input class="form-control" type="date" name="birthdatee" id="birthdatee">
+                            </div>
+
+                            <div class="form-group container-fluid p-0">
+                                <label class="form-label" for="sexd">Sexuality</label>
+                                <select class="form-select" name="sexe" id="sexe">
+                                    <option selected disabled>-- Select --</option>
+                                    <option value="0">Male</option>
+                                    <option value="1">Female</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <div class="form-group container-fluid p-0">
+                                <label class="form-label" for="phoned">Contact No.</label>
+                                <input class="form-control" type="tel" name="phonee" id="phonee">
+                            </div>
+
+                            <div class="form-group container-fluid p-0">
+                                <label class="form-label" for="emaild">Email Address</label>
+                                <input class="form-control" type="email" name="emaile" id="emaile">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="addressd">Address</label>
+                            <input class="form-control" type="text" name="addresse" id="addresse">
+                        </div>
+                    </form>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('edit-dentist-form').submit()">Add</button>
                     </div>
                 </div>
             </div>
@@ -944,6 +1014,27 @@
                     $('#eservice-minutes').val(minutes);
                     $('#eservice-price-start').val(data.service.price_start);
                     $('#eservice-price-end').val(data.service.price_end);
+                });
+            }
+
+            function get_dentist (id) {
+                fetch(`/get-dentist/${parseInt(id, 10)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(response => {
+                    return response.json();
+                }).then(data => {
+                    $('#fnamee').val(data.user.fname);
+                    $('#mnamee').val(data.user.mname);
+                    $('#lnamee').val(data.user.lname);
+                    $('#birthdatee').val((data.user.birthdate).);
+                    $('#sexe').val(data.user.sex);
+                    $('#phonee').val(data.user.phone);
+                    $('#emaile').val(data.user.email);
+                    $('#addresse').val(data.user.address);
                 });
             }
 

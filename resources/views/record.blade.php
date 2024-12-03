@@ -66,7 +66,11 @@
         </nav>
 
         <div class="container-fluid p-4">
-            <a class="btn btn-secondary" href="{{ '/admin?page=2' }}">Return</a>
+            @if (Auth::user()->status == 3)
+                <a class="btn btn-secondary" href="{{ '/superadmin' }}">Return</a>
+            @else
+                <a class="btn btn-secondary" href="{{ '/admin?page=2' }}">Return</a>
+            @endif
 
             <div class="d-flex flex-column mx-auto w-75 gap-3">
                 <div class="d-flex justify-content-between">

@@ -100,34 +100,34 @@
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][fname]">First Name</label>
-                                <input class="form-control" type="text" name="fname" value="{{ $user->fname }}" id="fname" required>
+                                <input class="form-control" type="text" name="appointments[0][fname]" value="{{ $user->fname }}" id="fname" required>
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][mname]">Middle Name</label>
-                                <input class="form-control" type="text" name="mname" value="{{ $user->mname ?? '' }}" id="mname">
+                                <input class="form-control" type="text" name="appointments[0][mname]" value="{{ $user->mname ?? '' }}" id="mname">
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][lname]">Last Name</label>
-                                <input class="form-control" type="text" name="lname" value="{{ $user->lname }}" required id="lname">
+                                <input class="form-control" type="text" name="appointments[0][lname]" value="{{ $user->lname }}" required id="lname">
                             </div>
                         </div>
 
                         <div class="d-flex gap-2 mb-2">
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][email]">Email Address</label>
-                                <input class="form-control" type="email" name="email" value="{{ $user->email }}" required id="email">
+                                <input class="form-control" type="email" name="appointments[0][email]" value="{{ $user->email }}" required id="email">
                             </div>
 
                             <div class="form-group w-100">
                                 <label class="form-label" for="appointments[0][contact]">Contact No.</label>
-                                <input class="form-control" type="tel" name="contact" value="{{ $user->phone }}" required id="phone">
+                                <input class="form-control" type="tel" name="appointments[0][contact]" value="{{ $user->phone }}" required id="phone">
                             </div>
 
                             <div class="form-group w-50">
                                 <label class="form-label" for="appointments[0][sex]">Sexuality</label>
-                                <select class="form-select" name="sex" id="sex">
+                                <select class="form-select" name="appointments[0][sex]" id="sex">
                                     <option selected disabled>-- Select --</option>
                                     <option value="0" @selected($user->gender == 0)>Male</option>
                                     <option value="1" @selected($user->gender == 1)>Female</option>
@@ -137,20 +137,19 @@
 
                         <div class="form-group visually-hidden" id="birthdate">
                             <label class="form-label" for="birthdate">Birthdate</label>
-                            <input class="form-control" type="date" name="birthdate">
+                            <input class="form-control" type="date" name="appointments[0][birthdate]">
                         </div>
 
                         <div class="form-group mb-2">
                             <label class="form-label" for="appointments[0][service]">Type of Service</label>
-
                             <div class="input-group">
-                                <select class="form-select" name="service" required>
+                                <select class="form-select" name="appointments[0][service]" required>
                                     <option selected disabled>-- Select --</option>
                                     @foreach ($availables as $available)
                                         <option value="{{ $available->service->id }}">{{ $available->service->name }}</option>
                                     @endforeach
                                 </select>
-                                <input class="form-control" type="text" id="schedule" name="time" placeholder="Select a date">
+                                <input class="form-control" type="text" id="schedule" name="appointments[0][time]" placeholder="Select a date">
                             </div>
 
                             @php
@@ -179,11 +178,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="dentist">Dentist</label>
-                            <select class="form-select" name="dentist" required>
+                            <label class="form-label" for="appointments[0][dentist]">Dentist</label>
+                            <select class="form-select" name="appointments[0][dentist]" required>
                                 <option selected disabled>-- Select Dentist --</option>
                                 <option value="0">Any</option>
-                                
                                 @foreach ($assign as $assi)
                                     <option value="{{ $assi->user->id }}">{{ $assi->user->fname }}</option>
                                 @endforeach
@@ -198,7 +196,7 @@
                         Add Person
                     </button>
                 </div>
-                
+                            
                 <div class="form-check mb-2">
                     <input class="form-check-input" type="checkbox" name="terms" required>
                     <label class="form-check-label" for="terms">By checking this box you agree to share your medical history with all clinic branches</label>
@@ -264,12 +262,21 @@
                 }
             }
 
-            function add_patient () {
+            function add_patient() {
                 const box = document.getElementById('patient-box');
                 const clone = box.cloneNode(true);
+                const patientCount = document.querySelectorAll('.box').length;
 
-                clone.id = 'patient-box' + (document.querySelector('.box').length + 1);
+                clone.id = 'patient-box' + patientCount;
+                const inputs = clone.querySelectorAll('input, select');
+                inputs.forEach(input => {
+                    const name = input.name.replace(/\[0\]/, `[${patientCount}]`);
+                    input.name = name;
+                    input.id = name;
+                });
+
                 document.getElementById('patient-list').appendChild(clone);
+                document.getElementById('btn-add').style.display = 'flex';
             }
 
             function delete_patient (button) {
