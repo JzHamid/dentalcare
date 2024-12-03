@@ -1030,8 +1030,11 @@
                     $('#fnamee').val(data.user.fname);
                     $('#mnamee').val(data.user.mname);
                     $('#lnamee').val(data.user.lname);
-                    $('#birthdatee').val((data.user.birthdate).);
-                    $('#sexe').val(data.user.sex);
+                    
+                    const birthdate = new Date(data.user.birthdate).toISOString().split('T')[0];
+                    $('#birthdatee').val(birthdate);
+
+                    $('#sexe').val(data.user.gender);
                     $('#phonee').val(data.user.phone);
                     $('#emaile').val(data.user.email);
                     $('#addresse').val(data.user.address);
