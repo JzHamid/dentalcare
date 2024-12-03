@@ -355,7 +355,7 @@ class AdminController extends Controller
         $appointment->status = $request->status;
         $appointment->save();
 
-        return view('record')->with(['appointments' => $allappoints]);
+        return view('record')->with(['appointment' => $appointment]);
     }
 
     public function record_user ($id) {
