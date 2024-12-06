@@ -421,6 +421,12 @@
                         @csrf
 
                         <div class="form-group">
+                            <img style="height: 100px; width: 100px;" name="service_thumbnail" id="service_thumbnail">
+                            <input class="visually-hidden" type="file" name="service_file" id="service_file" onchange="previewListing(this, 4)">
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('service_file').click()">Upload</button>
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label" for="service_name">Service Name</label>
                             <input class="form-control" type="text" name="service_name" required>
                         </div>
@@ -471,6 +477,12 @@
 
                     <form class="modal-body d-flex flex-column gap-2" method="post" id="edit-service-form">
                         @csrf
+
+                        <div class="form-group">
+                            <img style="height: 100px; width: 100px;" name="eservice_thumbnail" id="eservice_thumbnail">
+                            <input class="visually-hidden" type="file" name="eservice_file" id="eservice_file" onchange="previewListing(this, 5)">
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('service_file').click()">Upload</button>
+                        </div>
 
                         <div class="form-group">
                             <label class="form-label" for="eservice_name">Service Name</label>
@@ -984,6 +996,8 @@
                             previewer = document.getElementById('vlisting-thumbnail-img');
                         } else if (type == 3) {
                             previewer = document.getElementById('profile-img');
+                        } else if (type == 4) {
+                            previewer = document.getElementById('service_thumbnail');
                         }
 
                         previewer.src = e.target.result;

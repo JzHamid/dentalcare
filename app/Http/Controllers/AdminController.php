@@ -21,7 +21,11 @@ class AdminController extends Controller
     public function create_service (Request $request) {
         $service = new Service();
 
-
+        if ($request->hasFile('service_file')) {
+            $file = $request->file('service_file');
+            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
+            $service->image_path = $path;
+        }
 
         $service->name = $request->service_name;
         $service->description = $request->service_description;
@@ -34,11 +38,21 @@ class AdminController extends Controller
         $service->price_end = $request->service_price_end;
         $service->save();
 
-        return redirect('/superadmin')->with(['page' => 3]);
+        if (Auth::user()->status == 3) {
+            return redirect('/superadmin')->with(['page' => 2]);
+        } else {
+            return redirect('/admin')->with(['page' => 3]);
+        }
     }
 
     public function edit_service (Request $request, $id) {
         $service = Service::find($id);
+
+        if ($request->hasFile('eservice_file')) {
+            $file = $request->file('eservice_file');
+            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
+            $service->image_path = $path;
+        }
 
         $service->name = $request->eservice_name;
         $service->description = $request->eservice_description;

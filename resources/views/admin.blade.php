@@ -310,10 +310,10 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                         <h5 class="m-0">List of Services</h5>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-service">
+                        <!-- <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-service">
                             <i class="bi-plus-lg"></i>
                             Add
-                        </button>
+                        </button> -->
                     </div>
 
                     <table class="table table-bordered">
@@ -392,12 +392,12 @@
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                         <h5 class="m-0">Current Listings</h5>
 
-                        <div class="d-flex">
+                        <!-- <div class="d-flex">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-listing">
                                 <i class="bi-plus-lg"></i>
                                 Add
                             </button>
-                        </div>
+                        </div> -->
                     </div>
 
                     <table class="table table-bordered">
@@ -596,7 +596,7 @@
                         @csrf
 
                         <div class="form-group">
-                            <img style="height: 100px; width: 100px;" id="service_thumbnail">
+                            <img style="height: 100px; width: 100px;" name="service_thumbnail" id="service_thumbnail">
                             <input class="visually-hidden" type="file" name="service_file" id="service_file" onchange="previewListing(this, 4)">
                             <button type="button" class="btn btn-primary" onclick="document.getElementById('service_file').click()">Upload</button>
                         </div>
@@ -652,6 +652,12 @@
 
                     <form class="modal-body d-flex flex-column gap-2" method="post" id="edit-service-form">
                         @csrf
+
+                        <div class="form-group">
+                            <img style="height: 100px; width: 100px;" name="eservice_thumbnail" id="eservice_thumbnail">
+                            <input class="visually-hidden" type="file" name="eservice_file" id="eservice_file" onchange="previewListing(this, 5)">
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('service_file').click()">Upload</button>
+                        </div>
 
                         <div class="form-group">
                             <label class="form-label" for="eservice_name">Service Name</label>
@@ -1092,6 +1098,7 @@
                 }).then(response => {
                     return response.json();
                 }).then(data => {
+                    $('#eservice_file').attr('src', '/storage/' + data.service.image_path)
                     $('#edit-service-form').attr('action', `/edit-service/${data.service.id}`);
                     $('#eservice-name').val(data.service.name);
                     $('#eservice-description').text(data.service.description);
