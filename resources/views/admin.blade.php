@@ -999,7 +999,7 @@
                             <select class="form-select" name="collab-position" required>
                                 <option value="0" selected disabled>-- Select --</option>
                                 <option value="1">Secretary</option>
-                                <option value="2">Dentist</option>
+                                <!-- <option value="2">Dentist</option> -->
                             </select>
                         </div>
                     </form>
@@ -1028,7 +1028,7 @@
                             <select class="form-select" name="ecollab-position" id="ecollab-position">
                                 <option selected disabled>-- Select --</option>
                                 <option value="1">Secretary</option>
-                                <option value="2">Dentist</option>
+                                <!-- <option value="2">Dentist</option> -->
                             </select>
                         </div>
                     </form>
