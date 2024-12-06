@@ -596,6 +596,12 @@
                         @csrf
 
                         <div class="form-group">
+                            <img style="height: 100px; width: 100px;" id="service_thumbnail">
+                            <input class="visually-hidden" type="file" name="service_file" id="service_file" onchange="previewListing(this, 4)">
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('service_file').click()">Upload</button>
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label" for="service_name">Service Name</label>
                             <input class="form-control" type="text" name="service_name" required>
                         </div>
@@ -1162,6 +1168,8 @@
                             previewer = document.getElementById('vlisting-thumbnail-img');
                         } else if (type == 3) {
                             previewer = document.getElementById('profile-img');
+                        } else if (type == 4) {
+                            previewer = document.getElementById('service_thumbnail');
                         }
 
                         previewer.src = e.target.result;

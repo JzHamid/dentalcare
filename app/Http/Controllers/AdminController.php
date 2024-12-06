@@ -21,6 +21,8 @@ class AdminController extends Controller
     public function create_service (Request $request) {
         $service = new Service();
 
+
+
         $service->name = $request->service_name;
         $service->description = $request->service_description;
 
@@ -290,10 +292,10 @@ class AdminController extends Controller
             $appointment = new Appointments();
 
             $appointment->user_id = Auth::user()->id;
-            $appointment->service_id = Service::where('id', $request->service)->first()->id;
+            $appointment->service_id = Service::where('id', $request->appointments[0]['service'])->first()->id;
             $appointment->listing_id = Listing::where('id', $id)->first()->id;
-            $appointment->appointment_time = $request->time;
-            $appointment->dentist_id = $request->dentist;
+            $appointment->appointment_time = $request->appointments[0]['time'];
+            $appointment->dentist_id = $request->appointments[0]['dentist'];
             $appointment->status = 'Pending';
 
             if ($request->whofor == 1) {

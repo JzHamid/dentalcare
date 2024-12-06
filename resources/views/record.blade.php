@@ -86,13 +86,13 @@
                                 <input type="hidden" name="status" id="status">
                             </form>
                         @elseif ($appointment->status == 'Upcoming')
-                            <div class="input-group">
+                            <form class="input-group" action="{{ route('update.status', $appointment->id) }}" method="post" id="status-form">
                                 <select class="form-select" name="status">
                                     <option value="0">Pending</option>
                                     <option value="1">Done</option>
                                 </select>
                                 <button class="btn btn-primary">Update</button>
-                            </div>
+                            </form>
                         @endif
                     </div>
                 </div>

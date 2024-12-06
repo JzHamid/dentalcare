@@ -262,7 +262,7 @@
                                 <div class="d-flex gap-3">
                                     <input class="visually-hidden" type="file" name="profile" onchange="previewThumbnail(this)" id="profile">
                                     <button class="btn btn-primary btn-sm" type="button" onclick="document.getElementById('profile').click()">Upload</button>
-                                    <button class="btn btn-danger btn-sm" type="button">Remove</button>
+                                    <button class="btn btn-danger btn-sm" type="button" onclick="">Remove</button>
                                 </div>
                                 <p class="mt-auto mb-0">Your image should be below 4MB</p>
                             </div>
@@ -325,13 +325,15 @@
 
         <!-- Add Health Record -->
         <div class="modal fade" data-bs-backdrop="static" id="create-record" tabindex="-1">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">Add Health Record</h5>
                     </div>
 
-                    <form class="modal-body" id="add-record-form">
+                    <form class="modal-body" id="add-record-form" method="" action="">
+                        @csrf
+
                         
                     </for>
 
@@ -366,6 +368,10 @@
 
                     reader.readAsDataURL(file);
                 }
+            }
+
+            function clearThumbnail () {
+
             }
         </script>
     </body>
