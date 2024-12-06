@@ -201,6 +201,9 @@
                                             @case ('Upcoming')
                                                 <span class="badge text-bg-success">Upcoming</span>
                                                 @break
+                                            @case ('Rescheduled')
+                                                <span class="badge text-bg-info">Rescheduled</span>
+                                                @break
                                         @endswitch
                                     </td>
                                     <td class="d-flex justify-content-center">

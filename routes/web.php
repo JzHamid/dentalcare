@@ -20,6 +20,7 @@ Route::post('/reset-password', [PageController::class]);
 
 // Appointment
 Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
+Route::post('/reschedule-appointment/{id}', [AdminController::class, 'reschedule_appointment'])->name('reschedule.appointment')->middleware(['auth']);
 
 Route::group(['middleware' => 'auth', 'admin'], function() {
     Route::get('/admin', [PageController::class, 'admin'])->name('admin');

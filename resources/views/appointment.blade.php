@@ -89,7 +89,7 @@
                     <select class="form-select" name="whofor" id="whofor" onchange="show_button()" required>
                         <option value="0">For Myself</option>
                         <option value="1">For Others</option>
-                        <option value="2">For Multiple People</option>
+                        <option value="2" disabled>For Multiple People</option>
                     </select>
                 </div>
 

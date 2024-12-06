@@ -122,8 +122,42 @@
                         <div class="container-fluid d-flex flex-column p-0 gap-2 h-100">
                             <div class="form-group">
                                 <label class="form-label" for="schedule">Schedule</label>
-                                <input class="form-control" type="date" name="schedule" value="{{ Carbon\Carbon::parse($appointment->appointment_time)->format('Y-m-d') }}" disabled>
+                                <form class="input-group" action="{{ route('reschedule.appointment', $appointment->id) }}" method="post">
+                                    @csrf
+
+                                    <input 
+                                    class="form-control" 
+                                    type="datetime-local" 
+                                    name="schedule" 
+                                    id="schedule" 
+                                    value="{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('Y-m-d\TH:i') }}">
+                                    <button class="btn btn-primary">Reschedule</button>
+                                </form>
                             </div>
+
+                            @php
+                                $availableDays = $schedules->pluck('day')->map(function ($day) {
+                                    return strtolower($day);
+                                })->toArray();
+                            @endphp
+
+                            <script>
+                                flatpickr('#schedule', {
+                                    dateFormat: 'Y-m-d H:i',
+                                    enableTime: true,
+                                    enable: [
+                                        function (date) {
+                                            const allowedDays = @json($availableDays);
+                                            const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                                            const dayName = dayNames[date.getDay()];
+
+                                            return allowedDays.includes(dayName);
+                                        }
+                                    ],
+                                    minDate: 'today',
+                                    maxDate: new Date(new Date().getFullYear(), 11, 31),
+                                });
+                            </script>
 
                             <div class="form-group">
                                 <label class="form-label" for="dentist">Dentist</label>

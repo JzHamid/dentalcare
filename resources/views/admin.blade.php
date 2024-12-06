@@ -190,7 +190,7 @@
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-column">
                                     <img src="{{ asset('images/patient_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
-                                    <p class="lead text-center m-0">Patients</p>
+                                    <p class="lead text-center m-0">End-Users</p>
                                 </div>
 
                                 <p class="display-5">{{ $users->count() }}</p>
