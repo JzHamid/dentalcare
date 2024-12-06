@@ -80,7 +80,10 @@
             <a class="btn btn-secondary" href="{{ '/user-profile' }}">Return</a>
             
             <div class="d-flex flex-column mx-auto w-75 gap-3">
-                <h3>Patient Info</h3>
+                <div class="d-flex justify-content-between">
+                    <h3>Patient Info</h3>
+                    <button class="btn btn-danger">Cancel Appointment</button>
+                </div>
 
                 <div class="d-flex rounded shadow p-4 gap-4">
                     <div class="d-flex flex-column gap-1">

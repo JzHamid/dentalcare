@@ -208,7 +208,7 @@
                                             $temp = json_decode($appointment->temporary, true);
                                         @endphp
                                         
-                                        <td></td>
+                                        <td>{{ ($temp['fname'] ?? 'N/A') . ' ' . ($temp['mname'] ?? 'N/A') . ' ' . ($temp['fname'] ?? 'N/A') }}</td>
                                     @else
                                         <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                                     @endif
