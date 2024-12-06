@@ -417,7 +417,7 @@
                         <h5 class="modal-title">Create Service</h5>
                     </div>
 
-                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.service') }}" method="post" id="create-service">
+                    <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.service') }}" method="post" id="create-service" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group">
@@ -475,13 +475,13 @@
                         <h5 class="modal-title">Edit Service</h5>
                     </div>
 
-                    <form class="modal-body d-flex flex-column gap-2" method="post" id="edit-service-form">
+                    <form class="modal-body d-flex flex-column gap-2" method="post" id="edit-service-form" enctype="multipart/form-data">
                         @csrf
 
                         <div class="form-group">
                             <img style="height: 100px; width: 100px;" name="eservice_thumbnail" id="eservice_thumbnail">
                             <input class="visually-hidden" type="file" name="eservice_file" id="eservice_file" onchange="previewListing(this, 5)">
-                            <button type="button" class="btn btn-primary" onclick="document.getElementById('service_file').click()">Upload</button>
+                            <button type="button" class="btn btn-primary" onclick="document.getElementById('eservice_file').click()">Upload</button>
                         </div>
 
                         <div class="form-group">
@@ -998,6 +998,8 @@
                             previewer = document.getElementById('profile-img');
                         } else if (type == 4) {
                             previewer = document.getElementById('service_thumbnail');
+                        } else if (type == 5) {
+                            previewer = document.getElementById('eservice_thumbnail');
                         }
 
                         previewer.src = e.target.result;
@@ -1018,6 +1020,7 @@
                     return response.json();
                 }).then(data => {
                     $('#edit-service-form').attr('action', `/edit-service/${data.service.id}`);
+                    $('#eservice_thumbnail').attr('src', '/storage/' + data.service.image_path);
                     $('#eservice-name').val(data.service.name);
                     $('#eservice-description').text(data.service.description);
 

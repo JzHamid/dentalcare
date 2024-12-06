@@ -65,7 +65,11 @@ class AdminController extends Controller
         $service->price_end = $request->eservice_price_end;
         $service->save();
 
-        return redirect('/admin')->with(['page' => 3]); 
+        if (Auth::user()->status == 3) {
+            return redirect('/superadmin')->with(['page' => 2]);
+        } else {
+            return redirect('/admin')->with(['page' => 3]);
+        }
     }
 
     public function get_service ($id) {
