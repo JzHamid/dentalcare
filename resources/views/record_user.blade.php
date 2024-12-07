@@ -164,7 +164,7 @@
 
                             <div class="form-group">
                                 <label class="form-label" for="dentist">Dentist</label>
-                                <input class="form-control" type="text" name="dentist" value="{{ $dentist->fname }}" disabled>
+                                <input class="form-control" type="text" name="dentist" value="{{ $dentist->fname ?? 'Any' }}" disabled>
                             </div>
 
                             <div class="form-group">

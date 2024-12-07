@@ -201,7 +201,7 @@
                         <tbody>
                             @foreach ($appointments as $appointment)
                                 <tr>
-                                    <td>{{ $appointment->dentist->fname . ' ' . $appointment->dentist->mname . ' ' . $appointment->dentist->lname }}</td>
+                                    <td>{{ ($appointment->dentist->fname ?? '') . ' ' . ($appointment->dentist->mname ?? '') . ' ' . ($appointment->dentist->lname ?? '') }}</td>
                                         
                                     @if ($appointment->temporary)
                                         @php
