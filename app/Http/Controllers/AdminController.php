@@ -375,7 +375,11 @@ class AdminController extends Controller
         $appointment->status = $request->status;
         $appointment->save();
 
-        return view('record')->with(['appointment' => $appointment]);
+        if (Auth::user()->status) {
+            return view('record')->with(['appointment' => $appointment]);
+        } else {
+            return redirect('/user-record/' . $id);
+        }
     }
 
     public function record_user ($id) {
