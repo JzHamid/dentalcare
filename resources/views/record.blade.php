@@ -87,11 +87,14 @@
                             </form>
                         @elseif ($appointment->status == 'Upcoming')
                             <form class="input-group" action="{{ route('update.status', $appointment->id) }}" method="post" id="status-form">
+                                @csrf
+
                                 <select class="form-select" name="status">
-                                    <option value="0">Pending</option>
-                                    <option value="1">Done</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Done">Done</option>
                                 </select>
-                                <button class="btn btn-primary">Update</button>
+                                
+                                <button class="btn btn-primary" type="submit">Update</button>
                             </form>
                         @endif
                     </div>

@@ -98,7 +98,7 @@
                                 $temp = json_decode($appointment->temporary, true);
                             @endphp
 
-                            <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ $temp['fname'] . ' ' . $temp['mname'] . ' ' . $temp['lname'] }}</p>
+                            <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ ($temp['fname'] ?? '') . ' ' . ($temp['mname'] ?? '') . ' ' . ($temp['lname'] ?? '') }}</p>
                             <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ Carbon\Carbon::parse($temp['birth'])->format('F j, Y') }}</p>
                             <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $temp['email'] }}</p>
                             <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $temp['phone'] }}</p>

@@ -40,9 +40,9 @@ class PageController extends Controller
 
     public function admin () {
         $log = Auth::user();
-        $appointments = Appointments::all();
         $services = Service::all();
         $assign = Assign::where('user_id', $log->id)->get();
+        $appointments = Appointments::where('dentist_id', $assign->user_id)->get();
 
         $users = User::all();
 
