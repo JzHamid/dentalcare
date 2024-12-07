@@ -290,10 +290,13 @@
                                                 <span class="badge text-bg-primary">Pending</span>
                                                 @break
                                             @case ('Upcoming')
-                                                <span class="badge text-bg-success">Upcoming</span>
+                                                <span class="badge text-bg-warning text-white">Upcoming</span>
                                                 @break
                                             @case ('Cancelled')
                                                 <span class="badge text-bg-danger">Cancelled</span>
+                                                @break
+                                            @case ('Done')
+                                                <span class="badge text-bg-success">Done</span>
                                                 @break
                                         @endswitch
                                     </td>

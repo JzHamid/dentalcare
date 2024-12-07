@@ -89,13 +89,13 @@
             </div>
         </div>
 
-        <div class="container-fluid" id="services">
+        <div class="container-fluid bg-light p-5 mb-5" id="services">
             <h1 class="text-default text-center mb-5">SERVICES</h1>
 
             @foreach ($services->chunk(3) as $serviceRow)
                 <div class="row d-flex px-5 mb-5 justify-content-center gap-5">
                     @foreach ($serviceRow as $service)
-                        <div class="col-md-3 rounded shadow-sm p-4 gap-3 d-flex flex-column">
+                        <div class="col-md-3 rounded shadow p-4 gap-3 d-flex flex-column bg-white">
                             <img style="height: 200px;" class="img-fluid" src="{{ asset('storage/' . $service->image_path) }}">
                             <h5 class="text-center">{{ $service->name }}</h5>
                             <p style="text-align: justify;">{{ $service->description }}</p>
