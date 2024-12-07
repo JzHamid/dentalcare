@@ -298,6 +298,9 @@
                                             @case ('Done')
                                                 <span class="badge text-bg-success">Done</span>
                                                 @break
+                                            @case ('Rescheduled')
+                                                <span class="badge text-bg-info text-white">Rescheduled</span>
+                                                @break
                                         @endswitch
                                     </td>
                                     <td class="d-flex justify-content-center">
