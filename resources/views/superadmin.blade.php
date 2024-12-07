@@ -204,6 +204,9 @@
                                             @case ('Rescheduled')
                                                 <span class="badge text-bg-info">Rescheduled</span>
                                                 @break
+                                            @case ('Cancelled')
+                                                <span class="badge text-bg-danger">Cancelled</span>
+                                                @break
                                         @endswitch
                                     </td>
                                     <td class="d-flex justify-content-center">

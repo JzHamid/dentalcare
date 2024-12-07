@@ -80,10 +80,16 @@
             <a class="btn btn-secondary" href="{{ '/user-profile' }}">Return</a>
             
             <div class="d-flex flex-column mx-auto w-75 gap-3">
-                <div class="d-flex justify-content-between">
+                <form class="d-flex justify-content-between" action="{{ route('update.status', $appointment->id) }}" method="post">
+                    @csrf
                     <h3>Patient Info</h3>
-                    <button class="btn btn-danger">Cancel Appointment</button>
-                </div>
+
+                    @if ($appointment->status != 'Cancelled')
+                        <button class="btn btn-danger">Cancel Appointment</button>
+                    @endif
+
+                    <input type="hidden" name="status" value="Cancelled">
+                </form>
 
                 <div class="d-flex rounded shadow p-4 gap-4">
                     <div class="d-flex flex-column gap-1">

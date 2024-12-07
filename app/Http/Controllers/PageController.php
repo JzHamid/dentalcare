@@ -26,7 +26,10 @@ class PageController extends Controller
 
     public function user () {
         $user = Auth::user();
-        $appointments = Appointments::where(['user_id' => $user->id])->get();
+        $appointments = Appointments::where([
+            ['user_id', '=', $user->id],
+            ['status', '!=', 'Cancelled']
+        ])->get();
 
         if ($user->status == 0) {
             return view('user')->with(['logged' => true, 'user' => $user, 'appointments' => $appointments]);
