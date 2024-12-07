@@ -84,8 +84,8 @@
                 </for>
             </div>
 
-            <div class="col">
-                <img src="{{ asset('images/side_pic_landing.jpg') }}" style="box-sizing: cover;" alt="Responsive image">
+            <div class="col mt-5 p-4">
+                <img src="{{ asset('images/side_pic_landing.jpg') }}" style="box-sizing: cover; height: 500px;" alt="Responsive image">
             </div>
         </div>
 
