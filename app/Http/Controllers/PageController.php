@@ -42,7 +42,7 @@ class PageController extends Controller
         $log = Auth::user();
         $services = Service::all();
         $assign = Assign::where('user_id', $log->id)->get();
-        $appointments = Appointments::where('listing_id', $assign->clinic_id)->get();
+        $appointments = Appointments::where('dentist_id', $assign->user_id)->get();
 
         $users = User::all();
 
