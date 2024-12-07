@@ -96,7 +96,7 @@
                 <div class="row d-flex px-5 mb-5 justify-content-center gap-5">
                     @foreach ($serviceRow as $service)
                         <div class="col-md-3 rounded shadow-sm p-4 gap-3 d-flex flex-column">
-                            <img style="height: 200px;" class="img-fluid" src="{{ asset('storage/' . $service->image_path) }}">
+                            <img style="height: 250px;" class="img-fluid" src="{{ asset('storage/' . $service->image_path) }}">
                             <h5 class="text-center">{{ $service->name }}</h5>
                             <p style="text-align: justify;">{{ $service->description }}</p>
                         </div>
@@ -110,25 +110,25 @@
 
             <div class="row d-flex px-5 gap-3">
                 <div class="col rounded shadow-sm p-4">
-                    <img style="height: 200px;">
+                    <img style="height: 250px;" class="img-fluid" src="{{ asset('storage/' . $service->image_path) }}">
                     <h5 class="text-center">Comprehensive Access</h5>
                     <p style="text-align: justify;">We connect you to a wide range of trusted dental clinics in downtown Zamboanga City. Whether you're looking for routine cleaning, orthodontics, or specialized treatments, you'll find the right clinic with just a few clicks</p>
                 </div>
 
                 <div class="col rounded shadow-sm p-4">
-                    <img style="height: 200px;">
+                    <img style="height: 250px;" class="img-fluid" src="{{ asset('storage/' . $service->image_path) }}">
                     <h5 class="text-center">Realtime Availability</h5>
                     <p style="text-align: justify;">With our seamless booking system, you can see real-time appointment availability for each clinic. No need to call multiple places—schedule an appointment whenever it’s convenient for you, instantly.</p>
                 </div>
 
                 <div class="col rounded shadow-sm p-4">
-                    <img style="height: 200px;">
+                    <img style="height: 250px;" class="img-fluid" src="{{ asset('storage/' . $service->image_path) }}">
                     <h5 class="text-center">Price Transparency</h5>
                     <p style="text-align: justify;">Compare prices across clinics before making a decision. We provide upfront information on costs for services like cleaning, fillings, crowns, and more, so there are no surprises when it comes time to pay.</p>
                 </div>
 
                 <div class="col rounded shadow-sm p-4">
-                    <img style="height: 200px;">
+                    <img style="height: 250px;" class="img-fluid" src="{{ asset('storage/' . $service->image_path) }}">
                     <h5 class="text-center">Tailored For You</h5>
                     <p style="text-align: justify;">Whether you're booking for yourself, a family member, or even multiple people at once, our platform makes it easy to manage all your appointments in one place.</p>
                 </div>
