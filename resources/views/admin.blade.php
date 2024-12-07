@@ -292,6 +292,9 @@
                                             @case ('Upcoming')
                                                 <span class="badge text-bg-success">Upcoming</span>
                                                 @break
+                                            @case ('Cancelled')
+                                                <span class="badge text-bg-danger">Cancelled</span>
+                                                @break
                                         @endswitch
                                     </td>
                                     <td class="d-flex justify-content-center">
