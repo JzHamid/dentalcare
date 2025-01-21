@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('address');
-            $table->timestamp('birthdate');
+            $table->timestamp('birthdate')->nullable();
             $table->string('phone');
             $table->mediumText('note')->nullable();
             $table->string('image_path')->nullable();
