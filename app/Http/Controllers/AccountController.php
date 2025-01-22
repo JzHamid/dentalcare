@@ -109,7 +109,6 @@ class AccountController extends Controller
         $user->gender = $request->gender;
         $user->phone = $request->phone;
         $user->email = $request->email;
-        $user->address = $request->location;
 
         $user->save();
 
