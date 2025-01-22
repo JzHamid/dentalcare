@@ -82,10 +82,8 @@ class AccountController extends Controller
 
     public function update(Request $request)
     {
-        // Find the currently authenticated user
         $user = User::find(Auth::user()->id);
 
-        // Validate the request
         $request->validate([
             'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',
             'street_name' => 'required|string|max:255',
@@ -94,29 +92,22 @@ class AccountController extends Controller
             'postal_code' => 'required|string|max:10',
         ]);
 
-        // Check if the profile image is uploaded
         if ($request->hasFile('profile')) {
             $file = $request->file('profile');
 
-            // Create a unique filename to avoid conflicts
             $filename = time() . '_' . $file->getClientOriginalName();
 
-            // Define the destination path for the file inside the public folder
             $destinationPath = public_path('profile_images');
 
-            // Ensure the directory exists
             if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true); // Create the directory if it doesn't exist
+                mkdir($destinationPath, 0777, true);
             }
 
-            // Move the file to the specified directory
             $file->move($destinationPath, $filename);
 
-            // Save the image path in the database
             $user->image_path = 'profile_images/' . $filename;
         }
 
-        // Update the other fields
         $user->street_name = $request->street_name;
         $user->city = $request->city;
         $user->province = $request->province;
@@ -130,10 +121,8 @@ class AccountController extends Controller
         $user->phone = $request->phone;
         $user->email = $request->email;
 
-        // Save the updated user information
         $user->save();
 
-        // Redirect based on user status
         if (Auth::user()->status == 0) {
             return redirect('/user-profile')->with(['page' => 4]);
         } else {

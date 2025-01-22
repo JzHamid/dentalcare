@@ -485,7 +485,7 @@
                         @csrf
 
                         <div class="form-group">
-                            <img style="height: 100px; width: 100px;" name="eservice_thumbnail" id="eservice_thumbnail">
+                            <img src="{{ isset($service) && $service->image_path ? asset($service->image_path) : asset('images/default.png') }}" alt="Service Image"  style="height: 100px; width: 100px;" name="eservice_thumbnail" id="eservice_thumbnail">
                             <input class="visually-hidden" type="file" name="eservice_file" id="eservice_file" onchange="previewListing(this, 5)">
                             <button type="button" class="btn btn-primary" onclick="document.getElementById('eservice_file').click()">Upload</button>
                         </div>
@@ -1026,7 +1026,7 @@
                     return response.json();
                 }).then(data => {
                     $('#edit-service-form').attr('action', `/edit-service/${data.service.id}`);
-                    $('#eservice_thumbnail').attr('src', '/storage/' + data.service.image_path);
+                    $('#eservice_thumbnail').attr('src', '/' + data.service.image_path);
                     $('#eservice-name').val(data.service.name);
                     $('#eservice-description').text(data.service.description);
 
@@ -1076,7 +1076,7 @@
                 }).then(data => {
                     $('#view-listing-form').attr('action', `/edit-listing/${data.listing.id}`);
 
-                    $('#vlisting-thumbnail-img').attr('src', '/storage/' + data.listing.image_path);
+                    $('#vlisting-thumbnail-img').attr('src', '/' + data.listing.image_path);
                     $('#vlisting-name').val(data.listing.name);
                     $('#vlisting-email').val(data.listing.email);
                     $('#vlisting-contact').val(data.listing.contact);

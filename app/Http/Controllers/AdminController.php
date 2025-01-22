@@ -15,16 +15,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Psy\Command\WhereamiCommand;
 use Ramsey\Uuid\Type\Integer;
+use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
-    public function create_service (Request $request) {
+    public function create_service(Request $request)
+    {
         $service = new Service();
 
         if ($request->hasFile('service_file')) {
             $file = $request->file('service_file');
-            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
-            $service->image_path = $path;
+
+            $destinationPath = public_path('services_image');
+
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true, true);
+            }
+
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $file->move($destinationPath, $filename);
+
+            $service->image_path = 'services_image/' . $filename;
         }
 
         $service->name = $request->service_name;
@@ -45,14 +57,9 @@ class AdminController extends Controller
         }
     }
 
-    public function edit_service (Request $request, $id) {
+    public function edit_service(Request $request, $id)
+    {
         $service = Service::find($id);
-
-        if ($request->hasFile('eservice_file')) {
-            $file = $request->file('eservice_file');
-            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
-            $service->image_path = $path;
-        }
 
         $service->name = $request->eservice_name;
         $service->description = $request->eservice_description;
@@ -63,6 +70,22 @@ class AdminController extends Controller
 
         $service->price_start = $request->eservice_price_start;
         $service->price_end = $request->eservice_price_end;
+
+        if ($request->hasFile('eservice_file')) {
+            $file = $request->file('eservice_file');
+            $destinationPath = public_path('services_image');
+
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true, true);
+            }
+
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $file->move($destinationPath, $filename);
+
+            $service->image_path = 'services_image/' . $filename;
+        }
+
         $service->save();
 
         if (Auth::user()->status == 3) {
@@ -72,19 +95,22 @@ class AdminController extends Controller
         }
     }
 
-    public function get_service ($id) {
+    public function get_service($id)
+    {
         $service = Service::find($id);
 
         return response()->json(['service' => $service]);
     }
 
-    public function delete_service ($id) {
+    public function delete_service($id)
+    {
         Service::where('id', $id)->delete();
 
-        return redirect('/admin')->with(['page' => 3]);
+        return redirect('/superadmin')->with(['page' => 3]);
     }
 
-    public function create_dentist (Request $request) {
+    public function create_dentist(Request $request)
+    {
         $validData = $request->validate([
             'fnamed' => 'required|string|max:255',
             'mnamed' => 'nullable|string|max:255',
@@ -115,13 +141,15 @@ class AdminController extends Controller
         return redirect('superadmin')->with(['page' => 4]);
     }
 
-    public function get_dentist ($id) {
+    public function get_dentist($id)
+    {
         $user = User::find($id);
-        
+
         return response()->json(['user' => $user]);
     }
 
-    public function create_listing (Request $request) {
+    public function create_listing(Request $request)
+    {
         $listing = new Listing();
 
         $listing->name = $request->input('listing-name');
@@ -155,7 +183,7 @@ class AdminController extends Controller
         foreach ($dentist as $dent) {
             $assign = new Assign();
             $user = User::find($dent);
-            
+
             $assign->clinic_id = $listing->id;
             $assign->user_id = $user->id;
 
@@ -185,7 +213,8 @@ class AdminController extends Controller
         }
     }
 
-    public function edit_listing (Request $request, $id) {
+    public function edit_listing(Request $request, $id)
+    {
         $listing = Listing::find($id);
         $assign = Assign::where('clinic_id', $id)->first();
 
@@ -239,11 +268,12 @@ class AdminController extends Controller
         return redirect('/superadmin')->with(['page' => 5]);
     }
 
-    public function get_listing ($id) {
+    public function get_listing($id)
+    {
         $listing = Listing::find($id);
         $available = Available::where('listing_id', $id)->first();
         $assign = Assign::where('clinic_id', $id)->first();
-        
+
         if ($available) {
             $services = $available->service_id ? Service::where('id', $available->service_id)->get() : collect();
         } else {
@@ -261,13 +291,15 @@ class AdminController extends Controller
         return response()->json(['listing' => $listing, 'services' => $services, 'schedules' => $schedule, 'assign' => $assigns]);
     }
 
-    public function delete_listing ($id) {
+    public function delete_listing($id)
+    {
         Listing::where('id', $id)->delete();
 
         return redirect('/superadmin')->with(['page' => 5]);
     }
 
-    public function create_collab (Request $request) {
+    public function create_collab(Request $request)
+    {
         $user = User::where('email', $request->input('collab-email'))->where('status', 0)->first();
 
         if ($user) {
@@ -279,23 +311,26 @@ class AdminController extends Controller
         return redirect('/admin')->with(['page' => 7]);
     }
 
-    public function edit_collab (Request $request, $id) {
+    public function edit_collab(Request $request, $id)
+    {
         $user = User::find($id);
 
         $user->status = $request->input('ecollab-position');
-        
+
         $user->save();
 
         return redirect('/admin')->with(['page' => 7]);
     }
 
-    public function get_collab ($id) {
+    public function get_collab($id)
+    {
         $user = User::find($id);
 
         return response()->json(['user' => $user]);
     }
 
-    public function remove_collab ($id) {
+    public function remove_collab($id)
+    {
         $user = User::find($id);
 
         $user->status = 0;
@@ -305,7 +340,8 @@ class AdminController extends Controller
         return redirect('/admin')->with(['page' => 7]);
     }
 
-    public function create_appointment (Request $request, $id) {
+    public function create_appointment(Request $request, $id)
+    {
         if ($request->whofor != 2) {
             $appointment = new Appointments();
 
@@ -333,7 +369,7 @@ class AdminController extends Controller
         } else {
             foreach ($request->appointments as $appointmentData) {
                 $appointment = new Appointments();
-                
+
                 $existing = User::where('fname', $appointmentData['fname'])->where('lname', $appointmentData['lname'])->first();
 
                 if ($existing) {
@@ -350,7 +386,7 @@ class AdminController extends Controller
                     $appointment->appointment_time = $appointmentData['time'];
                     $appointment->dentist_id = $appointmentData['dentist'];
                     $appointment->status = 'Pending';
-                
+
                     $appointment->temporary = json_encode([
                         'fname' => $appointmentData['fname'],
                         'mname' => $appointmentData['mname'],
@@ -360,15 +396,16 @@ class AdminController extends Controller
                         'birth' => $appointmentData['birthdate'],
                     ]);
                 }
-            
+
                 $appointment->save();
-            }            
+            }
         }
 
         return redirect('user-profile');
     }
 
-    public function appointment_status (Request $request, $id) {
+    public function appointment_status(Request $request, $id)
+    {
         $appointment = Appointments::find($id);
         $allappoints = Appointments::all();
 
@@ -382,7 +419,8 @@ class AdminController extends Controller
         }
     }
 
-    public function record_user ($id) {
+    public function record_user($id)
+    {
         $appointment = Appointments::where('id', $id)->first();
         $schedule = Schedule::where('clinic_id', $appointment->listing_id)->get();
         $dentist = User::where('id', $appointment->dentist_id)->first();
@@ -390,7 +428,8 @@ class AdminController extends Controller
         return view('record_user')->with(['appointment' => $appointment, 'dentist' => $dentist, 'schedules' => $schedule]);
     }
 
-    public function reschedule_appointment (Request $request, $id) {
+    public function reschedule_appointment(Request $request, $id)
+    {
         $appointment = Appointments::find($id);
         $appointment->rescheduled_time = $request->schedule;
         $appointment->status = 'Rescheduled';
@@ -399,7 +438,5 @@ class AdminController extends Controller
         return redirect('/user-record/' . $id);
     }
 
-    public function forget_password () {
-        
-    }
+    public function forget_password() {}
 }
