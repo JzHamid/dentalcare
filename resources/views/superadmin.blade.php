@@ -296,7 +296,7 @@
                             <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($user->birthdate)->age }}</td>
                             <td>{{ $user->email }}</td>
-                            <td>{{ $user->address }}</td>
+                            <td>{{ trim("{$user->street_name}, {$user->city}, {$user->province}", ', ') }}</td>
                             <td class="d-flex justify-content-center gap-2">
                                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-service">
                                     <i class="bi-pencil-square"></i>
