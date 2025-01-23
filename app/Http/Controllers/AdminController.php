@@ -117,6 +117,14 @@ class AdminController extends Controller
         return redirect('/superadmin')->with(['page' => 3]);
     }
 
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+    
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
     public function create_dentist(Request $request)
     {
         $validData = $request->validate([

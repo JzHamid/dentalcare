@@ -302,10 +302,11 @@
                                     <i class="bi-pencil-square"></i>
                                 </button>
 
-
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="patient-modal" data-bs-target="#delete-service">
+                                <!-- Delete Button -->
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-user" data-user-id="{{ $user->id }}">
                                     <i class="bi-trash-fill"></i>
                                 </button>
+
                             </td>
                         </tr>
                         @endforeach
@@ -555,6 +556,32 @@
             </div>
         </div>
     </div>
+
+    <!-- Delete User Modal -->
+    <div class="modal fade" data-bs-backdrop="static" id="delete-user" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete User</h5>
+                </div>
+
+                <div class="modal-body">
+                    Are you sure you want to delete this user?
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">No</button>
+                    <!-- Form for Deleting User -->
+                    <form id="delete-user-form" action="" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger w-25" type="submit">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Add Dentist -->
     <div class="modal fade" data-bs-backdrop="static" id="add-dentist" tabindex="-1">
@@ -1244,6 +1271,16 @@
         function setDeleteFormAction(action) {
             document.getElementById('delete-service-form').setAttribute('action', action);
         }
+
+        // This function is called when the trash button is clicked
+        $('#delete-user').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var userId = button.data('user-id'); // Extract the user ID from data-* attributes
+
+            // Update the form action dynamically with the correct user ID
+            var form = $(this).find('#delete-user-form');
+            form.attr('action', '/users/' + userId);
+        });
     </script>
 </body>
 
