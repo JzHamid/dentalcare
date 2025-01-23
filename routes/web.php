@@ -4,6 +4,12 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PageController;
 use Illuminate\Support\Facades\Route;
+use App\Models\User;
+
+Route::get('/users/{id}', function ($id) {
+    return response()->json(User::findOrFail($id));
+});
+Route::post('/users/update', [AdminController::class, 'update'])->name('users.update');
 
 Route::post('/create-account', [AccountController::class, 'signup'])->name('create.account');
 Route::post('/update-user', [AccountController::class, 'update'])->name('update.account');
@@ -22,7 +28,7 @@ Route::post('/reset-password', [PageController::class]);
 Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
 Route::post('/reschedule-appointment/{id}', [AdminController::class, 'reschedule_appointment'])->name('reschedule.appointment')->middleware(['auth']);
 
-Route::group(['middleware' => 'auth', 'admin'], function() {
+Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::get('/admin', [PageController::class, 'admin'])->name('admin');
 
     // Service
@@ -53,6 +59,10 @@ Route::group(['middleware' => 'auth', 'admin'], function() {
 });
 
 Route::get('/', [PageController::class, 'index'])->name('landing');
-Route::get('/login', function () {return view('login');})->name('login');
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
 Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
-Route::get('/signup', function () {return view('signup');})->name('signup');
+Route::get('/signup', function () {
+    return view('signup');
+})->name('signup');

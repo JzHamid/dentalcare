@@ -57,6 +57,14 @@ class AdminController extends Controller
         }
     }
 
+    public function update(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+        $user->update($request->all());
+
+        return redirect()->back()->with('success', 'User updated successfully.');
+    }
+
     public function edit_service(Request $request, $id)
     {
         $service = Service::find($id);

@@ -298,11 +298,12 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ trim("{$user->street_name}, {$user->city}, {$user->province}", ', ') }}</td>
                             <td class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-service">
+                                <button class="btn btn-sm btn-primary edit-button" data-id="{{ $user->id }}" data-bs-toggle="modal" data-bs-target="#edit-patient">
                                     <i class="bi-pencil-square"></i>
                                 </button>
 
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal-patients" data-bs-target="#delete-service">
+
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="patient-modal" data-bs-target="#delete-service">
                                     <i class="bi-trash-fill"></i>
                                 </button>
                             </td>
@@ -978,6 +979,106 @@
         </div>
     </div>
 
+    <!-- Patient Edit Modal -->
+    <div class="container-fluid p-0">
+        <div class="modal fade" id="edit-patient" tabindex="-1" aria-labelledby="edit-service-label" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form class="d-flex flex-column p-4 gap-3" id="edit-form" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-center w-100" id="edit-service-label">Edit Patient</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" name="id" id="edit-id">
+
+                            <!-- Profile Picture -->
+                            <div class="text-center">
+                                <img id="profile-preview"
+                                    alt="Profile Picture" class="rounded-circle mb-3" width="120" height="120">
+                                <input type="file" id="edit-profile-picture" name="profile_picture" class="form-control">
+                            </div>
+
+                            <!-- First Name - Middle Name - Last Name -->
+                            <div class="d-flex gap-2">
+                                <div class="form-group container-fluid p-0">
+                                    <label class="form-label m-0" for="edit-fname">First Name</label>
+                                    <input class="form-control" name="fname" id="edit-fname" type="text" placeholder="First Name" required>
+                                </div>
+                                <div class="form-group container-fluid p-0">
+                                    <label class="form-label m-0" for="edit-mname">Middle Name</label>
+                                    <input class="form-control" name="mname" id="edit-mname" type="text" placeholder="Middle Name">
+                                </div>
+                                <div class="form-group container-fluid p-0">
+                                    <label class="form-label m-0" for="edit-lname">Last Name</label>
+                                    <input class="form-control" name="lname" id="edit-lname" type="text" placeholder="Last Name" required>
+                                </div>
+                            </div>
+
+                            <!-- Date of Birth - Sexuality -->
+                            <div class="d-flex gap-2">
+                                <div class="form-group container-fluid p-0">
+                                    <label for="edit-birthdate" class="form-label">Date of Birth</label>
+                                    <input type="date" class="form-control" id="edit-birthdate" name="birthdate">
+                                </div>
+                                <div class="form-group container-fluid p-0">
+                                    <label class="form-label m-0" for="edit-sexuality">Sexuality</label>
+                                    <select class="form-select" name="sexuality" id="edit-sexuality" required>
+                                        <option selected disabled>-- Select --</option>
+                                        <option value="0">Male</option>
+                                        <option value="1">Female</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Contact No. - Email Address -->
+                            <div class="d-flex gap-2">
+                                <div class="form-group container-fluid p-0">
+                                    <label class="form-label m-0" for="edit-number">Contact No.</label>
+                                    <input class="form-control" name="number" id="edit-number" type="tel" placeholder="Contact No." required>
+                                </div>
+                                <div class="form-group container-fluid p-0">
+                                    <label class="form-label m-0" for="edit-email">Email Address</label>
+                                    <input class="form-control" name="email" id="edit-email" type="email" placeholder="Email Address" required>
+                                </div>
+                            </div>
+
+                            <!-- Street Name -->
+                            <div class="form-group">
+                                <label class="form-label m-0" for="edit-street">Street Name</label>
+                                <input class="form-control" name="street" id="edit-street" type="text" placeholder="Street Name" required>
+                            </div>
+
+                            <!-- Province - City -->
+                            <div class="d-flex gap-2">
+                                <div class="form-group container-fluid p-0">
+                                    <label class="form-label m-0" for="edit-province">Province</label>
+                                    <input class="form-control" name="province" id="edit-province" type="text" placeholder="Province" required>
+                                </div>
+                                <div class="form-group container-fluid p-0">
+                                    <label class="form-label m-0" for="edit-city">City</label>
+                                    <input class="form-control" name="city" id="edit-city" type="text" placeholder="City" required>
+                                </div>
+                            </div>
+
+                            <!-- Postal Code -->
+                            <div class="form-group">
+                                <label class="form-label m-0" for="edit-postal-code">Postal Code</label>
+                                <input class="form-control" name="postal_code" id="edit-postal-code" type="text" placeholder="Postal Code" required>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             switch (parseInt("{{ session('page') }}", 10)) {
@@ -1105,6 +1206,40 @@
                 $('#vlisting-about').val(data.listing.description);
             });
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.edit-button').forEach(button => {
+                button.addEventListener('click', function() {
+                    const userId = this.getAttribute('data-id');
+
+                    // Fetch user data from the server
+                    fetch(`/users/${userId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const birthdate = new Date(data.birthdate);
+                            const today = new Date();
+                            const age = today.getFullYear() - birthdate.getFullYear();
+                            const defaultImage = "..\\profile_images\\blank_profile_default.png";
+
+                            // Populate modal form fields
+                            document.getElementById('edit-id').value = data.id;
+                            document.getElementById('profile-preview').src = data.image_path ? data.image_path : defaultImage;
+                            document.getElementById('edit-fname').value = data.fname;
+                            document.getElementById('edit-mname').value = data.mname;
+                            document.getElementById('edit-lname').value = data.lname;
+                            document.getElementById('edit-birthdate').value = data.birthdate ? data.birthdate.split(' ')[0] : '';
+                            document.getElementById('edit-sexuality').value = data.gender;
+                            document.getElementById('edit-email').value = data.email;
+                            document.getElementById('edit-number').value = data.phone;
+                            document.getElementById('edit-street').value = data.street_name;
+                            document.getElementById('edit-province').value = data.province;
+                            document.getElementById('edit-city').value = data.city;
+                            document.getElementById('edit-postal-code').value = data.postal_code;
+                        })
+                        .catch(error => console.error('Error fetching user data:', error));
+                });
+            });
+        });
 
         function setDeleteFormAction(action) {
             document.getElementById('delete-service-form').setAttribute('action', action);
