@@ -348,16 +348,17 @@
                             <td></td>
                             <td>{{ $dent->email }}</td>
                             <td>{{ $dent->phone }}</td>
-                            <td>{{ $dent->address }}</td>
+                            <td>{{ trim("{$dent->street_name}, {$dent->city}, {$dent->province}", ', ') }}</td>
                             <td></td>
                             <td class="d-flex justify-content-center gap-2">
                                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-dentist" onclick="get_dentist('{{ $dent->id }}')">
                                     <i class="bi-pencil-square"></i>
                                 </button>
 
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-dentist">
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-dentist" data-user-id="{{ $dent->id }}">
                                     <i class="bi-trash-fill"></i>
                                 </button>
+
                             </td>
                         </tr>
                         @endforeach
@@ -582,6 +583,30 @@
         </div>
     </div>
 
+    <!-- Delete Dentist Modal -->
+    <div class="modal fade" data-bs-backdrop="static" id="delete-dentist" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete User</h5>
+                </div>
+
+                <div class="modal-body">
+                    Are you sure you want to delete this user?
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">No</button>
+                    <!-- Form for Deleting User -->
+                    <form id="delete-dentist-form" action="" method="POST" style="display: inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger w-25" type="submit">Yes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Add Dentist -->
     <div class="modal fade" data-bs-backdrop="static" id="add-dentist" tabindex="-1">
@@ -640,8 +665,20 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="addressd">Address</label>
-                        <input class="form-control" type="text" name="addressd">
+                        <label class="form-label" for="streetName">Street Name</label>
+                        <input class="form-control" type="text" id="streetName" name="street_named" placeholder="Enter street name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="city">City</label>
+                        <input class="form-control" type="text" id="city" name="cityd" placeholder="Enter city">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="province">Province</label>
+                        <input class="form-control" type="text" id="province" name="provinced" placeholder="Enter province">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="postalCode">Postal Code</label>
+                        <input class="form-control" type="text" id="postalCode" name="postal_coded" placeholder="Enter postal code">
                     </div>
 
                     <div class="form-group">
@@ -715,8 +752,25 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="addressd">Address</label>
-                        <input class="form-control" type="text" name="addresse" id="addresse">
+                        <label class="form-label m-0" for="edit-street">Street Name</label>
+                        <input class="form-control" name="street_namee" id="street_namee" type="text" placeholder="Street Name" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <label class="form-label m-0" for="edit-province">Province</label>
+                        <input class="form-control" name="provincee" id="provincee" type="text" placeholder="Province" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <label class="form-label m-0" for="edit-city">City</label>
+                        <input class="form-control" name="citye" id="citye" type="text" placeholder="City" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <div class="form-group">
+                            <label class="form-label m-0" for="edit-postal-code">Postal Code</label>
+                            <input class="form-control" name="postal_codee" id="postal_codee" type="text" placeholder="Postal Code" required>
+                        </div>
                     </div>
                 </form>
 
@@ -1192,7 +1246,10 @@
                 $('#sexe').val(data.user.gender);
                 $('#phonee').val(data.user.phone);
                 $('#emaile').val(data.user.email);
-                $('#addresse').val(data.user.address);
+                $('#street_namee').val(data.user.street_name);
+                $('#provincee').val(data.user.province);
+                $('#citye').val(data.user.city);
+                $('#postal_codee').val(data.user.postal_code);
             });
         }
 
@@ -1239,7 +1296,6 @@
                 button.addEventListener('click', function() {
                     const userId = this.getAttribute('data-id');
 
-                    // Fetch user data from the server
                     fetch(`/users/${userId}`)
                         .then(response => response.json())
                         .then(data => {
@@ -1248,7 +1304,6 @@
                             const age = today.getFullYear() - birthdate.getFullYear();
                             const defaultImage = "..\\profile_images\\blank_profile_default.png";
 
-                            // Populate modal form fields
                             document.getElementById('edit-id').value = data.id;
                             document.getElementById('profile-preview').src = data.image_path ? data.image_path : defaultImage;
                             document.getElementById('edit-fname').value = data.fname;
@@ -1272,14 +1327,20 @@
             document.getElementById('delete-service-form').setAttribute('action', action);
         }
 
-        // This function is called when the trash button is clicked
         $('#delete-user').on('show.bs.modal', function(event) {
-            var button = $(event.relatedTarget); // Button that triggered the modal
-            var userId = button.data('user-id'); // Extract the user ID from data-* attributes
+            var button = $(event.relatedTarget);
+            var userId = button.data('user-id');
 
-            // Update the form action dynamically with the correct user ID
             var form = $(this).find('#delete-user-form');
             form.attr('action', '/users/' + userId);
+        });
+
+        $('#delete-dentist').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var userId = button.data('user-id');
+
+            var form = $(this).find('#delete-dentist-form');
+            form.attr('action', '/dentist/' + userId);
         });
     </script>
 </body>

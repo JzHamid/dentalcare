@@ -121,7 +121,7 @@ class AdminController extends Controller
     {
         $user = User::findOrFail($id);
         $user->delete();
-    
+
         return redirect()->back()->with('success', 'User deleted successfully.');
     }
 
@@ -135,7 +135,10 @@ class AdminController extends Controller
             'sexd' => 'required',
             'phoned' => 'required|digits_between:10,15',
             'emaild' => 'required|email|unique:users,email',
-            'addressd' => 'required|string|max:255',
+            'street_named' => 'required|string|max:255',
+            'cityd' => 'required|string|max:255',
+            'provinced' => 'required|string|max:255',
+            'postal_coded' => 'required|string|max:20',
             'passwordd' => 'required|string|min:8',
         ]);
 
@@ -148,7 +151,11 @@ class AdminController extends Controller
         $user->gender = $validData['sexd'];
         $user->phone = $validData['phoned'];
         $user->email = $validData['emaild'];
-        $user->address = $validData['addressd'];
+        $user->street_name = $validData['street_named'];
+        $user->city = $validData['cityd'];
+        $user->province = $validData['provinced'];
+        $user->postal_code = $validData['postal_coded'];
+
         $user->password = bcrypt($validData['passwordd']);
         $user->status = 2;
 
@@ -156,6 +163,7 @@ class AdminController extends Controller
 
         return redirect('superadmin')->with(['page' => 4]);
     }
+
 
     public function get_dentist($id)
     {
