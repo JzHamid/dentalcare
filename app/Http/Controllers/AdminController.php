@@ -164,6 +164,48 @@ class AdminController extends Controller
         return redirect('superadmin')->with(['page' => 4]);
     }
 
+    public function update_dentist(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:users,id',
+            'fnamee' => 'required|string|max:255',
+            'mnamee' => 'nullable|string|max:255',
+            'lnamee' => 'required|string|max:255',
+            'birthdatee' => 'required|date',
+            'sexe' => 'required|integer|in:0,1',
+            'phonee' => 'required|string|max:15',
+            'emaile' => 'required|email|max:255',
+            'street_namee' => 'required|string|max:255',
+            'provincee' => 'required|string|max:255',
+            'citye' => 'required|string|max:255',
+            'postal_codee' => 'required|string|max:10',
+            'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',  // Add validation for profile image
+        ]);
+
+        $dentist = User::find($request->id);
+
+        // Update the rest of the fields
+        $dentist->fname = $request->fnamee;
+        $dentist->mname = $request->mnamee;
+        $dentist->lname = $request->lnamee;
+        $dentist->birthdate = $request->birthdatee;
+        $dentist->gender = $request->sexe;
+        $dentist->phone = $request->phonee;
+        $dentist->email = $request->emaile;
+        $dentist->street_name = $request->street_namee;
+        $dentist->province = $request->provincee;
+        $dentist->city = $request->citye;
+        $dentist->postal_code = $request->postal_codee;
+
+        // Save the changes to the user record
+        $dentist->save();
+
+        // Redirect based on status
+        return redirect('superadmin')->with(['page' => 4]);
+    }
+
+
+
 
     public function get_dentist($id)
     {

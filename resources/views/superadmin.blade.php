@@ -703,9 +703,10 @@
                     <h5 class="modal-title">Edit Dentist</h5>
                 </div>
 
-                <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.dentist') }}" method="post" id="edit-dentist-form">
+                <form class="modal-body d-flex flex-column gap-2" action="{{ route('update.dentist') }}" method="post" id="edit-dentist-form">
                     @csrf
-
+                    @method('PUT')
+                    <input type="hidden" name="id" id="dentist-id">
                     <div class="d-flex gap-2">
                         <div class="form-group container-fluid p-0">
                             <label class="form-label" for="fnamed">First Name</label>
@@ -776,7 +777,7 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('edit-dentist-form').submit()">Add</button>
+                    <button class="btn btn-primary w-25" type="button" onclick="document.getElementById('edit-dentist-form').submit()">Update</button>
                 </div>
             </div>
         </div>
@@ -1236,6 +1237,8 @@
             }).then(response => {
                 return response.json();
             }).then(data => {
+                console.log("Fetched Data:", data);
+                $('#dentist-id').val(data.user.id);
                 $('#fnamee').val(data.user.fname);
                 $('#mnamee').val(data.user.mname);
                 $('#lnamee').val(data.user.lname);

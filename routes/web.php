@@ -42,6 +42,7 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
     // Dentist
     Route::post('/create-dentist', [AdminController::class, 'create_dentist'])->name('create.dentist');
     Route::get('/get-dentist/{id}', [AdminController::class, 'get_dentist'])->name('get.dentist');
+    Route::put('/update-dentist', [AdminController::class, 'update_dentist'])->name('update.dentist');
 
     // Listing
     Route::post('/create-listing', [AdminController::class, 'create_listing'])->name('create.listing');
