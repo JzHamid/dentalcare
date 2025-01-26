@@ -76,7 +76,7 @@
     <div class="row m-0" style="height: 93%;">
         <div class="col-md-2 bg-default nav flex-column p-3 gap-2" role="tablist" aria-orientation="vertical" id="navbar">
             <div class="container-fluid d-flex flex-column align-items-center py-4">
-                <img src="{{ asset('storage/' . $user->image_path) }}" class="mb-2" style="height: 100px; width: 100px;">
+                <img src="{{ asset($user->image_path ?: 'profile_images/blank_profile_default.png') }}" class="mb-2" style="height: 100px; width: 100px;">
                 <p class="fs-5 text-center fw-medium text-white m-0 mb-2">{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</p>
 
                 <div class="text-white d-flex align-items-center p-0 gap-2">
@@ -254,9 +254,10 @@
 
                 <form class="rounded shadow p-5" action="{{ route('update.account') }}" method="post" enctype="multipart/form-data">
                     @csrf
+                    @method('POST')
 
                     <div class="border border-tertiary rounded d-flex gap-3 p-4 mb-4">
-                        <img class="border border-2 border-tertiary" src="{{ '/storage/' . $user->image_path }}" style="height: 150px; width: 150px;" id="profile-thumbnail-img">
+                        <img class="border border-2 border-tertiary" src="{{ asset($user->image_path ?: 'profile_images/blank_profile_default.png') }}" style="height: 150px; width: 150px;" id="profile-thumbnail-img">
 
                         <div class="d-flex flex-column p-0">
                             <h5>Profile Image</h5>
@@ -317,46 +318,42 @@
                         <label class="form-label" for="location">Address</label>
                         <div class="row g-2">
                             <div class="col-md-6">
+                                <label for="street_name" class="form-label">Street Name</label>
                                 <input
                                     class="form-control"
                                     type="text"
                                     name="street_name"
+                                    id="street_name"
                                     value="{{ $user->street_name }}"
                                     placeholder="Street Name">
                             </div>
                             <div class="col-md-6">
-                                <input
-                                    class="form-control"
-                                    type="text"
-                                    name="province"
-                                    value="{{ $user->province }}"
-                                    placeholder="Province">
-                            </div>
-                        </div>
-                        <div class="row g-2 mt-2">
-                            <div class="col-md-6">
-                                <input
-                                    class="form-control"
-                                    type="text"
-                                    name="city"
-                                    value="{{ $user->city }}"
-                                    placeholder="City">
+                                <label for="province" class="form-label">Province</label>
+                                <select class="form-control" id="province" name="province">
+                                    <option value="">Select Province</option>
+                                </select>
                             </div>
                             <div class="col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <select class="form-control" id="city" name="city" disabled>
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="postal_code" class="form-label">Postal Code</label>
                                 <input
                                     class="form-control"
                                     type="text"
                                     name="postal_code"
+                                    id="postal_code"
                                     value="{{ $user->postal_code }}"
                                     placeholder="Postal Code">
                             </div>
                         </div>
-                    </div>
 
-
-                    <div class="d-flex w-100 justify-content-end">
-                        <button class="btn btn-primary w-25" type="submit">Save Profile</button>
-                    </div>
+                        <div class="d-flex w-100 justify-content-end">
+                            <button class="btn btn-primary w-25" type="submit" style="margin-top: 20px;">Save Profile</button>
+                        </div>
                 </form>
             </div>
         </div>
@@ -412,6 +409,85 @@
         function clearThumbnail() {
 
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const provinceSelect = document.getElementById("province");
+            const citySelect = document.getElementById("city");
+            const existingProvince = "{{ $user->province }}";
+            const existingCity = "{{ $user->city }}";
+
+            // Fetch provinces from API
+            fetch("https://psgc.gitlab.io/api/provinces/")
+                .then(response => response.json())
+                .then(provinces => {
+                    provinces.forEach(province => {
+                        let option = document.createElement("option");
+                        option.value = province.code;
+                        option.textContent = province.name;
+                        option.setAttribute("data-name", province.name);
+
+                        if (province.name === existingProvince) {
+                            option.selected = true;
+                        }
+
+                        provinceSelect.appendChild(option);
+                    });
+
+                    // If an existing province is set, trigger city fetch
+                    if (existingProvince) {
+                        loadCities(provinces.find(p => p.name === existingProvince)?.code);
+                    }
+                })
+                .catch(error => console.error("Error fetching provinces:", error));
+
+            function loadCities(provinceCode) {
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                citySelect.disabled = true;
+
+                if (provinceCode) {
+                    fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities/`)
+                        .then(response => response.json())
+                        .then(cities => {
+                            cities.forEach(city => {
+                                let option = document.createElement("option");
+                                option.value = city.name;
+                                option.textContent = city.name;
+
+                                if (city.name === existingCity) {
+                                    option.selected = true;
+                                }
+
+                                citySelect.appendChild(option);
+                            });
+
+                            citySelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error("Error fetching cities:", error);
+                            citySelect.innerHTML = '<option value="">Error loading cities</option>';
+                        });
+                }
+            }
+
+            // Fetch cities when a province is selected
+            provinceSelect.addEventListener("change", function() {
+                let selectedProvinceCode = this.value;
+                loadCities(selectedProvinceCode);
+            });
+
+            // Ensure the correct province name is stored instead of the code
+            document.querySelector("form").addEventListener("submit", function(event) {
+                let selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
+                let provinceName = selectedProvince.getAttribute("data-name");
+
+                let provinceInput = document.createElement("input");
+                provinceInput.type = "hidden";
+                provinceInput.name = "province";
+                provinceInput.value = provinceName;
+
+                this.appendChild(provinceInput);
+            });
+        });
     </script>
 </body>
 

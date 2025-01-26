@@ -178,39 +178,38 @@
             const provinceSelect = document.getElementById("province");
             const citySelect = document.getElementById("city");
 
-            // Fetch provinces from an API (Philippines)
+            // Fetch provinces from API
             fetch("https://psgc.gitlab.io/api/provinces/")
                 .then(response => response.json())
                 .then(provinces => {
                     provinces.forEach(province => {
                         let option = document.createElement("option");
-                        option.value = province.code; // Use province code as value
+                        option.value = province.code; // Keep province code as value for fetching cities
                         option.textContent = province.name;
+                        option.setAttribute("data-name", province.name); // Store province name in data attribute
                         provinceSelect.appendChild(option);
                     });
                 });
 
-            // Fetch cities when province is selected
+            // Fetch cities when a province is selected
             provinceSelect.addEventListener("change", function() {
                 let selectedProvinceCode = this.value;
                 citySelect.innerHTML = '<option value="">Select City</option>';
                 citySelect.disabled = true;
 
                 if (selectedProvinceCode) {
-                    // Fetch cities for the selected province using its code
                     fetch(`https://psgc.gitlab.io/api/provinces/${selectedProvinceCode}/cities/`)
                         .then(response => response.json())
                         .then(cities => {
                             if (cities.length > 0) {
                                 cities.forEach(city => {
                                     let option = document.createElement("option");
-                                    option.value = city.name; // City name
+                                    option.value = city.name; // Store city name as value
                                     option.textContent = city.name;
                                     citySelect.appendChild(option);
                                 });
                                 citySelect.disabled = false;
                             } else {
-                                // If no cities found for the selected province
                                 let option = document.createElement("option");
                                 option.value = "";
                                 option.textContent = "No cities found";
@@ -222,9 +221,20 @@
                             console.error('Error fetching cities:', error);
                             citySelect.disabled = true;
                         });
-                } else {
-                    citySelect.disabled = true;
                 }
+            });
+
+            // Ensure the correct province name is stored instead of the code
+            document.querySelector("form").addEventListener("submit", function(event) {
+                let selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
+                let provinceName = selectedProvince.getAttribute("data-name"); // Retrieve province name
+
+                let provinceInput = document.createElement("input");
+                provinceInput.type = "hidden";
+                provinceInput.name = "province"; // Ensure it matches form field
+                provinceInput.value = provinceName; // Store province name instead of code
+
+                this.appendChild(provinceInput);
             });
         });
     </script>

@@ -84,18 +84,29 @@ class AccountController extends Controller
     {
         $user = User::find(Auth::user()->id);
 
-        if ($request->hasFile('profile')) {
-            $file = $request->file('profile');
-            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
-            $user->image_path = $path;
-        }
-
         $request->validate([
+            'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',
             'street_name' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'province' => 'required|string|max:255',
             'postal_code' => 'required|string|max:10',
         ]);
+
+        if ($request->hasFile('profile')) {
+            $file = $request->file('profile');
+
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $destinationPath = public_path('profile_images');
+
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            $file->move($destinationPath, $filename);
+
+            $user->image_path = 'profile_images/' . $filename;
+        }
 
         $user->street_name = $request->street_name;
         $user->city = $request->city;
@@ -109,7 +120,6 @@ class AccountController extends Controller
         $user->gender = $request->gender;
         $user->phone = $request->phone;
         $user->email = $request->email;
-        $user->address = $request->location;
 
         $user->save();
 

@@ -15,16 +15,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Psy\Command\WhereamiCommand;
 use Ramsey\Uuid\Type\Integer;
+use Illuminate\Support\Facades\File;
 
 class AdminController extends Controller
 {
-    public function create_service (Request $request) {
+    public function create_service(Request $request)
+    {
         $service = new Service();
 
         if ($request->hasFile('service_file')) {
             $file = $request->file('service_file');
-            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
-            $service->image_path = $path;
+
+            $destinationPath = public_path('services_image');
+
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true, true);
+            }
+
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $file->move($destinationPath, $filename);
+
+            $service->image_path = 'services_image/' . $filename;
         }
 
         $service->name = $request->service_name;
@@ -45,14 +57,17 @@ class AdminController extends Controller
         }
     }
 
-    public function edit_service (Request $request, $id) {
-        $service = Service::find($id);
+    public function update(Request $request)
+    {
+        $user = User::findOrFail($request->id);
+        $user->update($request->all());
 
-        if ($request->hasFile('eservice_file')) {
-            $file = $request->file('eservice_file');
-            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
-            $service->image_path = $path;
-        }
+        return redirect()->back()->with('success', 'User updated successfully.');
+    }
+
+    public function edit_service(Request $request, $id)
+    {
+        $service = Service::find($id);
 
         $service->name = $request->eservice_name;
         $service->description = $request->eservice_description;
@@ -63,6 +78,22 @@ class AdminController extends Controller
 
         $service->price_start = $request->eservice_price_start;
         $service->price_end = $request->eservice_price_end;
+
+        if ($request->hasFile('eservice_file')) {
+            $file = $request->file('eservice_file');
+            $destinationPath = public_path('services_image');
+
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true, true);
+            }
+
+            $filename = time() . '_' . $file->getClientOriginalName();
+
+            $file->move($destinationPath, $filename);
+
+            $service->image_path = 'services_image/' . $filename;
+        }
+
         $service->save();
 
         if (Auth::user()->status == 3) {
@@ -72,19 +103,30 @@ class AdminController extends Controller
         }
     }
 
-    public function get_service ($id) {
+    public function get_service($id)
+    {
         $service = Service::find($id);
 
         return response()->json(['service' => $service]);
     }
 
-    public function delete_service ($id) {
+    public function delete_service($id)
+    {
         Service::where('id', $id)->delete();
 
-        return redirect('/admin')->with(['page' => 3]);
+        return redirect('/superadmin')->with(['page' => 3]);
     }
 
-    public function create_dentist (Request $request) {
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return redirect()->back()->with('success', 'User deleted successfully.');
+    }
+
+    public function create_dentist(Request $request)
+    {
         $validData = $request->validate([
             'fnamed' => 'required|string|max:255',
             'mnamed' => 'nullable|string|max:255',
@@ -93,7 +135,10 @@ class AdminController extends Controller
             'sexd' => 'required',
             'phoned' => 'required|digits_between:10,15',
             'emaild' => 'required|email|unique:users,email',
-            'addressd' => 'required|string|max:255',
+            'street_named' => 'required|string|max:255',
+            'cityd' => 'required|string|max:255',
+            'provinced' => 'required|string|max:255',
+            'postal_coded' => 'required|string|max:20',
             'passwordd' => 'required|string|min:8',
         ]);
 
@@ -106,7 +151,11 @@ class AdminController extends Controller
         $user->gender = $validData['sexd'];
         $user->phone = $validData['phoned'];
         $user->email = $validData['emaild'];
-        $user->address = $validData['addressd'];
+        $user->street_name = $validData['street_named'];
+        $user->city = $validData['cityd'];
+        $user->province = $validData['provinced'];
+        $user->postal_code = $validData['postal_coded'];
+
         $user->password = bcrypt($validData['passwordd']);
         $user->status = 2;
 
@@ -115,13 +164,58 @@ class AdminController extends Controller
         return redirect('superadmin')->with(['page' => 4]);
     }
 
-    public function get_dentist ($id) {
+    public function update_dentist(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:users,id',
+            'fnamee' => 'required|string|max:255',
+            'mnamee' => 'nullable|string|max:255',
+            'lnamee' => 'required|string|max:255',
+            'birthdatee' => 'required|date',
+            'sexe' => 'required|integer|in:0,1',
+            'phonee' => 'required|string|max:15',
+            'emaile' => 'required|email|max:255',
+            'street_namee' => 'required|string|max:255',
+            'provincee' => 'required|string|max:255',
+            'citye' => 'required|string|max:255',
+            'postal_codee' => 'required|string|max:10',
+            'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',  // Add validation for profile image
+        ]);
+
+        $dentist = User::find($request->id);
+
+        // Update the rest of the fields
+        $dentist->fname = $request->fnamee;
+        $dentist->mname = $request->mnamee;
+        $dentist->lname = $request->lnamee;
+        $dentist->birthdate = $request->birthdatee;
+        $dentist->gender = $request->sexe;
+        $dentist->phone = $request->phonee;
+        $dentist->email = $request->emaile;
+        $dentist->street_name = $request->street_namee;
+        $dentist->province = $request->provincee;
+        $dentist->city = $request->citye;
+        $dentist->postal_code = $request->postal_codee;
+
+        // Save the changes to the user record
+        $dentist->save();
+
+        // Redirect based on status
+        return redirect('superadmin')->with(['page' => 4]);
+    }
+
+
+
+
+    public function get_dentist($id)
+    {
         $user = User::find($id);
-        
+
         return response()->json(['user' => $user]);
     }
 
-    public function create_listing (Request $request) {
+    public function create_listing(Request $request)
+    {
         $listing = new Listing();
 
         $listing->name = $request->input('listing-name');
@@ -155,7 +249,7 @@ class AdminController extends Controller
         foreach ($dentist as $dent) {
             $assign = new Assign();
             $user = User::find($dent);
-            
+
             $assign->clinic_id = $listing->id;
             $assign->user_id = $user->id;
 
@@ -185,7 +279,8 @@ class AdminController extends Controller
         }
     }
 
-    public function edit_listing (Request $request, $id) {
+    public function edit_listing(Request $request, $id)
+    {
         $listing = Listing::find($id);
         $assign = Assign::where('clinic_id', $id)->first();
 
@@ -239,11 +334,12 @@ class AdminController extends Controller
         return redirect('/superadmin')->with(['page' => 5]);
     }
 
-    public function get_listing ($id) {
+    public function get_listing($id)
+    {
         $listing = Listing::find($id);
         $available = Available::where('listing_id', $id)->first();
         $assign = Assign::where('clinic_id', $id)->first();
-        
+
         if ($available) {
             $services = $available->service_id ? Service::where('id', $available->service_id)->get() : collect();
         } else {
@@ -261,13 +357,15 @@ class AdminController extends Controller
         return response()->json(['listing' => $listing, 'services' => $services, 'schedules' => $schedule, 'assign' => $assigns]);
     }
 
-    public function delete_listing ($id) {
+    public function delete_listing($id)
+    {
         Listing::where('id', $id)->delete();
 
         return redirect('/superadmin')->with(['page' => 5]);
     }
 
-    public function create_collab (Request $request) {
+    public function create_collab(Request $request)
+    {
         $user = User::where('email', $request->input('collab-email'))->where('status', 0)->first();
 
         if ($user) {
@@ -279,23 +377,26 @@ class AdminController extends Controller
         return redirect('/admin')->with(['page' => 7]);
     }
 
-    public function edit_collab (Request $request, $id) {
+    public function edit_collab(Request $request, $id)
+    {
         $user = User::find($id);
 
         $user->status = $request->input('ecollab-position');
-        
+
         $user->save();
 
         return redirect('/admin')->with(['page' => 7]);
     }
 
-    public function get_collab ($id) {
+    public function get_collab($id)
+    {
         $user = User::find($id);
 
         return response()->json(['user' => $user]);
     }
 
-    public function remove_collab ($id) {
+    public function remove_collab($id)
+    {
         $user = User::find($id);
 
         $user->status = 0;
@@ -305,7 +406,8 @@ class AdminController extends Controller
         return redirect('/admin')->with(['page' => 7]);
     }
 
-    public function create_appointment (Request $request, $id) {
+    public function create_appointment(Request $request, $id)
+    {
         if ($request->whofor != 2) {
             $appointment = new Appointments();
 
@@ -333,7 +435,7 @@ class AdminController extends Controller
         } else {
             foreach ($request->appointments as $appointmentData) {
                 $appointment = new Appointments();
-                
+
                 $existing = User::where('fname', $appointmentData['fname'])->where('lname', $appointmentData['lname'])->first();
 
                 if ($existing) {
@@ -350,7 +452,7 @@ class AdminController extends Controller
                     $appointment->appointment_time = $appointmentData['time'];
                     $appointment->dentist_id = $appointmentData['dentist'];
                     $appointment->status = 'Pending';
-                
+
                     $appointment->temporary = json_encode([
                         'fname' => $appointmentData['fname'],
                         'mname' => $appointmentData['mname'],
@@ -360,15 +462,16 @@ class AdminController extends Controller
                         'birth' => $appointmentData['birthdate'],
                     ]);
                 }
-            
+
                 $appointment->save();
-            }            
+            }
         }
 
         return redirect('user-profile');
     }
 
-    public function appointment_status (Request $request, $id) {
+    public function appointment_status(Request $request, $id)
+    {
         $appointment = Appointments::find($id);
         $allappoints = Appointments::all();
 
@@ -382,7 +485,8 @@ class AdminController extends Controller
         }
     }
 
-    public function record_user ($id) {
+    public function record_user($id)
+    {
         $appointment = Appointments::where('id', $id)->first();
         $schedule = Schedule::where('clinic_id', $appointment->listing_id)->get();
         $dentist = User::where('id', $appointment->dentist_id)->first();
@@ -390,7 +494,8 @@ class AdminController extends Controller
         return view('record_user')->with(['appointment' => $appointment, 'dentist' => $dentist, 'schedules' => $schedule]);
     }
 
-    public function reschedule_appointment (Request $request, $id) {
+    public function reschedule_appointment(Request $request, $id)
+    {
         $appointment = Appointments::find($id);
         $appointment->rescheduled_time = $request->schedule;
         $appointment->status = 'Rescheduled';
@@ -399,7 +504,5 @@ class AdminController extends Controller
         return redirect('/user-record/' . $id);
     }
 
-    public function forget_password () {
-        
-    }
+    public function forget_password() {}
 }
