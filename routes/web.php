@@ -12,6 +12,7 @@ Route::get('/users/{id}', function ($id) {
 Route::post('/users/update', [AdminController::class, 'update'])->name('users.update');
 Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
 Route::delete('/dentist/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
+Route::post('/update-patient', [AdminController::class, 'update_patient'])->name('update_patient.account');
 
 Route::post('/create-account', [AccountController::class, 'signup'])->name('create.account');
 Route::post('/update-user', [AccountController::class, 'update'])->name('update.account');

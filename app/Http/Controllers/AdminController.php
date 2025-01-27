@@ -65,6 +65,49 @@ class AdminController extends Controller
         return redirect()->back()->with('success', 'User updated successfully.');
     }
 
+    public function update_patient(Request $request)
+    {
+        $user = User::find($request->id); // Fetch the user by ID from the form
+
+        $request->validate([
+            'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',
+            'street_name' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'province' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:10',
+        ]);
+
+        if ($request->hasFile('profile')) {
+            $file = $request->file('profile');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $destinationPath = public_path('profile_images');
+
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+
+            $file->move($destinationPath, $filename);
+            $user->image_path = 'profile_images/' . $filename;
+        }
+
+        $user->street_name = $request->street_name;
+        $user->city = $request->city;
+        $user->province = $request->province;
+        $user->postal_code = $request->postal_code;
+        $user->fname = $request->fname;
+        $user->mname = $request->mname;
+        $user->lname = $request->lname;
+        $user->birthdate = $request->birth;
+        $user->gender = $request->gender;
+        $user->phone = $request->phone;
+        $user->email = $request->email;
+
+        $user->save();
+
+        return redirect()->route('superadmin')->with(['page' => 3]);
+    }
+
+
     public function edit_service(Request $request, $id)
     {
         $service = Service::find($id);
@@ -204,9 +247,6 @@ class AdminController extends Controller
         return redirect('superadmin')->with(['page' => 4]);
     }
 
-
-
-
     public function get_dentist($id)
     {
         $user = User::find($id);
@@ -340,10 +380,20 @@ class AdminController extends Controller
         $available = Available::where('listing_id', $id)->first();
         $assign = Assign::where('clinic_id', $id)->first();
 
+        // Fetch services linked to the current listing_id from the service_available table
         if ($available) {
-            $services = $available->service_id ? Service::where('id', $available->service_id)->get() : collect();
+            $selectedServiceIds = Available::where('listing_id', $id)->pluck('service_id')->toArray();
+
+            // Get only the services that are available for this listing_id
+            $services = Service::whereIn('id', $selectedServiceIds)->get();
+
+            // Mark the services as selected
+            $services->each(function ($service) {
+                $service->is_selected = true; // Set is_selected to true for services that exist in service_available
+            });
         } else {
-            $services = collect();
+            // If no services are available for this listing, just get all services
+            $services = Service::all();
         }
 
         if ($assign) {
@@ -356,6 +406,7 @@ class AdminController extends Controller
 
         return response()->json(['listing' => $listing, 'services' => $services, 'schedules' => $schedule, 'assign' => $assigns]);
     }
+
 
     public function delete_listing($id)
     {
@@ -409,66 +460,83 @@ class AdminController extends Controller
     public function create_appointment(Request $request, $id)
     {
         if ($request->whofor != 2) {
-            $appointment = new Appointments();
+            // Handle single appointment creation
+            $services = $request->appointments[0]['services'] ?? [];
+            $appointmentTimes = $request->appointments[0]['time'] ?? [];
 
-            $appointment->user_id = Auth::user()->id;
-            $appointment->service_id = Service::where('id', $request->appointments[0]['service'])->first()->id;
-            $appointment->listing_id = Listing::where('id', $id)->first()->id;
-            $appointment->appointment_time = $request->appointments[0]['time'];
-            $appointment->dentist_id = $request->appointments[0]['dentist'];
-            $appointment->status = 'Pending';
-
-            if ($request->whofor == 1) {
-                $appointment->temporary = json_encode([
-                    'fname' => $request->fname,
-                    'mname' => $request->mname,
-                    'lname' => $request->lname,
-                    'email' => $request->email,
-                    'phone' => $request->contact,
-                    'birth' => $request->birthdate,
-                ]);
-            }
-
-            $appointment->save();
-
-            return redirect('/user-profile');
-        } else {
-            foreach ($request->appointments as $appointmentData) {
+            foreach ($services as $serviceId) {
                 $appointment = new Appointments();
 
-                $existing = User::where('fname', $appointmentData['fname'])->where('lname', $appointmentData['lname'])->first();
+                // Retrieve the specific appointment time for each service
+                $appointmentTime = $appointmentTimes[$serviceId] ?? null;
 
-                if ($existing) {
+                if ($appointmentTime) {
                     $appointment->user_id = Auth::user()->id;
-                    $appointment->service_id = Service::where('id', $appointmentData['service'])->first()->id;
-                    $appointment->listing_id = Listing::where('id', $id)->first()->id;
-                    $appointment->appointment_time = $appointmentData['time'];
-                    $appointment->dentist_id = $appointmentData['dentist'];
-                    $appointment->status = 'Pending';
-                } else {
-                    $appointment->user_id = Auth::user()->id;
-                    $appointment->service_id = Service::where('id', $appointmentData['service'])->first()->id;
-                    $appointment->listing_id = Listing::where('id', $id)->first()->id;
-                    $appointment->appointment_time = $appointmentData['time'];
-                    $appointment->dentist_id = $appointmentData['dentist'];
+                    $appointment->service_id = Service::find($serviceId)->id;
+                    $appointment->listing_id = Listing::find($id)->id;
+                    $appointment->appointment_time = $appointmentTime;
+                    $appointment->dentist_id = $request->appointments[0]['dentist'] ?? null;
                     $appointment->status = 'Pending';
 
-                    $appointment->temporary = json_encode([
-                        'fname' => $appointmentData['fname'],
-                        'mname' => $appointmentData['mname'],
-                        'lname' => $appointmentData['lname'],
-                        'email' => $appointmentData['email'],
-                        'phone' => $appointmentData['contact'],
-                        'birth' => $appointmentData['birthdate'],
-                    ]);
+                    if ($request->whofor == 1) {
+                        $appointment->temporary = json_encode([
+                            'fname' => $request->fname,
+                            'mname' => $request->mname ?? '',
+                            'lname' => $request->lname,
+                            'email' => $request->email,
+                            'phone' => $request->contact,
+                            'birth' => $request->birthdate,
+                        ]);
+                    }
+
+                    $appointment->save();
                 }
+            }
+        } else {
+            // Handle appointments for other individuals
+            foreach ($request->appointments as $appointmentData) {
+                $services = $appointmentData['services'] ?? [];
+                $appointmentTimes = $appointmentData['time'] ?? [];
 
-                $appointment->save();
+                foreach ($services as $serviceId) {
+                    $appointment = new Appointments();
+
+                    // Retrieve the specific appointment time for each service
+                    $appointmentTime = $appointmentTimes[$serviceId] ?? null;
+
+                    if ($appointmentTime) {
+                        $existing = User::where('fname', $appointmentData['fname'])
+                            ->where('lname', $appointmentData['lname'])
+                            ->first();
+
+                        $appointment->user_id = Auth::user()->id;
+                        $appointment->service_id = Service::find($serviceId)->id;
+                        $appointment->listing_id = Listing::find($id)->id;
+                        $appointment->appointment_time = $appointmentTime;
+                        $appointment->dentist_id = $appointmentData['dentist'] ?? null;
+                        $appointment->status = 'Pending';
+
+                        if (!$existing) {
+                            $appointment->temporary = json_encode([
+                                'fname' => $appointmentData['fname'],
+                                'mname' => $appointmentData['mname'] ?? '',
+                                'lname' => $appointmentData['lname'],
+                                'email' => $appointmentData['email'],
+                                'phone' => $appointmentData['contact'],
+                                'birth' => $appointmentData['birthdate'],
+                            ]);
+                        }
+
+                        $appointment->save();
+                    }
+                }
             }
         }
 
         return redirect('user-profile');
     }
+
+
 
     public function appointment_status(Request $request, $id)
     {

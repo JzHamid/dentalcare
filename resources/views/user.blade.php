@@ -469,13 +469,11 @@
                 }
             }
 
-            // Fetch cities when a province is selected
             provinceSelect.addEventListener("change", function() {
                 let selectedProvinceCode = this.value;
                 loadCities(selectedProvinceCode);
             });
 
-            // Ensure the correct province name is stored instead of the code
             document.querySelector("form").addEventListener("submit", function(event) {
                 let selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
                 let provinceName = selectedProvince.getAttribute("data-name");

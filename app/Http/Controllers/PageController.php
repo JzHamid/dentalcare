@@ -14,7 +14,8 @@ use Illuminate\Support\Facades\Auth;
 
 class PageController extends Controller
 {
-    public function index () {
+    public function index()
+    {
         $services = Service::all();
 
         if (Auth::check()) {
@@ -24,7 +25,8 @@ class PageController extends Controller
         }
     }
 
-    public function user () {
+    public function user()
+    {
         $user = Auth::user();
         $appointments = Appointments::where([
             ['user_id', '=', $user->id],
@@ -38,34 +40,38 @@ class PageController extends Controller
         }
     }
 
-    public function admin () {
+    public function admin()
+    {
         $log = Auth::user();
         $services = Service::all();
-        $assign = Assign::where('user_id', $log->id)->first();
-        $appointments = Appointments::where('dentist_id', $assign->user_id)->get();
+        $assign = Assign::where('user_id', $log->id)->get();
+        $appointments = Appointments::where('dentist_id', $log->id)->get();
 
         $users = User::all();
 
         return view('admin')->with(['appointments' => $appointments, 'services' => $services, 'listings' => $assign, 'users' => $users, 'log' => $log, 'is_online' => $log->is_online]);
     }
 
-    public function superadmin() {
+    public function superadmin()
+    {
         $appointments = Appointments::all();
         $dentist = User::where('status', 2)->get();
         $users = User::where('status', 0)->get();
         $services = Service::all();
         $listings = Listing::all();
-        
+
         return view('superadmin')->with(['dentist' => $dentist, 'users' => $users, 'appointments' => $appointments, 'services' => $services, 'listings' => $listings]);
     }
 
-    public function listing () {
+    public function listing()
+    {
         $listings = Listing::with('availabilities.service')->get();
 
         return view('listing')->with(['listings' => $listings]);
     }
 
-    public function shop ($id) {
+    public function shop($id)
+    {
         $shop = Listing::find($id);
         $available = Available::where('listing_id', $shop->id)->get();
         $assign = Assign::where('clinic_id', $shop->id)->get();
@@ -73,7 +79,8 @@ class PageController extends Controller
         return view('shop')->with(['shop' => $shop, 'availables' => $available, 'assigns' => $assign]);
     }
 
-    public function appointment ($id) {
+    public function appointment($id)
+    {
         $shop = Listing::find($id);
         $user = Auth::user();
         $available = Available::where('listing_id', $shop->id)->get();
@@ -83,7 +90,8 @@ class PageController extends Controller
         return view('appointment')->with(['shop' => $shop, 'user' => $user, 'availables' => $available, 'schedules' => $schedules, 'assign' => $assign]);
     }
 
-    public function record ($id) {
+    public function record($id)
+    {
         $appointment = Appointments::find($id);
         $dentist = User::where('id', $appointment->dentist_id)->first();
 
