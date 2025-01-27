@@ -7,16 +7,6 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
-     */
-    public function up(): void
-    {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('image_path')->nullable(); // Add a column for image path
-        });
-    }
-
-    /**
      * Reverse the migrations.
      */
     public function down(): void
