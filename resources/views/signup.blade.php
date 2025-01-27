@@ -10,6 +10,7 @@
     <title>DentalCare | Signup</title>
 
     <style>
+        
         .text-default,
         .text-default:hover,
         .text-default:focus,
@@ -36,9 +37,9 @@
         </div>
     </nav>
 
-    <div class="container-fluid p-0">
-        <img class="w-100" style="object-fit: cover; height: 700px;" src="{{ asset('images/dentist_office.jpg') }}">
-
+    <div class="container-fluid p-0 vh-100">
+        <img class="w-100" style="object-fit: cover; height: 100vh;" src="{{ asset('images/dentist_office.jpg') }}">
+        
         <form class="d-flex flex-column position-absolute w-50 gap-2" style="top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; padding: 20px;" action="{{ route('create.account') }}" method="post">
             @csrf
 
