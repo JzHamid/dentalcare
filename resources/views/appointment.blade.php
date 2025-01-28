@@ -174,7 +174,6 @@
                         <script>
                             const availableDays = @json($availableDays);
 
-                            // Function to initialize flatpickr for new input elements
                             function initializeDatePickers() {
                                 document.querySelectorAll('.service-date').forEach((dateInput) => {
                                     flatpickr(dateInput, {
@@ -193,7 +192,6 @@
                                 });
                             }
 
-                            // Handle selection of services and display corresponding date pickers
                             document.querySelectorAll('.service-checkbox').forEach((checkbox) => {
                                 checkbox.addEventListener('change', (e) => {
                                     const serviceName = e.target.getAttribute('data-service');
@@ -210,10 +208,8 @@
             `;
                                         servicesDateContainer.appendChild(serviceDateDiv);
 
-                                        // Initialize flatpickr for the new input
                                         initializeDatePickers();
                                     } else {
-                                        // Remove the date picker for the unselected service
                                         const serviceDateDiv = servicesDateContainer.querySelector(`input[name="appointments[0][time][${serviceId}]"]`).parentElement;
                                         if (serviceDateDiv) {
                                             serviceDateDiv.remove();
@@ -222,6 +218,14 @@
                                 });
                             });
                         </script>
+
+                        @if ($errors->any())
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                alert('{{ $errors->first() }}');
+                            });
+                        </script>
+                        @endif
                     </div>
 
                     <div class="form-group">

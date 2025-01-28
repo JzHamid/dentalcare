@@ -460,22 +460,40 @@ class AdminController extends Controller
     public function create_appointment(Request $request, $id)
     {
         if ($request->whofor != 2) {
-            // Handle single appointment creation
             $services = $request->appointments[0]['services'] ?? [];
             $appointmentTimes = $request->appointments[0]['time'] ?? [];
+            $dentistId = $request->appointments[0]['dentist'] ?? null;
 
             foreach ($services as $serviceId) {
-                $appointment = new Appointments();
-
-                // Retrieve the specific appointment time for each service
                 $appointmentTime = $appointmentTimes[$serviceId] ?? null;
 
                 if ($appointmentTime) {
+                    $service = Service::findOrFail($serviceId);
+                    $duration = $service->duration;
+                    $newStart = \Carbon\Carbon::parse($appointmentTime);
+                    $newEnd = $newStart->copy()->addMinutes($duration);
+
+                    $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')
+                        ->where('appointments.listing_id', $id)
+                        ->where('appointments.dentist_id', $dentistId)
+                        ->where(function ($query) use ($newStart, $newEnd) {
+                            $query->where(function ($q) use ($newStart, $newEnd) {
+                                $q->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) < ?', [$newEnd->toDateTimeString()])
+                                    ->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) + INTERVAL services.duration MINUTE > ?', [$newStart->toDateTimeString()]);
+                            });
+                        })
+                        ->exists();
+
+                    if ($overlapping) {
+                        return redirect()->back()->withErrors(['msg' => 'There is already a scheduled appointment for the chosen Date and Time, please choose another.']);
+                    }
+
+                    $appointment = new Appointments();
                     $appointment->user_id = Auth::user()->id;
-                    $appointment->service_id = Service::find($serviceId)->id;
+                    $appointment->service_id = $service->id;
                     $appointment->listing_id = Listing::find($id)->id;
                     $appointment->appointment_time = $appointmentTime;
-                    $appointment->dentist_id = $request->appointments[0]['dentist'] ?? null;
+                    $appointment->dentist_id = $dentistId;
                     $appointment->status = 'Pending';
 
                     if ($request->whofor == 1) {
@@ -493,27 +511,45 @@ class AdminController extends Controller
                 }
             }
         } else {
-            // Handle appointments for other individuals
             foreach ($request->appointments as $appointmentData) {
                 $services = $appointmentData['services'] ?? [];
                 $appointmentTimes = $appointmentData['time'] ?? [];
+                $dentistId = $appointmentData['dentist'] ?? null;
 
                 foreach ($services as $serviceId) {
-                    $appointment = new Appointments();
-
-                    // Retrieve the specific appointment time for each service
                     $appointmentTime = $appointmentTimes[$serviceId] ?? null;
 
                     if ($appointmentTime) {
+                        $service = Service::findOrFail($serviceId);
+                        $duration = $service->duration;
+                        $newStart = \Carbon\Carbon::parse($appointmentTime);
+                        $newEnd = $newStart->copy()->addMinutes($duration);
+
+                        $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')
+                            ->where('appointments.listing_id', $id)
+                            ->where('appointments.dentist_id', $dentistId)
+                            ->where(function ($query) use ($newStart, $newEnd) {
+                                $query->where(function ($q) use ($newStart, $newEnd) {
+                                    $q->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) < ?', [$newEnd->toDateTimeString()])
+                                        ->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) + INTERVAL services.duration MINUTE > ?', [$newStart->toDateTimeString()]);
+                                });
+                            })
+                            ->exists();
+
+                        if ($overlapping) {
+                            return redirect()->back()->withErrors(['msg' => 'The selected time overlaps with an existing appointment.']);
+                        }
+
+                        $appointment = new Appointments();
                         $existing = User::where('fname', $appointmentData['fname'])
                             ->where('lname', $appointmentData['lname'])
                             ->first();
 
                         $appointment->user_id = Auth::user()->id;
-                        $appointment->service_id = Service::find($serviceId)->id;
+                        $appointment->service_id = $service->id;
                         $appointment->listing_id = Listing::find($id)->id;
                         $appointment->appointment_time = $appointmentTime;
-                        $appointment->dentist_id = $appointmentData['dentist'] ?? null;
+                        $appointment->dentist_id = $dentistId;
                         $appointment->status = 'Pending';
 
                         if (!$existing) {
