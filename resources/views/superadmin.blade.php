@@ -1139,11 +1139,15 @@
                             <div class="d-flex gap-2">
                                 <div class="form-group container-fluid p-0">
                                     <label class="form-label m-0" for="edit-province">Province</label>
-                                    <input class="form-control" name="province" id="edit-province" type="text" placeholder="Province" value="{{ old('province', $user->province) }}" required>
+                                    <select class="form-control" name="province" id="edit-province" required>
+                                        <option value="">Select Province</option>
+                                    </select>
                                 </div>
                                 <div class="form-group container-fluid p-0">
                                     <label class="form-label m-0" for="edit-city">City</label>
-                                    <input class="form-control" name="city" id="edit-city" type="text" placeholder="City" value="{{ old('city', $user->city) }}" required>
+                                    <select class="form-control" name="city" id="edit-city" required disabled>
+                                        <option value="">Select City</option>
+                                    </select>
                                 </div>
                             </div>
 
@@ -1349,6 +1353,91 @@
 
             var form = $(this).find('#delete-dentist-form');
             form.attr('action', '/dentist/' + userId);
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const provinceSelect = document.getElementById("edit-province");
+            const citySelect = document.getElementById("edit-city");
+            const existingProvince = "{{ $user->province }}".trim();
+            const existingCity = "{{ $user->city }}".trim();
+
+            // Fetch provinces
+            fetch("https://psgc.gitlab.io/api/provinces/")
+                .then(response => response.json())
+                .then(provinces => {
+                    provinces.forEach(province => {
+                        let option = document.createElement("option");
+                        option.value = province.code; // Store province code
+                        option.textContent = province.name; // Show province name
+                        option.setAttribute("data-name", province.name);
+
+                        if (province.name === existingProvince) {
+                            option.selected = true;
+                        }
+
+                        provinceSelect.appendChild(option);
+                    });
+
+                    // Load cities **only after** provinces have been populated
+                    if (existingProvince) {
+                        let selectedProvince = provinces.find(p => p.name === existingProvince);
+                        if (selectedProvince) {
+                            loadCities(selectedProvince.code, existingCity);
+                        }
+                    }
+                })
+                .catch(error => console.error("Error fetching provinces:", error));
+
+            // Function to fetch and load cities
+            function loadCities(provinceCode, selectedCity = "") {
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                citySelect.disabled = true;
+
+                if (provinceCode) {
+                    fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities/`)
+                        .then(response => response.json())
+                        .then(cities => {
+                            cities.forEach(city => {
+                                let option = document.createElement("option");
+                                option.value = city.name;
+                                option.textContent = city.name;
+
+                                if (city.name === selectedCity) {
+                                    option.selected = true;
+                                }
+
+                                citySelect.appendChild(option);
+                            });
+
+                            citySelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error("Error fetching cities:", error);
+                            citySelect.innerHTML = '<option value="">Error loading cities</option>';
+                        });
+                }
+            }
+
+            // Change event for province selection
+            provinceSelect.addEventListener("change", function() {
+                let selectedProvinceCode = this.value;
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                citySelect.disabled = true;
+                loadCities(selectedProvinceCode);
+            });
+
+            // Before submitting, store province name instead of code
+            document.getElementById("edit-form").addEventListener("submit", function(event) {
+                let selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
+                let provinceName = selectedProvince.getAttribute("data-name");
+
+                let provinceInput = document.createElement("input");
+                provinceInput.type = "hidden";
+                provinceInput.name = "province";
+                provinceInput.value = provinceName;
+
+                this.appendChild(provinceInput);
+            });
         });
     </script>
 </body>

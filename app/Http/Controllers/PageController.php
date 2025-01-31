@@ -92,9 +92,20 @@ class PageController extends Controller
 
     public function record($id)
     {
-        $appointment = Appointments::find($id);
+        $appointment = Appointments::where('id', $id)->first();
+        $schedule = Schedule::where('clinic_id', $appointment->listing_id)->get();
         $dentist = User::where('id', $appointment->dentist_id)->first();
 
-        return view('record')->with(['appointment' => $appointment]);
+        return view('record')->with(['appointment' => $appointment, 'dentist' => $dentist, 'schedules' => $schedule]);
+    }
+
+    public function reschedule_appointment_admin(Request $request, $id)
+    {
+        $appointment = Appointments::find($id);
+        $appointment->rescheduled_time = $request->schedule;
+        $appointment->status = 'Rescheduled';
+        $appointment->save();
+
+        return redirect('/record/' . $id);
     }
 }

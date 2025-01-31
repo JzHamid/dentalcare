@@ -172,7 +172,7 @@
                         @endphp
 
                         <script>
-                            const availableDays = @json($availableDays);
+                            // const availableDays = @json($availableDays);
 
                             function initializeDatePickers() {
                                 document.querySelectorAll('.service-date').forEach((dateInput) => {

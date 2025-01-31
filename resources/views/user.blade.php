@@ -416,7 +416,6 @@
             const existingProvince = "{{ $user->province }}";
             const existingCity = "{{ $user->city }}";
 
-            // Fetch provinces from API
             fetch("https://psgc.gitlab.io/api/provinces/")
                 .then(response => response.json())
                 .then(provinces => {
@@ -433,7 +432,6 @@
                         provinceSelect.appendChild(option);
                     });
 
-                    // If an existing province is set, trigger city fetch
                     if (existingProvince) {
                         loadCities(provinces.find(p => p.name === existingProvince)?.code);
                     }

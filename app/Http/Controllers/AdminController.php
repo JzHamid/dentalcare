@@ -67,7 +67,7 @@ class AdminController extends Controller
 
     public function update_patient(Request $request)
     {
-        $user = User::find($request->id); // Fetch the user by ID from the form
+        $user = User::find($request->id);
 
         $request->validate([
             'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',
@@ -380,19 +380,15 @@ class AdminController extends Controller
         $available = Available::where('listing_id', $id)->first();
         $assign = Assign::where('clinic_id', $id)->first();
 
-        // Fetch services linked to the current listing_id from the service_available table
         if ($available) {
             $selectedServiceIds = Available::where('listing_id', $id)->pluck('service_id')->toArray();
 
-            // Get only the services that are available for this listing_id
             $services = Service::whereIn('id', $selectedServiceIds)->get();
 
-            // Mark the services as selected
             $services->each(function ($service) {
-                $service->is_selected = true; // Set is_selected to true for services that exist in service_available
+                $service->is_selected = true; 
             });
         } else {
-            // If no services are available for this listing, just get all services
             $services = Service::all();
         }
 
