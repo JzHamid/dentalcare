@@ -154,7 +154,7 @@
                                 enableTime: true,
                                 enable: [
                                     function(date) {
-                                        // const allowedDays = @json($availableDays);
+                                        const allowedDays = @json($availableDays);
                                         const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
                                         const dayName = dayNames[date.getDay()];
 
