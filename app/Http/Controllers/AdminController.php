@@ -598,9 +598,10 @@ class AdminController extends Controller
     {
         $appointment = Appointments::find($id);
         $appointment->rescheduled_time = $request->schedule;
+        $appointment->reschedule_reason = $request->reschedule_reason;
         $appointment->status = 'Rescheduled';
         $appointment->save();
-
+    
         return redirect('/user-record/' . $id);
     }
 
