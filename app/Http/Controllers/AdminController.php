@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointments;
+use App\Mail\AppointmentRescheduledMail;
+use Illuminate\Support\Facades\Mail;
 use App\Models\Assign;
 use App\Models\Available;
 use App\Models\Listing;
@@ -386,7 +388,7 @@ class AdminController extends Controller
             $services = Service::whereIn('id', $selectedServiceIds)->get();
 
             $services->each(function ($service) {
-                $service->is_selected = true; 
+                $service->is_selected = true;
             });
         } else {
             $services = Service::all();
@@ -601,8 +603,37 @@ class AdminController extends Controller
         $appointment->reschedule_reason = $request->reschedule_reason;
         $appointment->status = 'Rescheduled';
         $appointment->save();
-    
-        return redirect('/user-record/' . $id);
+
+        // Get Patient Info
+        $patient = User::find($appointment->user_id);
+
+        // Get Dentist Info
+        $dentist = User::find($appointment->dentist_id);
+
+        // Get Clinic Info
+        $clinic = Listing::find($appointment->listing_id);
+
+        // Get Service Info
+        $service = Service::find($appointment->service_id);
+
+        // Get Dentists (Status 2) and Superadmins (Status 3)
+        $dentistEmail = $dentist->email;
+        $superadmins = User::where('status', 3)->pluck('email')->toArray();
+
+        // Send Email to Dentist
+        Mail::to($dentistEmail)->send(new AppointmentRescheduledMail($appointment, $dentist, $clinic, $service, $patient));
+
+        // Send Email to Superadmins
+        foreach ($superadmins as $superadminEmail) {
+            Mail::to($superadminEmail)->send(new AppointmentRescheduledMail($appointment, $dentist, $clinic, $service, $patient));
+        }
+
+        // Send Email to Patient
+        if (!empty($patient->email)) {
+            Mail::to($patient->email)->send(new AppointmentRescheduledMail($appointment, $dentist, $clinic, $service, $patient));
+        }
+
+        return redirect('/user-record/' . $id)->with('success', 'Appointment rescheduled and notifications sent to the patient, dentist, and superadmins.');
     }
 
     public function forget_password() {}
