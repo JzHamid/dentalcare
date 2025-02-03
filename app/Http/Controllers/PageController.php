@@ -11,6 +11,9 @@ use App\Models\Service;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\AppointmentRescheduledMail;
+
 
 class PageController extends Controller
 {
@@ -103,9 +106,39 @@ class PageController extends Controller
     {
         $appointment = Appointments::find($id);
         $appointment->rescheduled_time = $request->schedule;
+        $appointment->reschedule_reason = $request->reschedule_reason;
         $appointment->status = 'Rescheduled';
         $appointment->save();
 
-        return redirect('/record/' . $id);
+        // Get Patient Info
+        $patient = User::find($appointment->user_id);
+
+        // Get Dentist Info
+        $dentist = User::find($appointment->dentist_id);
+
+        // Get Clinic Info
+        $clinic = Listing::find($appointment->listing_id);
+
+        // Get Service Info
+        $service = Service::find($appointment->service_id);
+
+        // Get Dentists (Status 2) and Superadmins (Status 3)
+        $dentistEmail = $dentist->email;
+        $superadmins = User::where('status', 3)->pluck('email')->toArray();
+
+        // Send Email to Dentist
+        Mail::to($dentistEmail)->send(new AppointmentRescheduledMail($appointment, $dentist, $clinic, $service, $patient));
+
+        // Send Email to Superadmins
+        foreach ($superadmins as $superadminEmail) {
+            Mail::to($superadminEmail)->send(new AppointmentRescheduledMail($appointment, $dentist, $clinic, $service, $patient));
+        }
+
+        // Send Email to Patient
+        if (!empty($patient->email)) {
+            Mail::to($patient->email)->send(new AppointmentRescheduledMail($appointment, $dentist, $clinic, $service, $patient));
+        }
+
+        return redirect('/user-record/' . $id)->with('success', 'Appointment rescheduled and notifications sent to the patient, dentist, and superadmins.');
     }
 }

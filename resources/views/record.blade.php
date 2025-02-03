@@ -105,7 +105,10 @@
                 <div class="d-flex flex-column gap-1">
                     <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</p>
                     <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Address: </span>{{ $appointment->user->address }}</p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Address: </span>
+                        {{ $appointment->user->street_name }}, {{ $appointment->user->city }}, {{ $appointment->user->province }}
+                    </p>
                     <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $appointment->user->email }}</p>
                     <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $appointment->user->phone }}</p>
                     <p class="fw-light m-0"><span class="fw-bold">Medical Records: </span>{{ $appointment->user->notes }}</p>
@@ -129,7 +132,7 @@
                     <div class="container-fluid d-flex flex-column p-0 gap-2 h-100">
                         <div class="form-group">
                             <label class="form-label" for="schedule">Schedule</label>
-                            <form class="input-group" action="{{ route('reschedule.appointment.admin', $appointment->id) }}" method="post">
+                            <form class="input-group" id="rescheduleForm" action="{{ route('reschedule.appointment.admin', $appointment->id) }}" method="post">
                                 @csrf
 
                                 <input
@@ -138,7 +141,7 @@
                                     name="schedule"
                                     id="schedule"
                                     value="{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('Y-m-d\TH:i') }}">
-                                <button class="btn btn-primary">Reschedule</button>
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rescheduleModal">Reschedule</button>
                             </form>
                         </div>
 
@@ -154,7 +157,7 @@
                                 enableTime: true,
                                 enable: [
                                     function(date) {
-                                        // const allowedDays = @json($availableDays);
+                                        const allowedDays = @json($availableDays);
                                         const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
                                         const dayName = dayNames[date.getDay()];
 
@@ -178,8 +181,45 @@
 
                         <button class="btn btn-primary mt-auto" type="submit">Save Record</button>
                     </div>
+
+                    <!-- Reschedule Modal -->
+                    <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="rescheduleModalLabel">Reason for Reschedule</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="rescheduleReasonForm">
+                                        <div class="form-group">
+                                            <label for="reschedule_reason" class="form-label">Reason</label>
+                                            <textarea class="form-control" id="reschedule_reason" name="reschedule_reason" rows="3"></textarea>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary" id="confirmReschedule">Reschedule</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <script>
+                document.getElementById('confirmReschedule').addEventListener('click', function() {
+                    const reason = document.getElementById('reschedule_reason').value;
+                    const form = document.getElementById('rescheduleForm');
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'reschedule_reason';
+                    input.value = reason;
+                    form.appendChild(input);
+                    form.submit();
+                });
+            </script>
 
             <button class="btn btn-secondary">Add Procedure</button>
         </div>

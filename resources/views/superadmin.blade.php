@@ -1145,7 +1145,7 @@
                                 </div>
                                 <div class="form-group container-fluid p-0">
                                     <label class="form-label m-0" for="edit-city">City</label>
-                                    <select class="form-control" name="city" id="edit-city" required disabled>
+                                    <select class="form-control" name="city" id="edit-city" disabled>
                                         <option value="">Select City</option>
                                     </select>
                                 </div>
@@ -1355,20 +1355,21 @@
             form.attr('action', '/dentist/' + userId);
         });
 
+
+
         document.addEventListener("DOMContentLoaded", function() {
             const provinceSelect = document.getElementById("edit-province");
             const citySelect = document.getElementById("edit-city");
             const existingProvince = "{{ $user->province }}".trim();
             const existingCity = "{{ $user->city }}".trim();
 
-            // Fetch provinces
             fetch("https://psgc.gitlab.io/api/provinces/")
                 .then(response => response.json())
                 .then(provinces => {
                     provinces.forEach(province => {
                         let option = document.createElement("option");
-                        option.value = province.code; // Store province code
-                        option.textContent = province.name; // Show province name
+                        option.value = province.code;
+                        option.textContent = province.name;
                         option.setAttribute("data-name", province.name);
 
                         if (province.name === existingProvince) {
@@ -1378,7 +1379,6 @@
                         provinceSelect.appendChild(option);
                     });
 
-                    // Load cities **only after** provinces have been populated
                     if (existingProvince) {
                         let selectedProvince = provinces.find(p => p.name === existingProvince);
                         if (selectedProvince) {
@@ -1388,7 +1388,6 @@
                 })
                 .catch(error => console.error("Error fetching provinces:", error));
 
-            // Function to fetch and load cities
             function loadCities(provinceCode, selectedCity = "") {
                 citySelect.innerHTML = '<option value="">Select City</option>';
                 citySelect.disabled = true;
@@ -1418,7 +1417,6 @@
                 }
             }
 
-            // Change event for province selection
             provinceSelect.addEventListener("change", function() {
                 let selectedProvinceCode = this.value;
                 citySelect.innerHTML = '<option value="">Select City</option>';
@@ -1426,7 +1424,6 @@
                 loadCities(selectedProvinceCode);
             });
 
-            // Before submitting, store province name instead of code
             document.getElementById("edit-form").addEventListener("submit", function(event) {
                 let selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
                 let provinceName = selectedProvince.getAttribute("data-name");
