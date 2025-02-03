@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointments;
 use App\Mail\AppointmentRescheduledMail;
+use App\Mail\AppointmentScheduled;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Assign;
 use App\Models\Available;
@@ -506,6 +507,9 @@ class AdminController extends Controller
                     }
 
                     $appointment->save();
+
+                    // Send email to patient, dentist, and superadmin
+                    $this->sendAppointmentEmail($appointment);
                 }
             }
         } else {
@@ -562,12 +566,53 @@ class AdminController extends Controller
                         }
 
                         $appointment->save();
+
+                        // Send email to patient, dentist, and superadmin
+                        $this->sendAppointmentEmail($appointment);
                     }
                 }
             }
         }
 
         return redirect('user-profile');
+    }
+
+    private function sendAppointmentEmail($appointment)
+    {
+        $patient = User::find($appointment->user_id);
+        $dentist = User::find($appointment->dentist_id);
+        $superadmins = User::where('status', 3)->get(); // Retrieve all superadmins
+        $clinic = Listing::find($appointment->listing_id);
+        $service = Service::find($appointment->service_id);
+
+        $details = [
+            'patient_name' => $patient->fname . ' ' . $patient->lname,
+            'birthdate' => $patient->birthdate,
+            'street_name' => $patient->street_name,
+            'city' => $patient->city,
+            'province' => $patient->province,
+            'email' => $patient->email,
+            'contact_number' => $patient->phone,
+            'appointment_time' => $appointment->appointment_time,
+            'dentist_name' => $dentist->fname . ' ' . $dentist->lname,
+            'service_name' => $service->name,
+            'clinic_name' => $clinic->name,
+        ];
+
+        // Send email to patient
+        if ($patient->status == 0) {
+            Mail::to($patient->email)->send(new AppointmentScheduled($details));
+        }
+
+        // Send email to dentist
+        if ($dentist->status == 2) {
+            Mail::to($dentist->email)->send(new AppointmentScheduled($details));
+        }
+
+        // Send email to all superadmins
+        foreach ($superadmins as $superadmin) {
+            Mail::to($superadmin->email)->send(new AppointmentScheduled($details));
+        }
     }
 
 
