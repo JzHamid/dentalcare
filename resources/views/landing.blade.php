@@ -97,7 +97,7 @@
         <div class="row d-flex px-5 mb-5 justify-content-center gap-5">
             @foreach ($serviceRow as $service)
             <div class="col-md-3 rounded shadow-sm p-4 gap-3 d-flex flex-column">
-                <img style="height: 200px;" class="img-fluid" src="{{ asset('/' . $service->image_path) }}">
+                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('/' . $service->image_path) }}">
                 <h5 class="text-center">{{ $service->name }}</h5>
                 <p style="text-align: justify;">{{ $service->description }}</p>
             </div>
