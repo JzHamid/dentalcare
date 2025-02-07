@@ -49,6 +49,9 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
 
     // secretary
     Route::post('/create-secretary', [AdminController::class, 'create_secretary'])->name('create.secretary');
+    Route::get('/get-secretary/{id}', [AdminController::class, 'get_secretary'])->name('get.secretary');
+    Route::put('/update-secretary', [AdminController::class, 'update_secretary'])->name('update.secretary');
+
 
     // Listing
     Route::post('/create-listing', [AdminController::class, 'create_listing'])->name('create.listing');
