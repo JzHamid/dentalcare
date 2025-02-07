@@ -77,7 +77,7 @@
             <div class="col-md-2 bg-default nav flex-column p-3 gap-1" role="tablist" aria-orientation="vertical" id="navbar">
                 <div class="container-fluid d-flex flex-column align-items-center py-1">
                     <div class="position-relative d-flex justify-content-center">
-                        <img src="{{ '/storage/' . $log->image_path }}" class="mb-1" style="height: 100px; width: 100px;">
+                        <img src="{{ '/storage/' . $log->image_path }}" class="mb-1" style="height: 100px; width: 100px; border: solid white 3px; border-radius: 5px;">
 
                         @if ($is_online)
                             <span class="position-absolute top-0 start-100 translate-middle p-2 bg-success border border-light rounded-circle">
@@ -524,7 +524,7 @@
                         @csrf
 
                         <div class="border border-tertiary rounded d-flex gap-3 p-4 mb-4">
-                            <img src="{{ '/storage/' . $log->image_path }}" style="height: 150px; width: 150px;" id="profile-img">
+                            <img src="{{ '/storage/' . $log->image_path }}" style="height: 150px; width: 150px; border-radius: 50%; border: solid black 3px;" id="profile-img">
 
                             <div class="d-flex flex-column p-0">
                                 <h5>Profile Image</h5>
