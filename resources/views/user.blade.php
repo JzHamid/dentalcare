@@ -152,13 +152,13 @@
                             </div>
                         </div>
 
-                        <div class="container-fluid rounded bg-white shadow p-3">
+                        <!-- <div class="container-fluid rounded bg-white shadow p-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h4 class="m-0">Notifications</h4>
                                 <button class="btn btn-primary d-flex gap-2" onclick="document.getElementById('nav-notifications').click()">View All</button>
                             </div>
                             <hr>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
