@@ -181,7 +181,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Patient Name</th>
                             <th scope="col">Services</th>
                             <th scope="col">Set By</th>
@@ -194,7 +194,7 @@
                     <tbody>
                         @foreach ($appointments as $appointment)
                         <tr>
-                            <th class="text-center" scope="row">1</th>
+                            <!-- <th class="text-center" scope="row">1</th> -->
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                             <td>{{ $appointment->service->name }}</td>
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
@@ -240,7 +240,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Name of Service</th>
                             <th scope="col">Duration</th>
                             <th scope="col">Price Range</th>
@@ -251,7 +251,7 @@
                     <tbody>
                         @foreach ($services as $service)
                         <tr>
-                            <th class="text-center" scope="row">{{ $service->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $service->id }}</th> -->
                             <td>{{ $service->name }}</td>
                             <td>{{ floor($service->duration / 60) . 'hr ' . ($service->duration % 60) . 'm' }}</td>
                             <td>{{ $service->price_start }} - {{ $service->price_end }}</td>
@@ -285,7 +285,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Patient Name</th>
                             <th class="text-center" scope="col">Age</th>
                             <th scope="col">Email Address</th>
@@ -297,7 +297,7 @@
                     <tbody>
                         @foreach ($users as $user)
                         <tr>
-                            <th class="text-center" scope="row">{{ $user->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $user->id }}</th> -->
                             <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($user->birthdate)->age }}</td>
                             <td>{{ $user->email }}</td>
@@ -334,7 +334,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Dentist Name</th>
                             <th scope="col">Specialization</th>
                             <th scope="col">Email Address</th>
@@ -347,7 +347,7 @@
                     <tbody>
                         @foreach ($dentist as $dent)
                         <tr>
-                            <th class="text-center" scope="row">{{ $dent->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $dent->id }}</th> -->
                             <td>{{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</td>
                             <td></td>
                             <td>{{ $dent->email }}</td>
@@ -384,7 +384,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Secretary Name</th>
                             <th scope="col">Email Address</th>
                             <th scope="col">Phone</th>
@@ -396,7 +396,7 @@
                     <tbody>
                         @foreach ($secretary as $sec)
                         <tr>
-                            <th class="text-center" scope="row">{{ $sec->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $sec->id }}</th> -->
                             <td>{{ $sec->fname . ' ' . $sec->mname . ' ' . $sec->lname }}</td>
                             <td>{{ $sec->email }}</td>
                             <td>{{ $sec->phone }}</td>
@@ -434,7 +434,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Clinic Name</th>
                             <th scope="col">Email Address</th>
                             <th scope="col">Contact No.</th>
@@ -446,7 +446,7 @@
                     <tbody>
                         @foreach ($listings as $listing)
                         <tr>
-                            <th class="text-center" scope="row">{{ $listing->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $listing->id }}</th> -->
                             <td>{{ $listing->name }}</td>
                             <td>{{ $listing->email }}</td>
                             <td>{{ $listing->contact }}</td>

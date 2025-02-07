@@ -27,6 +27,7 @@ Route::get('/user-record/{id}', [AdminController::class, 'record_user'])->name('
 Route::get('/superadmin', [PageController::class, 'superadmin'])->name('superadmin')->middleware('auth');
 Route::post('/reset-password', [PageController::class]);
 
+
 // Appointment
 Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
 Route::post('/reschedule-appointment/{id}', [AdminController::class, 'reschedule_appointment'])->name('reschedule.appointment')->middleware(['auth']);
