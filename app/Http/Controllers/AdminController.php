@@ -542,6 +542,38 @@ class AdminController extends Controller
         return redirect('/admin')->with(['page' => 7]);
     }
 
+    private function isWithinClinicHours($clinicId, Carbon $appointmentStart, Carbon $appointmentEnd)
+    {
+        // Get the day of the week (e.g., "Monday")
+        $day = $appointmentStart->format('l');
+
+        // Retrieve the schedule for this clinic and day.
+        $schedule = Schedule::where('clinic_id', $clinicId)
+            ->where('day', $day)
+            ->first();
+
+        // If there is no schedule, assume the clinic is closed.
+        if (!$schedule) {
+            return false;
+        }
+
+        // Create Carbon instances from the schedule's start and end times.
+        // (These times are assumed to be stored in 'H:i:s' format.)
+        $clinicStart = Carbon::createFromFormat('H:i:s', $schedule->start);
+        $clinicEnd   = Carbon::createFromFormat('H:i:s', $schedule->end);
+
+        // Extract only the time part of the appointment times.
+        $appointmentStartTime = Carbon::createFromFormat('H:i:s', $appointmentStart->format('H:i:s'));
+        $appointmentEndTime   = Carbon::createFromFormat('H:i:s', $appointmentEnd->format('H:i:s'));
+
+        // Ensure the appointment does not start before or end after the clinic's hours.
+        if ($appointmentStartTime->lt($clinicStart) || $appointmentEndTime->gt($clinicEnd)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function create_appointment(Request $request, $id)
     {
         if ($request->whofor != 2) {
@@ -555,8 +587,16 @@ class AdminController extends Controller
                 if ($appointmentTime) {
                     $service = Service::findOrFail($serviceId);
                     $duration = $service->duration;
-                    $newStart = \Carbon\Carbon::parse($appointmentTime);
+                    $newStart = Carbon::parse($appointmentTime);
                     $newEnd = $newStart->copy()->addMinutes($duration);
+
+                    // --- Business Hours Check Start ---
+                    if (!$this->isWithinClinicHours($id, $newStart, $newEnd)) {
+                        return redirect()->back()->withErrors([
+                            'msg' => 'The appointment time is outside the clinic\'s business hours.'
+                        ]);
+                    }
+                    // --- Business Hours Check End ---
 
                     $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')
                         ->where('appointments.listing_id', $id)
@@ -570,7 +610,9 @@ class AdminController extends Controller
                         ->exists();
 
                     if ($overlapping) {
-                        return redirect()->back()->withErrors(['msg' => 'There is already a scheduled appointment for the chosen Date and Time, please choose another.']);
+                        return redirect()->back()->withErrors([
+                            'msg' => 'There is already a scheduled appointment for the chosen Date and Time, please choose another.'
+                        ]);
                     }
 
                     $appointment = new Appointments();
@@ -610,8 +652,16 @@ class AdminController extends Controller
                     if ($appointmentTime) {
                         $service = Service::findOrFail($serviceId);
                         $duration = $service->duration;
-                        $newStart = \Carbon\Carbon::parse($appointmentTime);
+                        $newStart = Carbon::parse($appointmentTime);
                         $newEnd = $newStart->copy()->addMinutes($duration);
+
+                        // --- Business Hours Check Start ---
+                        if (!$this->isWithinClinicHours($id, $newStart, $newEnd)) {
+                            return redirect()->back()->withErrors([
+                                'msg' => 'The appointment time is outside the clinics business hours.'
+                            ]);
+                        }
+                        // --- Business Hours Check End ---
 
                         $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')
                             ->where('appointments.listing_id', $id)
@@ -625,7 +675,9 @@ class AdminController extends Controller
                             ->exists();
 
                         if ($overlapping) {
-                            return redirect()->back()->withErrors(['msg' => 'The selected time overlaps with an existing appointment.']);
+                            return redirect()->back()->withErrors([
+                                'msg' => 'The selected time overlaps with an existing appointment.'
+                            ]);
                         }
 
                         $appointment = new Appointments();
@@ -662,6 +714,7 @@ class AdminController extends Controller
 
         return redirect('user-profile');
     }
+
 
     private function sendAppointmentEmail($appointment)
     {
