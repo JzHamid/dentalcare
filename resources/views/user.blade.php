@@ -76,7 +76,7 @@
     <div class="row m-0" style="height: 93%;">
         <div class="col-md-2 bg-default nav flex-column p-3 gap-2" role="tablist" aria-orientation="vertical" id="navbar">
             <div class="container-fluid d-flex flex-column align-items-center py-4">
-                <img src="{{ asset($user->image_path ?: 'profile_images/blank_profile_default.png') }}" class="mb-2" style="height: 100px; width: 100px;">
+                <img src="{{ asset($user->image_path ?: 'profile_images/blank_profile_default.png') }}" class="mb-2" style="height: 130px; width: 130px; border: solid white 3px; border-radius: 50%;">
                 <p class="fs-5 text-center fw-medium text-white m-0 mb-2">{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</p>
 
                 <div class="text-white d-flex align-items-center p-0 gap-2">
@@ -257,7 +257,7 @@
                     @method('POST')
 
                     <div class="border border-tertiary rounded d-flex gap-3 p-4 mb-4">
-                        <img class="border border-2 border-tertiary" src="{{ asset($user->image_path ?: 'profile_images/blank_profile_default.png') }}" style="height: 150px; width: 150px;" id="profile-thumbnail-img">
+                        <img class="border border-2 border-tertiary" src="{{ asset($user->image_path ?: 'profile_images/blank_profile_default.png') }}" style="height: 150px; width: 150px; border-radius: 50%;" id="profile-thumbnail-img">
 
                         <div class="d-flex flex-column p-0">
                             <h5>Profile Image</h5>
