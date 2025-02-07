@@ -90,10 +90,10 @@
                 Dashboard
             </button>
 
-            <button class="nav-link text-white d-flex gap-4" id="nav-notifications" data-bs-toggle="pill" data-bs-target="#tab-notifications" type="button" role="tab" aria-controls="tab-notifications" aria-selected="false">
+            <!-- <button class="nav-link text-white d-flex gap-4" id="nav-notifications" data-bs-toggle="pill" data-bs-target="#tab-notifications" type="button" role="tab" aria-controls="tab-notifications" aria-selected="false">
                 <i class="bi-bell-fill"></i>
                 Notifications
-            </button>
+            </button> -->
 
             <button class="nav-link text-white d-flex gap-4" id="nav-appointments" data-bs-toggle="pill" data-bs-target="#tab-appointments" type="button" role="tab" aria-controls="tab-appointments" aria-selected="false">
                 <i class="bi-calendar-event-fill"></i>
@@ -216,7 +216,9 @@
 
                             <td>{{ $appointment->clinic->location }}</td>
                             <td>{{ $appointment->service->name }}</td>
-                            <td>{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</td>
+                            <td>
+                                {{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}
+                            </td>
                             <td class="d-flex justify-content-center gap-2">
                                 <a class="btn btn-primary btn-sm" href="{{ route('user.record', $appointment->id) }}">
                                     <i class="bi-eye-fill"></i>

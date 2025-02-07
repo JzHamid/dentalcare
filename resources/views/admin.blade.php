@@ -108,10 +108,10 @@
                     Dashboard
                 </button>
 
-                <button class="nav-link text-white d-flex gap-4" id="nav-notifications" data-bs-toggle="pill" data-bs-target="#tab-notifications" type="button" role="tab" aria-controls="tab-notifications" aria-selected="false">
+                <!-- <button class="nav-link text-white d-flex gap-4" id="nav-notifications" data-bs-toggle="pill" data-bs-target="#tab-notifications" type="button" role="tab" aria-controls="tab-notifications" aria-selected="false">
                     <i class="bi-bell-fill"></i>
                     Notifications
-                </button>
+                </button> -->
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-appointments" data-bs-toggle="pill" data-bs-target="#tab-appointments" type="button" role="tab" aria-controls="tab-appointments" aria-selected="false">
                     <i class="bi-calendar-event-fill"></i>
@@ -266,7 +266,7 @@
                     <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th class="text-center" scope="col">ID</th>
+                                <!-- <th class="text-center" scope="col">ID</th> -->
                                 <th scope="col">Patient Name</th>
                                 <th scope="col">Services</th>
                                 <th scope="col">Set By</th>
@@ -279,12 +279,13 @@
                         <tbody>
                             @foreach ($appointments as $appointment)
                                 <tr>
-                                    <th class="text-center" scope="row">{{ $appointment->id }}</th>
+                                    <!-- <th class="text-center" scope="row">{{ $appointment->id }}</th> -->
                                     <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                                     <td>{{ $appointment->service->name }}</td>
                                     <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
-                                    <td>{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</td>
                                     <td>
+                                {{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}
+                            </td>                                    <td>
                                         @switch ( $appointment->status )
                                             @case ('Pending')
                                                 <span class="badge text-bg-primary">Pending</span>
@@ -328,7 +329,7 @@
                     <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th class="text-center" scope="col">ID</th>
+                                <!-- <th class="text-center" scope="col">ID</th> -->
                                 <th scope="col">Name of Service</th>
                                 <th scope="col">Duration</th>
                                 <th scope="col">Price Range</th>
@@ -339,7 +340,7 @@
                         <tbody>
                             @foreach ($services as $service)
                                 <tr>
-                                    <th class="text-center" scope="row">{{ $service->id }}</th>
+                                    <!-- <th class="text-center" scope="row">{{ $service->id }}</th> -->
                                     <td>{{ $service->name }}</td>
                                     <td>{{ floor($service->duration / 60) . 'hr ' . ($service->duration % 60) . 'm' }}</td>
                                     <td>{{ $service->price_start }} - {{ $service->price_end }}</td>
@@ -380,7 +381,7 @@
                     <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th class="text-center" scope="col">ID</th>
+                                <!-- <th class="text-center" scope="col">ID</th> -->
                                 <th scope="col">Patient Name</th>
                                 <th scope="col">Age</th>
                                 <th scope="col">Email Address</th>
@@ -412,7 +413,7 @@
                     <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th class="text-center" scope="col">ID</th>
+                                <!-- <th class="text-center" scope="col">ID</th> -->
                                 <th scope="col">Clinic Name</th>
                                 <th scope="col">Email Address</th>
                                 <th scope="col">Contact No.</th>
@@ -424,7 +425,7 @@
                         <tbody>
                             @foreach ($listings as $listing)
                                 <tr>
-                                    <th class="text-center" scope="row">{{ $listing->id }}</th>
+                                    <!-- <th class="text-center" scope="row">{{ $listing->id }}</th> -->
                                     <td>{{ $listing->clinic->name }}</td>
                                     <td>{{ $listing->clinic->email }}</td>
                                     <td>{{ $listing->clinic->contact }}</td>
@@ -457,7 +458,7 @@
                     <h1 class="mb-5">Staffs</h1>
 
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-                        <h5 class="m-0">List of staffs</h5>
+                        <h5 class="m-0">List of Staffs</h5>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-collab">
                             <i class="bi-plus-lg"></i>
                             Add
@@ -467,7 +468,7 @@
                     <table class="table table-bordered">
                         <thead class="table-primary">
                             <tr>
-                                <th class="text-center" scope="col">ID</th>
+                                <!-- <th class="text-center" scope="col">ID</th> -->
                                 <th scope="col">Name</th>
                                 <th scope="col">Contact No.</th>
                                 <th scope="col">Date Added</th>
@@ -481,7 +482,7 @@
                             @foreach ($users as $user)
                                 @if ($user->status > 0)
                                     <tr>
-                                        <th class="text-center" scope="row">{{ $user->id }}</th>
+                                        <!-- <th class="text-center" scope="row">{{ $user->id }}</th> -->
                                         <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
                                         <td>{{ $user->phone }}</td>
                                         <td>{{ Carbon\Carbon::parse($user->date_collab)->format('F j, Y') }}</td>

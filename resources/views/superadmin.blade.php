@@ -198,7 +198,9 @@
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                             <td>{{ $appointment->service->name }}</td>
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
-                            <td>{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</td>
+                            <td>
+                                {{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}
+                            </td>
                             <td>
                                 @switch ( $appointment->status )
                                 @case ('Pending')
