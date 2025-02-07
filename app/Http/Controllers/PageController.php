@@ -59,11 +59,12 @@ class PageController extends Controller
     {
         $appointments = Appointments::all();
         $dentist = User::where('status', 2)->get();
+        $secretary = User::where('status', 1)->get();
         $users = User::where('status', 0)->get();
         $services = Service::all();
         $listings = Listing::all();
 
-        return view('superadmin')->with(['dentist' => $dentist, 'users' => $users, 'appointments' => $appointments, 'services' => $services, 'listings' => $listings]);
+        return view('superadmin')->with(['dentist' => $dentist, 'users' => $secretary, 'users' => $users, 'appointments' => $appointments, 'services' => $services, 'listings' => $listings]);
     }
 
     public function listing()

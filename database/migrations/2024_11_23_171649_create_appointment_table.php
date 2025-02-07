@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('listing_id')->references('id')->on('clinic')->onDelete('cascade');
             $table->timestamp('appointment_time')->nullable();
             $table->timestamp('rescheduled_time')->nullable();
+            $table->timestamp('reschedule_reason')->nullable();
             $table->string('status');
         });
     }

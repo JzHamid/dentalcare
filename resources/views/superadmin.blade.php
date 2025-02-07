@@ -101,6 +101,11 @@
                 Dentists
             </button>
 
+            <button class="nav-link text-white d-flex gap-4" id="nav-dentist" data-bs-toggle="pill" data-bs-target="#tab-secretary" type="button" role="tab" aria-controls="tab-secretary" aria-selected="false">
+                <i class="bi-person-fill-add"></i>
+                Secretary
+            </button>
+
             <button class="nav-link text-white d-flex gap-4" id="nav-listing" data-bs-toggle="pill" data-bs-target="#tab-listing" type="button" role="tab" aria-controls="tab-listing" aria-selected="false">
                 <i class="bi-building-fill"></i>
                 Listing
@@ -348,6 +353,54 @@
                             <td>{{ $dent->email }}</td>
                             <td>{{ $dent->phone }}</td>
                             <td>{{ trim("{$dent->street_name}, {$dent->city}, {$dent->province}", ', ') }}</td>
+                            <td class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-dentist" onclick="get_dentist('{{ $dent->id }}')">
+                                    <i class="bi-pencil-square"></i>
+                                </button>
+
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-dentist" data-user-id="{{ $dent->id }}">
+                                    <i class="bi-trash-fill"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="tab-pane gap-5 p-3" id="tab-secretary" role="tabpanel" aria-labelledby="tab-secretary" tabindex="0">
+                <h1 class="mb-5">Secretary</h1>
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="m-0">List of Secretaries</h5>
+
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-secretary">
+                        <i class="bi-plus-lg"></i>
+                        Add
+                    </button>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead class="table-primary">
+                        <tr>
+                            <th class="text-center" scope="col">ID</th>
+                            <th scope="col">Secretary Name</th>
+                            <th scope="col">Email Address</th>
+                            <th scope="col">Phone</th>
+                            <th scope="col">Address</th>
+                            <th class="text-center" scope="col">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach ($secretary as $sec)
+                        <tr>
+                            <th class="text-center" scope="row">{{ $sec->id }}</th>
+                            <td>{{ $sec->fname . ' ' . $sec->mname . ' ' . $sec->lname }}</td>
+                            <td>{{ $sec->email }}</td>
+                            <td>{{ $sec->phone }}</td>
+                            <td>{{ trim("{$sec->street_name}, {$sec->city}, {$sec->province}", ', ') }}</td>
                             <td class="d-flex justify-content-center gap-2">
                                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-dentist" onclick="get_dentist('{{ $dent->id }}')">
                                     <i class="bi-pencil-square"></i>
@@ -688,6 +741,93 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
                     <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('add-dentist-form').submit()">Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+       <!-- Add Secretary -->
+       <div class="modal fade" data-bs-backdrop="static" id="add-secretary" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Secretary</h5>
+                </div>
+
+                <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.secretary') }}" method="post" id="add-secretary-form">
+                    @csrf
+
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="fnames">First Name</label>
+                            <input class="form-control" type="text" name="fnames">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="mnames">Middle Name</label>
+                            <input class="form-control" type="text" name="mnames">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="lnames">Last Name</label>
+                            <input class="form-control" type="text" name="lnames">
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="birthdates">Date of Birth</label>
+                            <input class="form-control" type="date" name="birthdates">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="sexs">Sexuality</label>
+                            <select class="form-select" name="sexs">
+                                <option selected disabled>-- Select --</option>
+                                <option value="0">Male</option>
+                                <option value="1">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="phones">Contact No.</label>
+                            <input class="form-control" type="tel" name="phones">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="emails">Email Address</label>
+                            <input class="form-control" type="email" name="emails">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="streetName">Street Name</label>
+                        <input class="form-control" type="text" id="streetName" name="street_names" placeholder="Enter street name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="city">City</label>
+                        <input class="form-control" type="text" id="city" name="citys" placeholder="Enter city">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="province">Province</label>
+                        <input class="form-control" type="text" id="province" name="provinces" placeholder="Enter province">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="postalCode">Postal Code</label>
+                        <input class="form-control" type="text" id="postalCode" name="postal_codes" placeholder="Enter postal code">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="passwordd">Default Password</label>
+                        <input class="form-control" type="password" name="passwords">
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-danger w-25" type="button" onclick="document.getElementById('add-secretary-form').submit()">Add</button>
                 </div>
             </div>
         </div>
