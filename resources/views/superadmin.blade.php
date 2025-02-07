@@ -181,7 +181,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Patient Name</th>
                             <th scope="col">Services</th>
                             <th scope="col">Set By</th>
@@ -194,11 +194,13 @@
                     <tbody>
                         @foreach ($appointments as $appointment)
                         <tr>
-                            <th class="text-center" scope="row">1</th>
+                            <!-- <th class="text-center" scope="row">1</th> -->
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                             <td>{{ $appointment->service->name }}</td>
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
-                            <td>{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</td>
+                            <td>
+                                {{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}
+                            </td>
                             <td>
                                 @switch ( $appointment->status )
                                 @case ('Pending')
@@ -240,7 +242,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Name of Service</th>
                             <th scope="col">Duration</th>
                             <th scope="col">Price Range</th>
@@ -251,7 +253,7 @@
                     <tbody>
                         @foreach ($services as $service)
                         <tr>
-                            <th class="text-center" scope="row">{{ $service->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $service->id }}</th> -->
                             <td>{{ $service->name }}</td>
                             <td>{{ floor($service->duration / 60) . 'hr ' . ($service->duration % 60) . 'm' }}</td>
                             <td>{{ $service->price_start }} - {{ $service->price_end }}</td>
@@ -285,7 +287,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Patient Name</th>
                             <th class="text-center" scope="col">Age</th>
                             <th scope="col">Email Address</th>
@@ -297,7 +299,7 @@
                     <tbody>
                         @foreach ($users as $user)
                         <tr>
-                            <th class="text-center" scope="row">{{ $user->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $user->id }}</th> -->
                             <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
                             <td class="text-center">{{ Carbon\Carbon::parse($user->birthdate)->age }}</td>
                             <td>{{ $user->email }}</td>
@@ -334,7 +336,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Dentist Name</th>
                             <th scope="col">Specialization</th>
                             <th scope="col">Email Address</th>
@@ -347,7 +349,7 @@
                     <tbody>
                         @foreach ($dentist as $dent)
                         <tr>
-                            <th class="text-center" scope="row">{{ $dent->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $dent->id }}</th> -->
                             <td>{{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</td>
                             <td></td>
                             <td>{{ $dent->email }}</td>
@@ -384,7 +386,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Secretary Name</th>
                             <th scope="col">Email Address</th>
                             <th scope="col">Phone</th>
@@ -396,17 +398,17 @@
                     <tbody>
                         @foreach ($secretary as $sec)
                         <tr>
-                            <th class="text-center" scope="row">{{ $sec->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $sec->id }}</th> -->
                             <td>{{ $sec->fname . ' ' . $sec->mname . ' ' . $sec->lname }}</td>
                             <td>{{ $sec->email }}</td>
                             <td>{{ $sec->phone }}</td>
                             <td>{{ trim("{$sec->street_name}, {$sec->city}, {$sec->province}", ', ') }}</td>
                             <td class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-dentist" onclick="get_dentist('{{ $dent->id }}')">
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-secretary" onclick="get_dentist('{{ $sec->id }}')">
                                     <i class="bi-pencil-square"></i>
                                 </button>
 
-                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-dentist" data-user-id="{{ $dent->id }}">
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-secretary" data-user-id="{{ $sec->id }}">
                                     <i class="bi-trash-fill"></i>
                                 </button>
 
@@ -434,7 +436,7 @@
                 <table class="table table-bordered">
                     <thead class="table-primary">
                         <tr>
-                            <th class="text-center" scope="col">ID</th>
+                            <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Clinic Name</th>
                             <th scope="col">Email Address</th>
                             <th scope="col">Contact No.</th>
@@ -446,7 +448,7 @@
                     <tbody>
                         @foreach ($listings as $listing)
                         <tr>
-                            <th class="text-center" scope="row">{{ $listing->id }}</th>
+                            <!-- <th class="text-center" scope="row">{{ $listing->id }}</th> -->
                             <td>{{ $listing->name }}</td>
                             <td>{{ $listing->email }}</td>
                             <td>{{ $listing->contact }}</td>
@@ -746,8 +748,8 @@
         </div>
     </div>
 
-       <!-- Add Secretary -->
-       <div class="modal fade" data-bs-backdrop="static" id="add-secretary" tabindex="-1">
+    <!-- Add Secretary -->
+    <div class="modal fade" data-bs-backdrop="static" id="add-secretary" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -916,6 +918,94 @@
                 <div class="modal-footer">
                     <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
                     <button class="btn btn-primary w-25" type="button" onclick="document.getElementById('edit-dentist-form').submit()">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Secretary -->
+    <div class="modal fade" data-bs-backdrop="static" id="edit-secretary" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Secretary</h5>
+                </div>
+
+                <form class="modal-body d-flex flex-column gap-2" action="{{ route('update.secretary') }}" method="post" id="edit-secretary-form">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="id" id="secretary-id">
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="fnamesec">First Name</label>
+                            <input class="form-control" type="text" name="fnamesec" id="fnamesec">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="mnamesec">Middle Name</label>
+                            <input class="form-control" type="text" name="mnamesec" id="mnamesec">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="lnamesec">Last Name</label>
+                            <input class="form-control" type="text" name="lnamesec" id="lnamesec">
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="birthdatesec">Date of Birth</label>
+                            <input class="form-control" type="date" name="birthdatesec" id="birthdatesec">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="sexsec">Sexuality</label>
+                            <select class="form-select" name="sexsec" id="sexsec">
+                                <option selected disabled>-- Select --</option>
+                                <option value="0">Male</option>
+                                <option value="1">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="phonesec">Contact No.</label>
+                            <input class="form-control" type="tel" name="phonesec" id="phonesec">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="emailsec">Email Address</label>
+                            <input class="form-control" type="email" name="emailsec" id="emailsec">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label m-0" for="edit-street">Street Name</label>
+                        <input class="form-control" name="street_namesec" id="street_namesec" type="text" placeholder="Street Name" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <label class="form-label m-0" for="edit-province">Province</label>
+                        <input class="form-control" name="provincesec" id="provincesec" type="text" placeholder="Province" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <label class="form-label m-0" for="edit-city">City</label>
+                        <input class="form-control" name="citysec" id="citysec" type="text" placeholder="City" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <div class="form-group">
+                            <label class="form-label m-0" for="edit-postal-code">Postal Code</label>
+                            <input class="form-control" name="postal_codesec" id="postal_codesec" type="text" placeholder="Postal Code" required>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary w-25" type="button" onclick="document.getElementById('edit-secretary-form').submit()">Update</button>
                 </div>
             </div>
         </div>
@@ -1402,6 +1492,35 @@
                 $('#provincee').val(data.user.province);
                 $('#citye').val(data.user.city);
                 $('#postal_codee').val(data.user.postal_code);
+            });
+        }
+
+        function get_secretary(id) {
+            fetch(`/get-secretary/${parseInt(id, 10)}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                console.log("Fetched Data:", data);
+                $('#secretary-id').val(data.user.id);
+                $('#fnamesec').val(data.user.fname);
+                $('#mnamesec').val(data.user.mname);
+                $('#lnamesec').val(data.user.lname);
+
+                const birthdate = new Date(data.user.birthdate).toISOString().split('T')[0];
+                $('#birthdatesec').val(birthdate);
+
+                $('#sexsec').val(data.user.gender);
+                $('#phonesec').val(data.user.phone);
+                $('#emailsec').val(data.user.email);
+                $('#street_namesec').val(data.user.street_name);
+                $('#provincesec').val(data.user.province);
+                $('#citysec').val(data.user.city);
+                $('#postal_codesec').val(data.user.postal_code);
             });
         }
 

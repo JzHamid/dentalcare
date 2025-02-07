@@ -64,7 +64,7 @@ class PageController extends Controller
         $services = Service::all();
         $listings = Listing::all();
 
-        return view('superadmin')->with(['dentist' => $dentist, 'users' => $secretary, 'users' => $users, 'appointments' => $appointments, 'services' => $services, 'listings' => $listings]);
+        return view('superadmin')->with(['dentist' => $dentist, 'secretary' => $secretary, 'users' => $users, 'appointments' => $appointments, 'services' => $services, 'listings' => $listings]);
     }
 
     public function listing()

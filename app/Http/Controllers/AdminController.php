@@ -289,7 +289,54 @@ class AdminController extends Controller
         return redirect('superadmin')->with(['page' => 4]);
     }
 
+    public function update_secretary(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:users,id',
+            'fnamesec' => 'required|string|max:255',
+            'mnamesec' => 'nullable|string|max:255',
+            'lnamesec' => 'required|string|max:255',
+            'birthdatesec' => 'required|date',
+            'sexsec' => 'required|integer|in:0,1',
+            'phonesec' => 'required|string|max:15',
+            'emailsec' => 'required|email|max:255',
+            'street_namesec' => 'required|string|max:255',
+            'provincesec' => 'required|string|max:255',
+            'citysec' => 'required|string|max:255',
+            'postal_codesec' => 'required|string|max:10',
+            'profilesec' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',  // Add validation for profile image
+        ]);
+
+        $dentist = User::find($request->id);
+
+        // Update the rest of the fields
+        $dentist->fname = $request->fnamesec;
+        $dentist->mname = $request->mnamesec;
+        $dentist->lname = $request->lnamesec;
+        $dentist->birthdate = $request->birthdatesec;
+        $dentist->gender = $request->sexsec;
+        $dentist->phone = $request->phonesec;
+        $dentist->email = $request->emailsec;
+        $dentist->street_name = $request->street_namesec;
+        $dentist->province = $request->provincesec;
+        $dentist->city = $request->citysec;
+        $dentist->postal_code = $request->postal_codesec;
+
+        // Save the changes to the user record
+        $dentist->save();
+
+        // Redirect based on status
+        return redirect('superadmin')->with(['page' => 4]);
+    }
+
     public function get_dentist($id)
+    {
+        $user = User::find($id);
+
+        return response()->json(['user' => $user]);
+    }
+
+    public function get_secretary($id)
     {
         $user = User::find($id);
 

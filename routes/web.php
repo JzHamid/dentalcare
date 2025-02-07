@@ -27,6 +27,7 @@ Route::get('/user-record/{id}', [AdminController::class, 'record_user'])->name('
 Route::get('/superadmin', [PageController::class, 'superadmin'])->name('superadmin')->middleware('auth');
 Route::post('/reset-password', [PageController::class]);
 
+
 // Appointment
 Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
 Route::post('/reschedule-appointment/{id}', [AdminController::class, 'reschedule_appointment'])->name('reschedule.appointment')->middleware(['auth']);
@@ -49,6 +50,9 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
 
     // secretary
     Route::post('/create-secretary', [AdminController::class, 'create_secretary'])->name('create.secretary');
+    Route::get('/get-secretary/{id}', [AdminController::class, 'get_secretary'])->name('get.secretary');
+    Route::put('/update-secretary', [AdminController::class, 'update_secretary'])->name('update.secretary');
+
 
     // Listing
     Route::post('/create-listing', [AdminController::class, 'create_listing'])->name('create.listing');
