@@ -210,6 +210,45 @@ class AdminController extends Controller
         return redirect('superadmin')->with(['page' => 4]);
     }
 
+    public function create_secretary(Request $request)
+    {
+        $validData = $request->validate([
+            'fnames' => 'required|string|max:255',
+            'mnames' => 'nullable|string|max:255',
+            'lnames' => 'required|string|max:255',
+            'birthdates' => 'required|date|before:today',
+            'sexs' => 'required',
+            'phones' => 'required|digits_between:10,15',
+            'emails' => 'required|email|unique:users,email',
+            'street_names' => 'required|string|max:255',
+            'citys' => 'required|string|max:255',
+            'provinces' => 'required|string|max:255',
+            'postal_codes' => 'required|string|max:20',
+            'passwords' => 'required|string|min:8',
+        ]);
+
+        $user = new User();
+
+        $user->fname = $validData['fnames'];
+        $user->mname = $validData['mnames'];
+        $user->lname = $validData['lnames'];
+        $user->birthdate = $validData['birthdates'];
+        $user->gender = $validData['sexs'];
+        $user->phone = $validData['phones'];
+        $user->email = $validData['emails'];
+        $user->street_name = $validData['street_names'];
+        $user->city = $validData['citys'];
+        $user->province = $validData['provinces'];
+        $user->postal_code = $validData['postal_codes'];
+
+        $user->password = bcrypt($validData['passwords']);
+        $user->status = 1;
+
+        $user->save();
+
+        return redirect('superadmin')->with(['page' => 5]);
+    }
+
     public function update_dentist(Request $request)
     {
         $request->validate([
