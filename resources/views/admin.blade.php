@@ -144,7 +144,7 @@
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-collab" data-bs-toggle="pill" data-bs-target="#tab-collab" type="button" role="tab" aria-controls="tab-collab" aria-selected="false">
                     <i class="bi-person-fill-add"></i>
-                    Collaborators
+                    Staffs
                 </button>
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-profile" data-bs-toggle="pill" data-bs-target="#tab-profile" type="button" role="tab" aria-controls="tab-profile" aria-selected="false">
@@ -454,10 +454,10 @@
                 </div>
 
                 <div class="tab-pane gap-5 p-3" id="tab-collab" role="tabpanel" aria-labelledby="tab-collab" tabindex="0">
-                    <h1 class="mb-5">Collaborators</h1>
+                    <h1 class="mb-5">Staffs</h1>
 
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-                        <h5 class="m-0">List of Collaborators</h5>
+                        <h5 class="m-0">List of staffs</h5>
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-collab">
                             <i class="bi-plus-lg"></i>
                             Add

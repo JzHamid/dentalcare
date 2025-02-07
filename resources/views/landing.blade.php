@@ -97,7 +97,7 @@
         <div class="row d-flex px-5 mb-5 justify-content-center gap-5">
             @foreach ($serviceRow as $service)
             <div class="col-md-3 rounded shadow-sm p-4 gap-3 d-flex flex-column">
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('/' . $service->image_path) }}">
+                <img style="height: 200px; width: 200px; border-radius: 50%" class="img-fluid d-block mx-auto" src="{{ asset('/' . $service->image_path) }}">
                 <h5 class="text-center">{{ $service->name }}</h5>
                 <p style="text-align: justify;">{{ $service->description }}</p>
             </div>
@@ -112,9 +112,9 @@
         <div class="row d-flex px-5 gap-3">
             <div class="col rounded shadow-sm p-4">
                 @if(isset($service) && $service->image_path && file_exists(public_path('storage/' . $service->image_path)))
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('storage/' . $service->image_path) }}">
+                <img style="height: 200px;" class="img-fluid d-block mx-auto" src="{{ asset('storage/' . $service->image_path) }}">
                 @else
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('services_image/accessability.png') }}">
+                <img style="height: 200px;" class="img-fluid d-block mx-auto" src="{{ asset('services_image/accessability.png') }}">
                 @endif
                 <h5 class="text-center">Comprehensive Access</h5>
                 <p style="text-align: justify;">We connect you to a wide range of trusted dental clinics in downtown Zamboanga City. Whether you're looking for routine cleaning, orthodontics, or specialized treatments, you'll find the right clinic with just a few clicks</p>
@@ -122,27 +122,27 @@
 
             <div class="col rounded shadow-sm p-4">
                 @if(isset($service) && $service->image_path && file_exists(public_path('storage/' . $service->image_path)))
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('storage/' . $service->image_path) }}">
+                <img style="height: 200px;" class="img-fluid d-block mx-auto" src="{{ asset('storage/' . $service->image_path) }}">
                 @else
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('services_image/data.png') }}">
+                <img style="height: 200px;" class="img-fluid d-block mx-auto" src="{{ asset('services_image/data.png') }}">
                 @endif <h5 class="text-center">Realtime Availability</h5>
                 <p style="text-align: justify;">With our seamless booking system, you can see real-time appointment availability for each clinic. No need to call multiple places—schedule an appointment whenever it’s convenient for you, instantly.</p>
             </div>
 
             <div class="col rounded shadow-sm p-4">
                 @if(isset($service) && $service->image_path && file_exists(public_path('storage/' . $service->image_path)))
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('storage/' . $service->image_path) }}">
+                <img style="height: 200px;" class="img-fluid d-block mx-auto" src="{{ asset('storage/' . $service->image_path) }}">
                 @else
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('services_image/price-tag.png') }}">
+                <img style="height: 200px;" class="img-fluid d-block mx-auto" src="{{ asset('services_image/price-tag.png') }}">
                 @endif <h5 class="text-center">Price Transparency</h5>
                 <p style="text-align: justify;">Compare prices across clinics before making a decision. We provide upfront information on costs for services like cleaning, fillings, crowns, and more, so there are no surprises when it comes time to pay.</p>
             </div>
 
             <div class="col rounded shadow-sm p-4">
                 @if(isset($service) && $service->image_path && file_exists(public_path('storage/' . $service->image_path)))
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('storage/' . $service->image_path) }}">
+                <img style="height: 200px;" class="img-fluid d-block mx-auto" src="{{ asset('storage/' . $service->image_path) }}">
                 @else
-                <img style="height: 250px;" class="img-fluid d-block mx-auto" src="{{ asset('services_image/personalization.png') }}">
+                <img style="height: 200px;" class="img-fluid d-block mx-auto" src="{{ asset('services_image/personalization.png') }}">
                 @endif <h5 class="text-center">Tailored For You</h5>
                 <p style="text-align: justify;">Whether you're booking for yourself, a family member, or even multiple people at once, our platform makes it easy to manage all your appointments in one place.</p>
             </div>
@@ -164,7 +164,8 @@
                     </h2>
 
                     <div class="accordion-collapse collapse" id="faqOne" data-bs-parent="#faq">
-                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                        <div class="accordion-body">
+                        To book an appointment, first you need to log in or create an account if you don't have one. After that, click the "book now" button, and then it will show you the available clinic. Choose a clinic, then fill out the form, and it's done.                        </div>
                     </div>
                 </div>
 
@@ -176,7 +177,9 @@
                     </h2>
 
                     <div class="accordion-collapse collapse" id="faqTwo" data-bs-parent="#faq">
-                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                        <div class="accordion-body">
+                            Yes, you can request a specific dentist when booking your appointment. Simply select the name of the dentist you prefer when filling out the form. 
+                        </div>
                     </div>
                 </div>
 
@@ -188,7 +191,9 @@
                     </h2>
 
                     <div class="accordion-collapse collapse" id="faqThree" data-bs-parent="#faq">
-                        <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                        <div class="accordion-body">
+                            If you need to cancel or reschedule your appointment, please contact us as soon as possible. You can call our office or reschedule through our website or mobile app. We kindly ask for at least 24 hours' notice to avoid cancellation fees.
+                        </div>
                     </div>
                 </div>
             </div>
