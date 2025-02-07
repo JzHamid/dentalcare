@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AppointmentRescheduledMail;
+use Illuminate\Support\Facades\DB;
 
 
 class PageController extends Controller
@@ -43,16 +44,45 @@ class PageController extends Controller
         }
     }
 
+    private function getServicesForDentist($dentistId)
+    {
+        // Step 1: Get the clinic IDs where the dentist is available.
+        // Assuming the available_dentist table has columns: id, clinic_id, user_id.
+        $clinicIds = DB::table('available_dentist')
+            ->where('user_id', $dentistId)
+            ->pluck('clinic_id')
+            ->toArray();
+
+        // Step 2: From those clinics, get the service IDs available.
+        // The Available model corresponds to the service_available table.
+        $serviceIds = Available::whereIn('listing_id', $clinicIds)
+            ->pluck('service_id')
+            ->unique()   // in case a service is available at more than one clinic.
+            ->toArray();
+
+        // Step 3: Retrieve and return the corresponding Service models.
+        return Service::whereIn('id', $serviceIds)->get();
+    }
+
     public function admin()
     {
         $log = Auth::user();
-        $services = Service::all();
+
+        // Instead of showing all services, get only those available for the logged-in dentist.
+        $services = $this->getServicesForDentist($log->id);
+
         $assign = Assign::where('user_id', $log->id)->get();
         $appointments = Appointments::where('dentist_id', $log->id)->get();
-
         $users = User::all();
 
-        return view('admin')->with(['appointments' => $appointments, 'services' => $services, 'listings' => $assign, 'users' => $users, 'log' => $log, 'is_online' => $log->is_online]);
+        return view('admin')->with([
+            'appointments' => $appointments,
+            'services'     => $services,
+            'listings'     => $assign,
+            'users'        => $users,
+            'log'          => $log,
+            'is_online'    => $log->is_online,
+        ]);
     }
 
     public function superadmin()
