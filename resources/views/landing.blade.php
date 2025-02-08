@@ -42,9 +42,7 @@
             @auth
             <div class="d-flex gap-4" style="margin-right: 100px;">
                 <div class="dropdown">
-                    <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi-bell-fill"></i>
-                    </button>
+                    <!--remove notif button -->
 
                     <ul class="dropdown-menu dropdown-end">
 
