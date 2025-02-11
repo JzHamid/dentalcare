@@ -136,13 +136,32 @@
                             <hr>
 
                             <div class="d-flex flex-column gap-2 overflow-y-scroll p-4" style="max-height: 300px;">
-                                @foreach ($appointments as $appointment)
+                            @foreach ($appointments->where('status', '!=', 'Done') as $appointment)
                                 <div class="container-fluid d-flex shadow-sm rounded p-4 gap-3">
                                     <img style="height: 100px; width: 100px; border-radius: 5px; border: solid black 2px;" src="{{ asset('/' . $appointment->service->image_path) }}">
 
                                     <div class="d-flex flex-column gap-2 w-100">
                                         <p class="fw-bold m-0">Service: <span class="fw-light">{{ $appointment->service->name }}</span></p>
                                         <p class="fw-bold m-0">Appointment Time: <span class="fw-light">{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}</span></p>
+                                        <p class="fw-bold m-0">Status: 
+                                        @switch ( $appointment->status )
+                                        @case ('Pending')
+                                        <span class="text-primary fw-bold text-uppercase">Pending</span>
+                                        @break
+                                        @case ('Done')
+                                        <span class="text-success fw-bold text-uppercase">Done</span>
+                                        @break
+                                        @case ('Upcoming')
+                                        <span class="text-warning fw-bold text-uppercase">Upcoming</span>
+                                        @break
+                                        @case ('Rescheduled')
+                                        <span class="text-info fw-bold text-uppercase">Rescheduled</span>
+                                        @break
+                                        @case ('Cancelled')
+                                        <span class="text-danger fw-bold text-uppercase">Cancelled</span>
+                                        @break
+                                        @endswitch
+                                        </p>
                                         <a class="btn btn-link btn-sm text-center align-self-end text-decoration-none fw-bold" href="{{ route('user.record', $appointment->id) }}">View Appointment</a>
                                     </div>
                                 </div>
