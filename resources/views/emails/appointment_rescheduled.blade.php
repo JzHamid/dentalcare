@@ -14,7 +14,7 @@
                 <table cellpadding="0" cellspacing="0" border="0" width="600" style="background-color: white; border-radius: 5px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
                     <tr>
                         <td style="background-color: #345D95; padding: 20px; text-align: center;">
-                            <h1 style="color: white; margin: 0;">Appointment Rescheduled</h1>
+                            <h1 style="color: white; margin: 0; font-weight: bold;">Appointment Rescheduled</h1>
                         </td>
                     </tr>
                     <tr>
@@ -22,7 +22,7 @@
                             <table cellpadding="0" cellspacing="0" border="0" width="100%">
                                 <tr>
                                     <td width="60%" style="vertical-align: top; padding-right: 20px;">
-                                        <h2 style="color: #345D95; margin-top: 0;">Patient Information</h2>
+                                        <h2 style="color: #345D95; margin-top: 0; font-weight: bold;">Patient Information</h2>
                                         <p><strong>Name:</strong> {{ $patient->fname }} {{ $patient->mname }} {{ $patient->lname }}</p>
                                         <p><strong>Birthdate:</strong> {{ $patient->birthdate }}</p>
                                         <p>
@@ -36,7 +36,7 @@
                                         <p><strong>Original Appointment:</strong> {{ $appointment->appointment_time }}</p>
                                         <p><strong>Rescheduled Appointment:</strong> {{ $appointment->rescheduled_time }}</p>
                                         <p><strong>Reschedule Reason:</strong> {{ $appointment->reschedule_reason }}</p>
-                                        <p><strong>Dentist:</strong> {{ $dentist->fname }} {{ $dentist->lname }}</p>
+                                        <p><strong>Dentist:</strong>Dr. {{ $dentist->fname }} {{ $dentist->lname }}</p>
                                         <p><strong>Service:</strong> {{ $service->name }}</p>
                                         <p><strong>Clinic:</strong> {{ $clinic->name }}</p>
                                     </td>

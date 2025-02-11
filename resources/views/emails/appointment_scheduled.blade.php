@@ -34,7 +34,7 @@
 
                                         <h2 style="color: #345D95; margin-top: 20px;">Appointment Details</h2>
                                         <p><strong>Appointment Time:</strong> {{ $details['appointment_time'] }}</p>
-                                        <p><strong>Dentist:</strong> {{ $details['dentist_name'] }} </p>
+                                        <p><strong>Dentist:</strong>Dr. {{ $details['dentist_name'] }} </p>
                                         <p><strong>Service Name:</strong> {{ $details['service_name'] }}</p>
                                         <p><strong>Clinic Name:</strong> {{ $details['clinic_name'] }}</p>
                                     </td>
