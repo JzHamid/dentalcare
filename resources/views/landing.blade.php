@@ -89,14 +89,14 @@
     </div>
 
     <div class="container-fluid bg-light p-5 mb-5" id="services">
-        <h1 class="text-default text-center mb-5">SERVICES</h1>
+        <h1 class="text-default text-center mb-5 fw-bold">SERVICES</h1>
 
         @foreach ($services->chunk(3) as $serviceRow)
         <div class="row d-flex px-5 mb-5 justify-content-center gap-5">
             @foreach ($serviceRow as $service)
             <div class="col-md-3 rounded shadow-sm p-4 gap-3 d-flex flex-column">
-                <img style="height: 200px; width: 200px; border-radius: 50%" class="img-fluid d-block mx-auto" src="{{ asset('/' . $service->image_path) }}">
-                <h5 class="text-center">{{ $service->name }}</h5>
+                <img style="height: 200px; width: 300px; border-radius: 5px;" class="img-fluid d-block mx-auto" src="{{ asset('/' . $service->image_path) }}">
+                <h5 class="text-center">{{ $service->name }} <br>Price starts at ₱{{ $service->price_start }}.00</h5>
                 <p style="text-align: justify;">{{ $service->description }}</p>
             </div>
             @endforeach
@@ -105,7 +105,7 @@
     </div>
 
     <div class="container-fluid mb-5">
-        <h1 class="text-default text-center mb-5">WHY WE ARE DIFFERENT</h1>
+        <h1 class="text-default text-center mb-5 fw-bold">WHY WE ARE DIFFERENT</h1>
 
         <div class="row d-flex px-5 gap-3">
             <div class="col rounded shadow-sm p-4">
@@ -207,9 +207,9 @@
         <div class="col">
             <h5 class="text-center fw-bold">Quick Links</h5>
             <div class="d-flex flex-column align-items-center">
-                <a href="#home">Home</a>
-                <a href="#services">Services</a>
-                <a href="#faqp">FAQ</a>
+                <a href="#home" class="text-decoration-none">Home</a>
+                <a href="#services" class="text-decoration-none">Services</a>
+                <a href="#faqp" class="text-decoration-none">FAQ</a>
             </div>
         </div>
 

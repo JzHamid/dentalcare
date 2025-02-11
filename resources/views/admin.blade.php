@@ -88,15 +88,15 @@
                         @endif
                     </div>
                     
-                    <h6 class="text-center text-white m-0">{{ $log->fname . ' ' . $log->mname . ' ' . $log->lname }}</h6>
-                    <p class="fw-light text-white mb-2">Title</p>
+                    <h6 class="text-center text-white m-0 fw-bold fs-6">{{ $log->fname . ' ' . $log->mname . ' ' . $log->lname }}</h6>
+                    <p class="fw-light text-white mb-2 fs-6">Dental Specialis</p>
 
                     <form class="w-100 d-flex justify-content-center" action="{{ route('availability') }}" method="post" id="availability">
                         @csrf
 
-                        <select class="form-select form-select-sm w-75" style="font-size: x-small;" name="online" onchange="document.getElementById('availability').submit()">
-                            <option value="1" @selected($is_online == 1)>Available</option>
-                            <option value="0" @selected($is_online == 0)>Not Available</option>
+                        <select class="form-select form-select-sm w-75 fw-bold" style="font-size: x-small;" name="online" onchange="document.getElementById('availability').submit()">
+                            <option class = "fw-bold" value="1" @selected($is_online == 1)>Available</option>
+                            <option class = "fw-bold" value="0" @selected($is_online == 0)>Not Available</option>
                         </select>
                     </form>
                 </div>
@@ -113,25 +113,25 @@
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-appointments" data-bs-toggle="pill" data-bs-target="#tab-appointments" type="button" role="tab" aria-controls="tab-appointments" aria-selected="false">
                     <i class="bi-calendar-event-fill"></i>
-                    Appointments
+                    Appointment
                 </button>
 
                 @if ($log->status > 1)
                     <button class="nav-link text-white d-flex gap-4" id="nav-services" data-bs-toggle="pill" data-bs-target="#tab-services" type="button" role="tab" aria-controls="tab-services" aria-selected="false">
                         <i class="bi-clipboard-plus-fill"></i>
-                        Services
+                        Service
                     </button>
                 @endif
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-patients" data-bs-toggle="pill" data-bs-target="#tab-patients" type="button" role="tab" aria-controls="tab-patients" aria-selected="false">
                     <i class="bi-people-fill"></i>
-                    Patients
+                    Patient
                 </button>
 
                 @if ($log->status > 1)
                     <button class="nav-link text-white d-flex gap-4" id="nav-listings" data-bs-toggle="pill" data-bs-target="#tab-listings" type="button" role="tab" aria-controls="tab-listings" aria-selected="false">
                         <i class="bi-building-fill"></i>
-                        Listings
+                        Clinic
                     </button>
                 @endif
 
@@ -142,7 +142,7 @@
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-collab" data-bs-toggle="pill" data-bs-target="#tab-collab" type="button" role="tab" aria-controls="tab-collab" aria-selected="false">
                     <i class="bi-person-fill-add"></i>
-                    Staffs
+                    Staff
                 </button>
 
                 <button class="nav-link text-white d-flex gap-4" id="nav-profile" data-bs-toggle="pill" data-bs-target="#tab-profile" type="button" role="tab" aria-controls="tab-profile" aria-selected="false">
@@ -395,10 +395,10 @@
                 </div>
 
                 <div class="tab-pane gap-5 p-3" id="tab-listings" role="tabpanel" aria-labelledby="tab-listings" tabindex="0">
-                    <h1 class="mb-5">Listings</h1>
+                    <h1 class="mb-5">Clinics</h1>
 
                     <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-                        <h5 class="m-0">Current Listings</h5>
+                        <h5 class="m-0">Dental Clinics</h5>
 
                         <!-- <div class="d-flex">
                             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-listing">
@@ -991,7 +991,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add Collaborator</h5>
+                        <h5 class="modal-title">Add Secretary</h5>
                     </div>
 
                     <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.collab') }}" method="post" id="create-collab">

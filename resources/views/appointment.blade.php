@@ -93,7 +93,7 @@
             </div>
 
             <div class="d-flex flex-column gap-2" id="patient-list">
-                <div class="d-flex flex-column rounded shadow p-4 mb-4 gap-3 box" id="patient-box">
+                <div class="d-flex flex-column rounded shadow-sm p-4 mb-4 gap-3 box" id="patient-box">
                     <button class="btn btn-close align-self-end visually-hidden" onclick="delete_patient(this)" id="btn-close"></button>
 
                     <div class="d-flex gap-2 mb-2">
@@ -251,7 +251,7 @@
                 <label class="form-check-label" for="terms">By checking this box you agree to share your medical history with all clinic branches</label>
             </div>
 
-            <button class="btn btn-primary mb-5" type="submit">Book</button>
+            <button class="btn btn-default mb-5" type="submit">Book</button>
         </form>
     </div>
 
@@ -264,10 +264,11 @@
         <div class="col">
             <h5 class="text-center fw-bold">Quick Links</h5>
             <div class="d-flex flex-column align-items-center">
-                <a href="#home">Home</a>
-                <a href="#services">Services</a>
-                <a href="#faqp">FAQ</a>
+                <a href="#home" class="text-decoration-none">Home</a>
+                <a href="#services" class="text-decoration-none">Services</a>
+                <a href="#faqp" class="text-decoration-none">FAQ</a>
             </div>
+
         </div>
 
         <div class="col">

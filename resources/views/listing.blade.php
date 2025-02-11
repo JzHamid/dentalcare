@@ -72,7 +72,7 @@
             </div>
         </nav>
 
-        <form class="container-fluid bg-body-tertiary align-items-center d-flex flex-column shadow p-5 gap-3">
+        <form class="container-fluid bg-body-tertiary align-items-center d-flex flex-column shadow-sm p-5 gap-3">
             @csrf
 
             <div class="input-group w-50">
@@ -107,8 +107,8 @@
 
         <div class="d-flex flex-column align-items-center p-5 gap-4">
             @foreach ($listings as $listing)
-                <a class="text-decoration-none text-black d-flex rounded shadow p-4 gap-3 w-75" href="{{ route('shop', $listing->id) }}">
-                    <img src="{{ '/storage/' . $listing->image_path }}" style="height: 200px; width: 200px;">
+                <a class="text-decoration-none text-black d-flex rounded shadow-sm p-4 gap-3 w-75" href="{{ route('shop', $listing->id) }}">
+                    <img src="{{ '/storage/' . $listing->image_path }}" style="height: 200px; width: 200px; border-radius: 10px;">
                     
                     <div class="d-flex flex-column">
                         <h3>{{ $listing->name }}</h3>
@@ -125,7 +125,6 @@
 
                         <p class="fw-bold m-0" style="font-size: medium;">Availability:</p>
                         <div class="container-fluid p-0">
-                            
                         </div>
                     </div>
                 </a>
@@ -141,9 +140,9 @@
             <div class="col">
                 <h5 class="text-center fw-bold">Quick Links</h5>
                 <div class="d-flex flex-column align-items-center">
-                    <a href="#home">Home</a>
-                    <a href="#services">Services</a>
-                    <a href="#faqp">FAQ</a>
+                    <a href="#home" class="text-decoration-none">Home</a>
+                    <a href="#services" class="text-decoration-none">Services</a>
+                    <a href="#faqp" class="text-decoration-none">FAQ</a>
                 </div>
             </div>
 

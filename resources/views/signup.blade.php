@@ -70,7 +70,7 @@
                 </div>
 
                 <div class="form-group container-fluid p-0">
-                    <label class="form-label m-0" for="sexuality">Sexuality</label>
+                    <label class="form-label m-0" for="sexuality">Sex</label>
                     <select class="form-select" name="sexuality" required>
                         <option selected disabled>-- Select --</option>
                         <option value="0">Male</option>

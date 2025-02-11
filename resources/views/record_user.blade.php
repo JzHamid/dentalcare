@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="d-flex align-items-center mx-auto">
-                    <img class="d-flex align-self-center" src="{{ asset('/storage/' . $appointment->user->image_path) }}" style="height: 100px; width: 100px;">
+                    <img class="d-flex align-self-center" src="{{ asset('storage/images/' . $appointment->user->image_path) }}" style="height: 200px; width: 200px;">
                 </div>
             </div>
 
@@ -172,7 +172,7 @@
 
                         <div class="form-group">
                             <label class="form-label" for="dentist">Dentist</label>
-                            <input class="form-control" type="text" name="dentist" value="{{ $dentist->fname ?? 'Any' }}" disabled>
+                            <input class="form-control" type="text" name="dentist" value="Dr. {{ $dentist->fname ?? 'Any' }}" disabled>
                         </div>
 
                         <div class="form-group">

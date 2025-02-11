@@ -122,7 +122,7 @@
                     <div class="rounded bg-white shadow p-3">
                         <div class="d-flex justify-content-between">
                             <h4>Health Record</h4>
-                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#create-record">Add</button>
+                            <button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#create-record">Add</button>
                         </div>
                         <hr>
                     </div>
@@ -131,19 +131,19 @@
                         <div class="container-fluid rounded bg-white shadow p-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h4 class="m-0">Appointments</h4>
-                                <a class="btn btn-primary d-flex gap-2" href="{{ route('listing') }}">New</a>
+                                <a class="btn btn-default d-flex gap-2" href="{{ route('listing') }}">New</a>
                             </div>
                             <hr>
 
                             <div class="d-flex flex-column gap-2 overflow-y-scroll p-4" style="max-height: 300px;">
                                 @foreach ($appointments as $appointment)
                                 <div class="container-fluid d-flex shadow-sm rounded p-4 gap-3">
-                                    <img style="height: 100px; min-width: 100px;">
+                                    <img style="height: 100px; width: 100px; border-radius: 5px; border: solid black 2px;" src="{{ asset('/' . $appointment->service->image_path) }}">
 
                                     <div class="d-flex flex-column gap-2 w-100">
                                         <p class="fw-bold m-0">Service: <span class="fw-light">{{ $appointment->service->name }}</span></p>
                                         <p class="fw-bold m-0">Appointment Time: <span class="fw-light">{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</span></p>
-                                        <a class="btn btn-link btn-sm text-center align-self-end" href="{{ route('user.record', $appointment->id) }}">View</a>
+                                        <a class="btn btn-link btn-sm text-center align-self-end text-decoration-none fw-bold" href="{{ route('user.record', $appointment->id) }}">View Appointment</a>
                                     </div>
                                 </div>
                                 @endforeach
@@ -200,7 +200,7 @@
                     <tbody>
                         @foreach ($appointments as $appointment)
                         <tr>
-                            <td>{{ ($appointment->dentist->fname ?? '') . ' ' . ($appointment->dentist->mname ?? '') . ' ' . ($appointment->dentist->lname ?? '') }}</td>
+                            <td>Dr. {{ ($appointment->dentist->fname ?? '') . ' ' . ($appointment->dentist->mname ?? '') . ' ' . ($appointment->dentist->lname ?? '') }}</td>
 
                             @if ($appointment->temporary)
                             @php
@@ -294,7 +294,7 @@
                         </div>
 
                         <div class="form-group w-100">
-                            <label class="form-label" for="gender">Sexuality</label>
+                            <label class="form-label" for="gender">Sex</label>
                             <select class="form-select" name="gender">
                                 <option value="0" @selected($user->gender == 0)>Male</option>
                                 <option value="1" @selected($user->gender == 1)>Female</option>
@@ -313,9 +313,9 @@
                             <input class="form-control" type="email" name="email" value="{{ $user->email }}">
                         </div>
                     </div>
-
+                    <br>
                     <div class="mb-4">
-                        <label class="form-label" for="location">Address</label>
+                        <label class="form-label fw-bold" for="location">Address</label>
                         <div class="row g-2">
                             <div class="col-md-6">
                                 <label for="street_name" class="form-label">Street Name</label>
@@ -352,7 +352,7 @@
                         </div>
 
                         <div class="d-flex w-100 justify-content-end">
-                            <button class="btn btn-primary w-25" type="submit" style="margin-top: 20px;">Save Profile</button>
+                            <button class="btn btn-default w-25" type="submit" style="margin-top: 20px;">Save Profile</button>
                         </div>
                 </form>
             </div>

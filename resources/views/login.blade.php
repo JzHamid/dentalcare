@@ -31,7 +31,7 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script> 
     
         <div class="navbar bg-body-secondary">
-            <div class="container-fluid px-4">x
+            <div class="container-fluid px-4">
             <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
             </div>
         </div>
@@ -42,7 +42,7 @@
             <form class="position-absolute w-25" style="top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; padding: 20px;" action="{{ route('login.account') }}" method="get">
                 @csrf
 
-                <h3 class="text-default text-center">DentalCare</h3>
+                <h3 class="text-default text-center fw-bold" style = "text-shadow: 1px 2px 3px rgba(255, 255, 255, 0.5)">DentalCare</h3>
 
                 <div class="d-flex flex-column gap-2">
                     <input class="form-control" type="text" placeholder="Email" name="email">
@@ -50,22 +50,22 @@
                 </div>
 
                 <div class="d-flex flex-column gap-2">
-                    <a class="text-end text-decoration-none mb-3" style="font-size: small;" href="">Forgot Password?</a>
-                    <button class="btn btn-default" type="submit">Login</button>
+                    <a class="text-end text-decoration-none mb-3 fw-bold" style="font-size: small; color: red;" href="">Forgot Password?</a>
+                    <button class="btn btn-default fw-bold" type="submit">Login</button>
                 </div>
 
                 <hr class="btn-default w-100">
 
                 <div class="d-flex flex-column gap-2">
-                    <a class="btn btn-default w-100" href="{{ route('signup') }}">Create Account</a>
+                    <a class="btn btn-default w-100 fw-bold" href="{{ route('signup') }}">Create Account</a>
 
                     <div class="d-flex gap-2 w-100">
-                        <button class="btn btn-danger w-100">
-                            <i class="bi-google"></i>
+                        <button class="btn btn-default w-100">
+                            <img src="{{ asset('images/google-removebg-preview.png') }}" alt="google" style = "width: 25px; height: 25px;">
                         </button>
 
                         <button class="btn btn-default w-100">
-                            <i class="bi-facebook"></i>
+                        <img src="{{ asset('images/fbimg.png') }}" alt="google" style = "width: 20px; height: 20px;">
                         </button>
                     </div>
                 </div>

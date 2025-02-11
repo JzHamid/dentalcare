@@ -81,22 +81,22 @@
 
             <button class="nav-link text-white d-flex gap-4" id="nav-appointments" data-bs-toggle="pill" data-bs-target="#tab-appointments" type="button" role="tab" aria-controls="tab-appointments" aria-selected="false">
                 <i class="bi-calendar-event-fill"></i>
-                Appointments
+                Appointment
             </button>
 
             <button class="nav-link text-white d-flex gap-4" id="nav-services" data-bs-toggle="pill" data-bs-target="#tab-services" type="button" role="tab" aria-controls="tab-services" aria-selected="false">
                 <i class="bi-clipboard-plus-fill"></i>
-                Services
+                Service
             </button>
 
             <button class="nav-link text-white d-flex gap-4" id="nav-patients" data-bs-toggle="pill" data-bs-target="#tab-patients" type="button" role="tab" aria-controls="tab-patients" aria-selected="false">
                 <i class="bi-people-fill"></i>
-                Patients
+                Patient
             </button>
 
             <button class="nav-link text-white d-flex gap-4" id="nav-dentist" data-bs-toggle="pill" data-bs-target="#tab-dentist" type="button" role="tab" aria-controls="tab-dentist" aria-selected="false">
                 <i class="bi-person-fill-add"></i>
-                Dentists
+                Dentist
             </button>
 
             <button class="nav-link text-white d-flex gap-4" id="nav-dentist" data-bs-toggle="pill" data-bs-target="#tab-secretary" type="button" role="tab" aria-controls="tab-secretary" aria-selected="false">
@@ -106,7 +106,7 @@
 
             <button class="nav-link text-white d-flex gap-4" id="nav-listing" data-bs-toggle="pill" data-bs-target="#tab-listing" type="button" role="tab" aria-controls="tab-listing" aria-selected="false">
                 <i class="bi-building-fill"></i>
-                Listing
+                Clinic
             </button>
 
             <a class="nav-link text-white d-flex gap-4 mt-auto" href="{{ route('logout') }}">
@@ -243,7 +243,7 @@
                             <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Name of Service</th>
                             <th scope="col">Duration</th>
-                            <th scope="col">Price Range</th>
+                            <th scope="col">Price Start</th>
                             <th class="text-center" scope="col">Actions</th>
                         </tr>
                     </thead>
@@ -254,7 +254,7 @@
                             <!-- <th class="text-center" scope="row">{{ $service->id }}</th> -->
                             <td>{{ $service->name }}</td>
                             <td>{{ floor($service->duration / 60) . 'hr ' . ($service->duration % 60) . 'm' }}</td>
-                            <td>{{ $service->price_start }} - {{ $service->price_end }}</td>
+                            <td>₱ {{ $service->price_start }}.00 - {{ $service->price_end }}.00</td>
                             <td class="d-flex justify-content-center gap-2">
                                 <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-service" onclick="get_service('{{ $service->id }}')">
                                     <i class="bi-pencil-square"></i>
@@ -320,10 +320,10 @@
             </div>
 
             <div class="tab-pane gap-5 p-3" id="tab-dentist" role="tabpanel" aria-labelledby="tab-dentist" tabindex="0">
-                <h1 class="mb-5">Dentist</h1>
+                <h1 class="mb-5">Dentists</h1>
 
                 <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="m-0">List of Dentist</h5>
+                    <h5 class="m-0">List of Dentists</h5>
 
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-dentist">
                         <i class="bi-plus-lg"></i>
@@ -348,7 +348,7 @@
                         @foreach ($dentist as $dent)
                         <tr>
                             <!-- <th class="text-center" scope="row">{{ $dent->id }}</th> -->
-                            <td>{{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</td>
+                            <td>Dr. {{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</td>
                             <td></td>
                             <td>{{ $dent->email }}</td>
                             <td>{{ $dent->phone }}</td>
@@ -418,10 +418,10 @@
             </div>
 
             <div class="tab-pane gap-5 p-3" id="tab-listing" role="tabpanel" aria-labelledby="tab-listing" tabindex="0">
-                <h1 class="mb-5">Listings</h1>
+                <h1 class="mb-5">Clinics</h1>
 
                 <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
-                    <h5 class="m-0">Listings</h5>
+                    <h5 class="m-0">Dental Clinics</h5>
 
                     <div class="d-flex">
                         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-listing">
@@ -512,7 +512,7 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="">Price Range</label>
+                        <label class="form-label" for="">Price Start</label>
 
                         <div class="input-group">
                             <span class="input-group-text">₱</span>
@@ -1014,7 +1014,7 @@
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Create Listing</h5>
+                    <h5 class="modal-title fw-bold">Create Clinic</h5>
                 </div>
 
                 <form class="modal-body d-flex flex-column gap-2" action="{{ route('create.listing') }}" method="post" enctype="multipart/form-data" id="create-listing">
@@ -1023,7 +1023,7 @@
                     <div class="d-flex gap-3">
                         <img class="border border-2" style="height: 150px; width: 150px;" id="listing-thumbnail-img">
                         <div class="d-flex flex-column gap-2">
-                            <h5 class="m-0">Listing Thumbnail</h5>
+                            <h5 class="m-0 fw-bold">Clinic</h5>
                             <div class="d-flex gap-2">
                                 <input class="visually-hidden" type="file" name="listing-thumbnail" onchange="previewListing(this, 1)" accept="image/*" id="listing-thumbnail">
                                 <button class="btn btn-primary btn-sm" type="button" onclick="document.getElementById('listing-thumbnail').click()">Upload</button>
@@ -1035,31 +1035,31 @@
                     <hr>
 
                     <div class="form-group">
-                        <label class="form-label" for="listing-name">Clinic Name</label>
+                        <label class="form-label fw-bold" for="listing-name">Clinic Name</label>
                         <input class="form-control" type="text" name="listing-name" required>
                     </div>
 
                     <div class="d-flex gap-2">
                         <div class="form-group w-50">
-                            <label class="form-label" for="listing-email">Email Address</label>
+                            <label class="form-label fw-bold" for="listing-email">Email Address</label>
                             <input class="form-control" type="email" name="listing-email" required>
                         </div>
 
                         <div class="form-group w-50">
-                            <label class="form-label" for="listing-contact">Contact No.</label>
+                            <label class="form-label fw-bold" for="listing-contact">Contact No.</label>
                             <input class="form-control" type="tel" name="listing-contact" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="listing-location">Location</label>
+                        <label class="form-label fw-bold" for="listing-location">Location</label>
                         <input class="form-control" type="text" name="listing-location" required>
                     </div>
 
                     <div class="accordion" id="accordion-services">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#list-services" aria-expanded="false" aria-controls="list-services">Services</button>
+                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#list-services" aria-expanded="false" aria-controls="list-services">Services</button>
                             </h2>
 
                             <div class="accordion-collapse collapse" id="list-services" data-bs-parent="#accordion-services">
@@ -1080,7 +1080,7 @@
                     <div class="accordion" id="accordion-dentist">
                         <div class="accordion-item">
                             <h2 class="accordion-header">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#list-dentist" aria-expanded="false" aria-controls="list-dentist">Dentist</button>
+                                <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#list-dentist" aria-expanded="false" aria-controls="list-dentist">Dentist</button>
                             </h2>
 
                             <div class="accordion-collapse collapse" id="list-dentist" data-bs-parent="#accordion-dentist">
@@ -1088,7 +1088,7 @@
                                     @forelse ($dentist as $dent)
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value="{{ $dent->id }}" name="dent[]">
-                                        <label class="form-check-label" for="dent{{ $dent->id }}">{{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</label>
+                                        <label class="form-check-label" for="dent{{ $dent->id }}">Dr. {{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</label>
                                     </div>
                                     @empty
                                     <h6 class="m-0">No dentists yet</h6>
@@ -1103,7 +1103,7 @@
                     @endphp
 
                     <div class="form-group d-flex flex-column gap-2">
-                        <label for="listing-schedule">Schedule</label>
+                        <label for="listing-schedule" class = "fw-bold">Schedule</label>
 
                         @foreach (array_chunk($days, 2) as $dayPair)
                         <div class="d-flex gap-2">
@@ -1127,8 +1127,8 @@
                     </div>
 
                     <div class="form-group mb-4">
-                        <label class="form-label" for="listing-about">About Us</label>
-                        <textarea class="form-control" name="listing-about" rows="10" style="resize: none;"></textarea>
+                        <label class="form-label fw-bold" for="listing-about">About Us</label>
+                        <textarea class="form-control" name="listing-about" rows="5" style="resize: none;"></textarea>
                     </div>
                 </form>
 

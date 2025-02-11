@@ -74,7 +74,7 @@
 
         <div class="d-flex flex-column bg-white p-5">
             <div class="d-flex justify-content-between align-items-center w-100">
-                <h1 class="display-4">{{ $shop->name }}</h1>
+                <h1 class="display-4 fw-bold text-uppercase">{{ $shop->name }}</h1>
                 <a class="btn btn-default" style="height: fit-content;" href="{{ route('appointment', $shop->id) }}">Book Apppointment</a>
             </div>
 
@@ -89,8 +89,8 @@
             <hr>
 
             <div class="d-flex flex-column gap-5" id="about">  
-                <div class="d-flex mx-auto rounded shadow p-4 gap-3 w-75">
-                    <img src="{{ '/storage/' . ($shop->image_path) }}" style="height: 300px; width: 300px;">
+                <div class="d-flex mx-auto rounded shadow-sm p-4 gap-3 w-75">
+                    <img src="{{ '/storage/' . ($shop->image_path) }}" style="height: 250px; width: 250px; border-radius: 10px">
                     
                     <div class="d-flex flex-column">
                         <h3></h3>
@@ -115,7 +115,7 @@
 
                 <div id="map"></div>
 
-                <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="services">
+                <div class="d-flex flex-column mx-auto rounded shadow-sm p-4 gap-3 w-75" id="services">
                     <h4 class="text-center w-100">Services Offered</h4>
                     <hr>
 
@@ -127,7 +127,8 @@
                                 @foreach ($chunk as $available)
                                     <div class="col-md-6 p-0">
                                         <div class="d-flex flex-column">
-                                            <p class="fw-bold m-0 mb-1">{{ $available->service->name }}</p>
+                                            <p class="fw-bold m-0 mb-1">{{ $available->service->name }} </p>
+                                            <p class="fw-bold m-0 mb-1">Price starts at ₱ {{ $available->service->price_start}} | Duration: {{ floor($available->service->duration / 60) . 'hr ' . ($available->service->duration % 60) . 'm' }} </p>
                                             <p>{{ $available->service->description }}</p>
                                         </div>
                                     </div>
@@ -137,17 +138,17 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-column mx-auto rounded shadow p-4 gap-3 w-75" id="dentist">
+                <div class="d-flex flex-column mx-auto rounded shadow-sm p-4 gap-3 w-75" id="dentist">
                     <h4 class="text-center w-100">Meet our Dentists</h4>
                     <hr>
                     
                     @foreach ($assigns as $assign)
-                        <div class="d-flex shadow rounded gap-4 p-4">
-                            <img src="{{ '/storage/' . $assign->user->image_path }}" style="height: 300px; width: 300px;">
+                        <div class="d-flex shadow-sm rounded gap-4 p-4">
+                            <img src="{{ '/storage/' . $assign->user->image_path }}" style="height: 200px; width: 200px; border-radius: 10px;" >
 
                             <div class="d-flex flex-column">
-                                <h1>{{ $assign->user->fname . ' ' . $assign->user->mname . ' ' . $assign->user->lname }}</h1>
-                                <p class="lead">Expertise</p>
+                                <h1>Dr. {{ $assign->user->lname . ' ' . $assign->user->fname . ' ' . $assign->user->mname }}</h1>
+                                <p class="lead">Dental Specialist</p>
                             </div>
                         </div>
                     @endforeach
@@ -164,10 +165,11 @@
             <div class="col">
                 <h5 class="text-center fw-bold">Quick Links</h5>
                 <div class="d-flex flex-column align-items-center">
-                    <a href="#home">Home</a>
-                    <a href="#services">Services</a>
-                    <a href="#faqp">FAQ</a>
+                    <a href="#home" class="text-decoration-none">Home</a>
+                    <a href="#services" class="text-decoration-none">Services</a>
+                    <a href="#faqp" class="text-decoration-none">FAQ</a>
                 </div>
+
             </div>
 
             <div class="col">
