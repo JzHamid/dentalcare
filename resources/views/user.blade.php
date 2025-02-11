@@ -142,7 +142,7 @@
 
                                     <div class="d-flex flex-column gap-2 w-100">
                                         <p class="fw-bold m-0">Service: <span class="fw-light">{{ $appointment->service->name }}</span></p>
-                                        <p class="fw-bold m-0">Appointment Time: <span class="fw-light">{{ Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y') }}</span></p>
+                                        <p class="fw-bold m-0">Appointment Time: <span class="fw-light">{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}</span></p>
                                         <a class="btn btn-link btn-sm text-center align-self-end text-decoration-none fw-bold" href="{{ route('user.record', $appointment->id) }}">View Appointment</a>
                                     </div>
                                 </div>

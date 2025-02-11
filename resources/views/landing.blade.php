@@ -84,7 +84,7 @@
         </div>
 
         <div class="col mt-5 p-4">
-            <img src="{{ asset('images/side_pic_landing.jpg') }}" style="box-sizing: cover; height: 500px;" alt="Responsive image">
+            <img src="{{ asset('images/okok.png') }}" style="box-sizing: cover; height: 500px;" alt="Responsive image">
         </div>
     </div>
 

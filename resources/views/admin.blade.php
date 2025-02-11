@@ -286,19 +286,19 @@
                             </td>                                    <td>
                                         @switch ( $appointment->status )
                                             @case ('Pending')
-                                                <span class="badge text-bg-primary">Pending</span>
+                                                <span class="text-primary fw-bold text-uppercase">Pending</span>
                                                 @break
                                             @case ('Upcoming')
-                                                <span class="badge text-bg-warning text-white">Upcoming</span>
+                                                <span class="text-warning fw-bold text-uppercase">Upcoming</span>
                                                 @break
                                             @case ('Cancelled')
-                                                <span class="badge text-bg-danger">Cancelled</span>
+                                                <span class="text-danger fw-bold text-uppercase">Cancelled</span>
                                                 @break
                                             @case ('Done')
-                                                <span class="badge text-bg-success">Done</span>
+                                                <span class="text-success fw-bold text-uppercase">Done</span>
                                                 @break
                                             @case ('Rescheduled')
-                                                <span class="badge text-bg-info text-white">Rescheduled</span>
+                                                <span class="text-info fw-bold text-uppercase">Rescheduled</span>
                                                 @break
                                         @endswitch
                                     </td>
@@ -330,7 +330,7 @@
                                 <!-- <th class="text-center" scope="col">ID</th> -->
                                 <th scope="col">Name of Service</th>
                                 <th scope="col">Duration</th>
-                                <th scope="col">Price Range</th>
+                                <th scope="col">Price Start</th>
                                 <th class="text-center" scope="col">Actions</th>
                             </tr>
                         </thead>
@@ -341,7 +341,7 @@
                                     <!-- <th class="text-center" scope="row">{{ $service->id }}</th> -->
                                     <td>{{ $service->name }}</td>
                                     <td>{{ floor($service->duration / 60) . 'hr ' . ($service->duration % 60) . 'm' }}</td>
-                                    <td>{{ $service->price_start }} - {{ $service->price_end }}</td>
+                                    <td>₱ {{ number_format($service->price_start) }} - ₱ {{ number_format($service->price_end) }}</td>
                                     <td class="d-flex justify-content-center gap-2">
                                         <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-service" onclick="get_service('{{ $service->id }}')">
                                             <i class="bi-pencil-square"></i>
