@@ -147,7 +147,7 @@
                             <img src="{{ '/storage/' . $assign->user->image_path }}" style="height: 200px; width: 200px; border-radius: 10px;" >
 
                             <div class="d-flex flex-column">
-                                <h1>Dr. {{ $assign->user->lname . ' ' . $assign->user->fname . ' ' . $assign->user->mname }}</h1>
+                                <h1>Dr. {{ $assign->user->lname . ' ' . $assign->user->fname }}</h1>
                                 <p class="lead">Dental Specialist</p>
                             </div>
                         </div>
