@@ -125,7 +125,7 @@
                         </div>
 
                         <div class="form-group w-50">
-                            <label class="form-label" for="appointments[0][sex]">Sexuality</label>
+                            <label class="form-label" for="appointments[0][sex]">Sex</label>
                             <select class="form-select" name="appointments[0][sex]" id="sex">
                                 <option selected disabled>-- Select --</option>
                                 <option value="0" @selected($user->gender == 0)>Male</option>
@@ -232,7 +232,7 @@
                             <option selected disabled>-- Select Dentist --</option>
                             <option value="0">Any</option>
                             @foreach ($assign as $assi)
-                            <option value="{{ $assi->user->id }}">{{ $assi->user->fname }}</option>
+                            <option value="{{ $assi->user->id }}">Dr. {{ $assi->user->fname }}</option>
                             @endforeach
                         </select>
                     </div>
