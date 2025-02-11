@@ -78,12 +78,12 @@
                 <a class="btn btn-default" style="height: fit-content;" href="{{ route('appointment', $shop->id) }}">Book Apppointment</a>
             </div>
 
-            <p class="lead">{{ $shop->location }}</p>
+            <p class="lead fw-bold">{{ $shop->location }}</p>
 
             <div class="d-flex gap-2">
-                <a class="btn btn-light" href="#about">About</a>
-                <a class="btn btn-light" href="#services">Services</a>
-                <a class="btn btn-light" href="#dentist">Dentist</a>
+                <a class="btn btn-light fw-bold" href="#about">About</a>
+                <a class="btn btn-light fw-bold" href="#services">Services</a>
+                <a class="btn btn-light fw-bold" href="#dentist">Dentist</a>
             </div>
 
             <hr>
@@ -95,10 +95,10 @@
                     <div class="d-flex flex-column">
                         <h3></h3>
 
-                        <h3 class="m-0">About Us:</h3>
+                        <h3 class="m-0 fw-bold">About Us:</h3>
                         <div class="container-fluid p-0 mb-3">{{ $shop->description }}</div>
 
-                        <h3 class="mb-2">Contact Information:</h3>
+                        <h3 class="mb-2 fw-bold">Contact Information:</h3>
                         <div class="container-fluid d-flex flex-column p-0 ms-2 gap-2">
                             <p class="m-0">
                                 <i class="bi-telephone-fill"></i>
@@ -116,17 +116,17 @@
                 <div id="map"></div>
 
                 <div class="d-flex flex-column mx-auto rounded shadow-sm p-4 gap-3 w-75" id="services">
-                    <h4 class="text-center w-100">Services Offered</h4>
+                    <h4 class="text-center w-100 fw-bold">Services Offered</h4>
                     <hr>
 
-                    <p class="lead m-0">Discover all that the clinic offers</p>
+                    <p class="lead m-0 fw-bold">Discover all that the clinic offers</p>
                     
                     <div class="container">
                         @foreach ($availables->chunk(2) as $chunk)
                             <div class="row mb-3">
                                 @foreach ($chunk as $available)
                                     <div class="col-md-6 p-0">
-                                        <div class="d-flex flex-column">
+                                        <div class="d-flex flex-column margin-right-2 p-4">
                                             <p class="fw-bold m-0 mb-1">{{ $available->service->name }} </p>
                                             <p class="fw-bold m-0 mb-1">Price starts at ₱ {{ $available->service->price_start}} | Duration: {{ floor($available->service->duration / 60) . 'hr ' . ($available->service->duration % 60) . 'm' }} </p>
                                             <p>{{ $available->service->description }}</p>
@@ -139,7 +139,7 @@
                 </div>
 
                 <div class="d-flex flex-column mx-auto rounded shadow-sm p-4 gap-3 w-75" id="dentist">
-                    <h4 class="text-center w-100">Meet our Dentists</h4>
+                    <h4 class="text-center w-100 fw-bold">Meet our Dentists</h4>
                     <hr>
                     
                     @foreach ($assigns as $assign)

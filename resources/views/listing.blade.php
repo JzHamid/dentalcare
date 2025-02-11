@@ -111,7 +111,7 @@
                     <img src="{{ '/storage/' . $listing->image_path }}" style="height: 200px; width: 200px; border-radius: 10px;">
                     
                     <div class="d-flex flex-column">
-                        <h3>{{ $listing->name }}</h3>
+                        <h3 class="fw-bold">{{ $listing->name }}</h3>
 
                         <p class="fw-bold m-0" style="font-size: medium;">Offered Services:</p>
                         <div class="container-fluid p-0 mb-1">

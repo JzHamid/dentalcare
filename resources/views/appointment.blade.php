@@ -81,7 +81,7 @@
         <form class="d-flex flex-column mx-auto w-50" action="{{ route('create.appointment', $shop->id) }}" method="post" id="app-form">
             @csrf
 
-            <h1 class="display-5 text-center mb-4">Appointment Form</h1>
+            <h1 class="display-5 text-center mb-4"><span class="fw-bold">{{ $shop->name }}</span> Appointment Form</h1>
 
             <div class="form-group mb-4">
                 <label class="form-label" for="whofor">Who is this appointment for?</label>
