@@ -115,44 +115,75 @@
             </a>
         </div>
 
-        <div class="col-md-10 bg-light tab-content p-0 overflow-y-scroll h-100">
+        <div class="col-md-10 bg-white tab-content p-0 overflow-y-scroll h-100">
             <div class="tab-pane show active gap-5 p-3" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
-                <h1 class="mb-5">Welcome Admin!</h1>
-
-                <div class="row m-0 d-flex gap-5">
-                    <div class="col bg-white rounded shadow p-4">
-                        <div class="d-flex justify-content-between">
-                            <div class="d-flex flex-column">
-                                <img src="{{ asset('images/dentist_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
-                                <p class="lead text-center m-0">Dentist</p>
+                <h1 class="mb-3">Welcome Admin!</h1>
+                <hr>
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="bg-transparent rounded shadow-sm p-4">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-column">
+                                        <img src="{{ asset('images/dentist_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
+                                        <p class="lead text-center m-0 fw-bold text-default">Dentist</p>
+                                    </div>
+                                    <p class="display-5 fw-bold text-default">{{ $dentist->count() }}</p>
+                                </div>
                             </div>
-
-                            <p class="display-5">{{ $dentist->count() }}</p>
                         </div>
-                    </div>
 
-                    <div class="col bg-white rounded shadow p-4">
-                        <div class="d-flex justify-content-between">
-                            <div class="d-flex flex-column">
-                                <img src="{{ asset('images/patient_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
-                                <p class="lead text-center m-0">End-Users</p>
+                        <div class="col-md-4">
+                            <div class="bg-white rounded shadow-sm p-4">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-column">
+                                        <img src="{{ asset('images/patient_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
+                                        <p class="lead text-center m-0 fw-bold text-default">Patient</p>
+                                    </div>
+                                    <p class="display-5 fw-bold text-default">{{ $users->count() }}</p>
+                                </div>
                             </div>
-
-                            <p class="display-5">{{ $users->count() }}</p>
                         </div>
-                    </div>
 
-                    <div class="col bg-white rounded shadow p-4">
-                        <div class="d-flex justify-content-between">
-                            <div class="d-flex flex-column">
-                                <img src="{{ asset('images/event_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
-                                <p class="lead text-center m-0">Appointments</p>
+                        <div class="col-md-4">
+                            <div class="bg-white rounded shadow-sm p-4">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-column">
+                                        <img src="{{ asset('images/event_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
+                                        <p class="lead text-center m-0 fw-bold text-default">Appointments</p>
+                                    </div>
+                                    <p class="display-5 fw-bold text-default">{{ $appointments->count() }}</p>
+                                </div>
                             </div>
+                        </div>
 
-                            <p class="display-5">{{ $appointments->count() }}</p>
+                        <!-- Second Row -->
+                        <div class="col-md-4">
+                            <div class="bg-white rounded shadow-sm p-4">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-column">
+                                        <img src="{{ asset('images/images.png') }}" class="mb-2" style="height: 100px; width: 100px;">
+                                        <p class="lead text-center m-0 fw-bold text-default">Services</p>
+                                    </div>
+                                    <p class="display-5 fw-bold text-default">{{ $services->count() }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="bg-white rounded shadow-sm p-4">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-column">
+                                        <img src="{{ asset('images/download.png') }}" class="mb-2" style="height: 100px; width: 100px;">
+                                        <p class="lead text-center m-0 fw-bold text-default">Clinics</p>
+                                    </div>
+                                    <p class="display-5 fw-bold text-default">{{ $listings->count() }}</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
 
             <div class="tab-pane gap-5 p-3" id="tab-appointments" role="tabpanel" aria-labelledby="tab-appointments" tabindex="0">
@@ -162,15 +193,17 @@
                     <h5 class="m-0">Appointment History</h5>
 
                     <div class="d-flex gap-2">
-                        <select class="form-select" name="filter" style="width: 200px;">
-                            <option value="0">All</option>
-                            <option value="2">Pending</option>
-                            <option value="3">Rescheduled</option>
-                            <option value="4">Cancelled</option>
+                        <select class="form-select fw-bold" name="filter" style="width: 200px;">
+                            <option class = "fw-bold" value="0">All</option>
+                            <option class = "fw-bold" value="1">Done</option>
+                            <option class = "fw-bold" value="2">Pending</option>
+                            <option class = "fw-bold" value="3">Rescheduled</option>
+                            <option class = "fw-bold" value="4">Cancelled</option>
+                            <option class = "fw-bold" value="5">Upcomming</option>
                         </select>
 
                         <div class="input-group">
-                            <input class="form-control" type="search">
+                            <input class="form-control" type="search" placeholder="search">
                             <button class="btn btn-secondary">Search</button>
                         </div>
                     </div>
@@ -182,6 +215,7 @@
                             <!-- <th class="text-center" scope="col">ID</th> -->
                             <th scope="col">Patient Name</th>
                             <th scope="col">Services</th>
+                            <th scope="col">Dentist Name</th>
                             <th scope="col">Set By</th>
                             <th scope="col">Appointment Time</th>
                             <th scope="col">Status</th>
@@ -193,9 +227,10 @@
                         @foreach ($appointments as $appointment)
                         <tr>
                             <!-- <th class="text-center" scope="row">1</th> -->
-                            <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
+                            <td>{{ $appointment->user->fname . ' ' . $appointment->user->lname }}</td>
                             <td>{{ $appointment->service->name }}</td>
-                            <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
+                            <td>Dr. {{ $appointment->dentist->fname . ' ' . $appointment->dentist->lname }}</td>
+                            <td>{{ $appointment->user->fname . ' ' . $appointment->user->lname }}</td>
                             <td>
                                 {{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}
                             </td>
@@ -302,7 +337,7 @@
                         <tr>
                             <!-- <th class="text-center" scope="row">{{ $user->id }}</th> -->
                             <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
-                            <td class="text-center">{{ Carbon\Carbon::parse($user->birthdate)->age }}</td>
+                            <td class="text-center">{{ Carbon\Carbon::parse($user->birthdate)->age }} yrs old</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ trim("{$user->street_name}, {$user->city}, {$user->province}", ', ') }}</td>
                             <td class="d-flex justify-content-center gap-2">
@@ -642,20 +677,20 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Delete User</h5>
+                    <h5 class="modal-title">Delete Dentist</h5>
                 </div>
 
                 <div class="modal-body">
-                    Are you sure you want to delete this user?
+                    Are you sure you want to delete this dentist?
                 </div>
 
                 <div class="modal-footer">
-                    <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">No</button>
+                    <button class="btn btn-secondary w-15" type="button" data-bs-dismiss="modal">No</button>
                     <!-- Form for Deleting User -->
                     <form id="delete-dentist-form" action="" method="POST" style="display: inline;">
                         @csrf
                         @method('DELETE')
-                        <button class="btn btn-danger w-25" type="submit">Yes</button>
+                        <button class="btn btn-danger w-15" type="submit">Yes</button>
                     </form>
                 </div>
             </div>

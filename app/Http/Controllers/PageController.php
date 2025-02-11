@@ -72,8 +72,21 @@ class PageController extends Controller
         $services = $this->getServicesForDentist($log->id);
 
         $assign = Assign::where('user_id', $log->id)->get();
+        // Check if the logged-in user is a **dentist or a secretary**
+    if ($log->status == 2) { // Dentist
         $appointments = Appointments::where('dentist_id', $log->id)->get();
-        $users = User::all();
+    } elseif ($log->status == 1) { // Secretary
+        $appointments = Appointments::all(); // Secretary sees all appointments
+    } else {
+        $appointments = collect(); // Empty collection if not authorized
+    }
+
+        // Get all users who have appointments with the logged-in dentist. feb. 11
+        $users = User::where('status', 0)
+        ->whereHas('appointments', function ($query) use ($log) {
+            $query->where('dentist_id', $log->id);
+        })
+        ->get();
 
         return view('admin')->with([
             'appointments' => $appointments,

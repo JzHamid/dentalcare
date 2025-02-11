@@ -188,10 +188,10 @@
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-column">
                                     <img src="{{ asset('images/patient_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
-                                    <p class="lead text-center m-0">End-Users</p>
+                                    <p class="lead text-center m-0 fw-bold text-default">Patient</p>
                                 </div>
 
-                                <p class="display-5">{{ $users->count() }}</p>
+                                <p class="display-5 fw-bold text-default">{{ $users->count() }}</p>
                             </div>
                         </div>
 
@@ -199,21 +199,21 @@
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-column">
                                     <img src="{{ asset('images/event_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
-                                    <p class="lead text-center m-0">Appointments</p>
+                                    <p class="lead text-center m-0 fw-bold text-default">Appointments</p>
                                 </div>
 
-                                <p class="display-5">{{ $appointments->count() }}</p>
+                                <p class="display-5 fw-bold text-default">{{ $appointments->count() }}</p>
                             </div>
                         </div>
 
                         <div class="col bg-white rounded shadow p-4">
                             <div class="d-flex justify-content-between">
                                 <div class="d-flex flex-column">
-                                    <img src="{{ asset('images/procedure_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
-                                    <p class="lead text-center m-0">Procedures</p>
+                                    <img src="{{ asset('images/images.png') }}" class="mb-2" style="height: 100px; width: 100px;">
+                                    <p class="lead text-center m-0 fw-bold text-default">Services</p>
                                 </div>
 
-                                <p class="display-5">0</p>
+                                <p class="display-5 fw-bold text-default">{{ $services->count() }}</p>
                             </div>
                         </div>
                     </div>
@@ -389,8 +389,27 @@
                         </thead>
 
                         <tbody>
-                            
-                        </tbody>
+                        @foreach ($users as $user)
+                        <tr>
+                            <!-- <th class="text-center" scope="row">{{ $user->id }}</th> -->
+                            <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
+                            <td class="text-center">{{ Carbon\Carbon::parse($user->birthdate)->age }} yrs old</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ trim("{$user->street_name}, {$user->city}, {$user->province}", ', ') }}</td>
+                            <td class="d-flex justify-content-center gap-2">
+                                <button class="btn btn-sm btn-primary edit-button" data-id="{{ $user->id }}" data-bs-toggle="modal" data-bs-target="#edit-patient">
+                                    <i class="bi-pencil-square"></i>
+                                </button>
+
+                                <!-- Delete Button -->
+                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-user" data-user-id="{{ $user->id }}">
+                                    <i class="bi-trash-fill"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
                     </table>
                 </div>
 
