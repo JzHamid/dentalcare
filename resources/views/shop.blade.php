@@ -52,11 +52,11 @@
                         </div>
 
                         <div class="dropdown d-flex" style="margin-right: 100px;">
-                            <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn dropdown-toggle fs-4 p-0 px-2 border-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi-person-circle"></i>
                             </button>
 
-                            <ul class="dropdown-menu dropdown-end">
+                            <ul class="dropdown-menu dropdown-end border-0 shadow-sm">
                                 <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
                                 <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                             </ul>
