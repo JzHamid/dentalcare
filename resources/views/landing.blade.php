@@ -35,7 +35,7 @@
 <body class="overflow-x-hidden">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
-    <nav class="navbar bg-body-secondary">
+    <nav class="navbar bg-body-secondary top-0 sticky-top">
         <div class="container-fluid px-4">
             <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
 
@@ -63,7 +63,7 @@
             @endauth
 
             @guest
-            <a class="text-default text-decoration-none" style="margin-right: 100px;" href="{{ route('login') }}">Login / Signup</a>
+            <a class="text-default text-decoration-none fw-bold" style="margin-right: 100px;" href="{{ route('login') }}">Login / Signup</a>
             @endguest
         </div>
     </nav>
@@ -96,7 +96,7 @@
             @foreach ($serviceRow as $service)
             <div class="col-md-3 rounded shadow-sm p-4 gap-3 d-flex flex-column">
                 <img style="height: 200px; width: 300px; border-radius: 5px;" class="img-fluid d-block mx-auto" src="{{ asset('/' . $service->image_path) }}">
-                <h5 class="text-center">{{ $service->name }} <br>Price starts at ₱{{ $service->price_start }}.00</h5>
+                <h5 class="text-center fw-bold text-default">{{ $service->name }} <br><span class="fs-6 fw-semibold text-muted">Starting at ₱{{ $service->price_start }}.00</span></h5>
                 <p style="text-align: justify;">{{ $service->description }}</p>
             </div>
             @endforeach
@@ -156,12 +156,12 @@
             <div class="accordion accordion-flush shadow-sm" id="faq">
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="false" aria-controls="faqOne">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqOne" aria-expanded="false" aria-controls="faqOne">
                             How do I book appointment with the dentist?
                         </button>
                     </h2>
 
-                    <div class="accordion-collapse collapse" id="faqOne" data-bs-parent="#faq">
+                    <div class="accordion-collapse collapse " id="faqOne" data-bs-parent="#faq">
                         <div class="accordion-body">
                         To book an appointment, first you need to log in or create an account if you don't have one. After that, click the "book now" button, and then it will show you the available clinic. Choose a clinic, then fill out the form, and it's done.                        </div>
                     </div>
@@ -169,7 +169,7 @@
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqTwo" aria-expanded="false" aria-controls="faqTwo">
                             Can I request a specific dentist when booking an appointment?
                         </button>
                     </h2>
@@ -183,7 +183,7 @@
 
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
+                        <button class="accordion-button collapsed fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#faqThree" aria-expanded="false" aria-controls="faqThree">
                             What should I do if I need to cancel or reschedule my appointment?
                         </button>
                     </h2>
@@ -200,26 +200,33 @@
 
     <footer class="row bg-body-secondary bottom-0 p-4">
         <div class="col">
-            <h5 class="text-default">DentalCare</h5>
+            <h5 class="text-default fw-bold">DentalCare</h5>
             <p style="text-align: justify;">Your health is our mission partner with us for exceptional healthcare, Schedule your appointment today and experience the difference of exceptional healthcare.</p>
         </div>
 
         <div class="col">
             <h5 class="text-center fw-bold">Quick Links</h5>
             <div class="d-flex flex-column align-items-center">
-                <a href="#home" class="text-decoration-none">Home</a>
-                <a href="#services" class="text-decoration-none">Services</a>
-                <a href="#faqp" class="text-decoration-none">FAQ</a>
+                <a href="#home" class="text-decoration-none fw-bold">Home</a>
+                <a href="#services" class="text-decoration-none fw-bold">Services</a>
+                <a href="#faqp" class="text-decoration-none fw-bold">FAQ</a>
             </div>
         </div>
 
         <div class="col">
-            <h5 class="fw-bold">Contact Us</h5>
-            <div class="d-flex flex-column">
-                <p class="m-0"><span class="fw-medium">Phone: </span>+63 123 456 7890</p>
-                <p><span class="fw-medium">Email: </span>dentalcare@gmail.com</p>
-            </div>
+            <h5 class="fw-bold mb-3">Contact Us</h5>
+            <ul class="list-unstyled">
+                <li class="mb-1">
+                    <i class="bi bi-telephone me-2"></i>
+                    <span class="fw-bold">Phone:</span> +63 123 456 7890
+                </li>
+                <li>
+                    <i class="bi bi-envelope me-2"></i>
+                    <span class="fw-bold">Email:</span> dentalcare@gmail.com
+                </li>
+            </ul>
         </div>
+
 
         <div class="col">
             <h5 class="text-center fw-bold">Follow Us</h5>
