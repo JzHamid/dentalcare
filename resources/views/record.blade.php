@@ -73,7 +73,7 @@
 
         <div class="d-flex flex-column mx-auto w-75 gap-3">
             <div class="d-flex justify-content-between">
-                <h3>Patient Info</h3>
+                <h3 class = "fw-bold">Patient Info</h3>
 
                 <div class="d-flex gap-3">
                     @if ($appointment->status == 'Pending')
@@ -118,7 +118,7 @@
             </div>
 
             <div class="mt-3">
-                <h3>Procedures</h3>
+                <h3 class = "fw-bold">Procedures</h3>
             </div>
 
             <div class="d-flex rounded shadow p-4 gap-4">
