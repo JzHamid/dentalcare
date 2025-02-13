@@ -496,8 +496,8 @@
                         </thead>
 
                         <tbody>
-                            @foreach ($users as $user)
-                                @if ($user->status > 0)
+                        @foreach ($staffs as $user)
+
                                     <tr>
                                         <!-- <th class="text-center" scope="row">{{ $user->id }}</th> -->
                                         <td>{{ $user->fname . ' ' . $user->mname . ' ' . $user->lname }}</td>
@@ -528,7 +528,7 @@
                                             </form>
                                         </td>
                                     </tr>
-                                @endif
+                                
                             @endforeach
                         </tbody>
                     </table>

@@ -65,38 +65,39 @@ class PageController extends Controller
     }
 
     public function admin()
-    {
-        $log = Auth::user();
+{
+    $log = Auth::user();
 
-        // Instead of showing all services, get only those available for the logged-in dentist.
-        $services = $this->getServicesForDentist($log->id);
+    $services = $this->getServicesForDentist($log->id);
+    $assign = Assign::where('user_id', $log->id)->get();
 
-        $assign = Assign::where('user_id', $log->id)->get();
-        // Check if the logged-in user is a **dentist or a secretary**
-    if ($log->status == 2) { // Dentist
+    if ($log->status == 2) { 
         $appointments = Appointments::where('dentist_id', $log->id)->get();
-    } elseif ($log->status == 1) { // Secretary
-        $appointments = Appointments::all(); // Secretary sees all appointments
+    } elseif ($log->status == 1) { 
+        $appointments = Appointments::all(); 
     } else {
-        $appointments = collect(); // Empty collection if not authorized
+        $appointments = collect(); 
     }
 
-        // Get all users who have appointments with the logged-in dentist. feb. 11
-        $users = User::where('status', 0)
+    $users = User::where('status', 0)
         ->whereHas('appointments', function ($query) use ($log) {
             $query->where('dentist_id', $log->id);
         })
         ->get();
 
-        return view('admin')->with([
-            'appointments' => $appointments,
-            'services'     => $services,
-            'listings'     => $assign,
-            'users'        => $users,
-            'log'          => $log,
-            'is_online'    => $log->is_online,
-        ]);
-    }
+    $staffs = User::whereIn('status', [1, 2])->get();
+
+    return view('admin')->with([
+        'appointments' => $appointments,
+        'services'     => $services,
+        'listings'     => $assign,
+        'users'        => $users,  
+        'staffs'       => $staffs, 
+        'log'          => $log,
+        'is_online'    => $log->is_online,
+    ]);
+}
+
 
     public function superadmin()
     {

@@ -119,19 +119,20 @@
                 <h1 class = "fw-bold">Dashboard</h1>
 
                 <div class="d-flex flex-column p-5 gap-5">
-                    <div class="rounded bg-white shadow p-3">
+                    <div class="rounded bg-white shadow-sm p-3">
                         <div class="d-flex justify-content-between">
                             <h4 class = "fw-bold"><i class="bi bi-heart-pulse me-2"></i>Health Record</h4>
                             <button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#create-record">Add</button>
                         </div>
                         <hr>
+                        
                     </div>
 
                     <div class="container-fluid d-flex p-0 gap-5">
-                        <div class="container-fluid rounded bg-white shadow p-3">
+                        <div class="container-fluid rounded bg-white shadow-sm p-3">
                             <div class="d-flex justify-content-between align-items-center">
                                 <h4 class="m-0 fw-bold"><i class="bi bi-calendar-heart me-2"></i>Appointments</h4>
-                                <a class="btn btn-default d-flex gap-2" href="{{ route('listing') }}">New</a>
+                                <a class="btn btn-default d-flex gap-2 shadow-sm" href="{{ route('listing') }}">Book a new appointment</a>
                             </div>
                             <hr>
 
@@ -228,7 +229,7 @@
                             $temp = json_decode($appointment->temporary, true);
                             @endphp
 
-                            <td>{{ ($temp['fname'] ?? 'N/A') . ' ' . ($temp['mname'] ?? 'N/A') . ' ' . ($temp['fname'] ?? 'N/A') }}</td>
+                            <td>{{ ($temp['fname'] ?? 'N/A') . ' ' . ($temp['mname'] ?? 'N/A') . ' ' . ($temp['lname'] ?? 'N/A') }}</td>
                             @else
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                             @endif
