@@ -84,13 +84,13 @@ class AccountController extends Controller
     {
         $user = User::find(Auth::user()->id);
 
-        $request->validate([
-            'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',
-            'street_name' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'province' => 'required|string|max:255',
-            'postal_code' => 'required|string|max:10',
-        ]);
+        // $request->validate([
+        //     'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',
+        //     'street_name' => 'required|string|max:255',
+        //     'city' => 'required|string|max:255',
+        //     'province' => 'required|string|max:255',
+        //     'postal_code' => 'required|string|max:10',
+        // ]);
 
         if ($request->hasFile('profile')) {
             $file = $request->file('profile');

@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\AppointmentRescheduledMail;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
 
 
 class PageController extends Controller
@@ -67,28 +69,29 @@ class PageController extends Controller
     public function admin()
     {
         $log = Auth::user();
+        $user = Auth::user();
 
         // Instead of showing all services, get only those available for the logged-in dentist.
         $services = $this->getServicesForDentist($log->id);
 
         $assign = Assign::where('user_id', $log->id)->get();
         // Check if the logged-in user is a **dentist or a secretary**
-    if ($log->status == 2) { // Dentist
-        $appointments = Appointments::where('dentist_id', $log->id)->get();
-    } elseif ($log->status == 1) { // Secretary
-        $appointments = Appointments::all(); // Secretary sees all appointments
-    } else {
-        $appointments = collect(); // Empty collection if not authorized
-    }
+        if ($log->status == 2) { // Dentist
+            $appointments = Appointments::where('dentist_id', $log->id)->get();
+        } elseif ($log->status == 1) { // Secretary
+            $appointments = Appointments::where('dentist_id', $log->id)->get(); // Secretary sees all appointments
+        } else {
+            $appointments = collect(); // Empty collection if not authorized
+        }
 
         // Get all users who have appointments with the logged-in dentist. feb. 11
         $users = User::where('status', 0)
-        ->whereHas('appointments', function ($query) use ($log) {
-            $query->where('dentist_id', $log->id);
-        })
-        ->get();
+            ->whereHas('appointments', function ($query) use ($log) {
+                $query->where('dentist_id', $log->id);
+            })
+            ->get();
 
-        return view('admin')->with([
+        return view('admin', compact('user'))->with([
             'appointments' => $appointments,
             'services'     => $services,
             'listings'     => $assign,
@@ -113,8 +116,10 @@ class PageController extends Controller
     public function listing()
     {
         $listings = Listing::with('availabilities.service')->get();
+        $services = Service::all();
 
-        return view('listing')->with(['listings' => $listings]);
+
+        return view('listing')->with(['services' => $services, 'listings' => $listings]);
     }
 
     public function shop($id)
@@ -122,6 +127,7 @@ class PageController extends Controller
         $shop = Listing::find($id);
         $available = Available::where('listing_id', $shop->id)->get();
         $assign = Assign::where('clinic_id', $shop->id)->get();
+
 
         return view('shop')->with(['shop' => $shop, 'availables' => $available, 'assigns' => $assign]);
     }
@@ -134,21 +140,99 @@ class PageController extends Controller
         $schedules = Schedule::where('clinic_id', $shop->id)->get();
         $assign = Assign::where('clinic_id', $id)->get();
 
+
         return view('appointment')->with(['shop' => $shop, 'user' => $user, 'availables' => $available, 'schedules' => $schedules, 'assign' => $assign]);
     }
 
     public function record($id)
     {
-        $appointment = Appointments::where('id', $id)->first();
+        $appointment = Appointments::with(['user', 'service', 'dentist', 'additional_fee'])->findOrFail($id);
         $schedule = Schedule::where('clinic_id', $appointment->listing_id)->get();
         $dentist = User::where('id', $appointment->dentist_id)->first();
 
-        return view('record')->with(['appointment' => $appointment, 'dentist' => $dentist, 'schedules' => $schedule]);
+        // Fetch past (archived) appointments for the patient
+        $appointmentHistory = Appointments::with(['dentist', 'service', 'additional_fee'])
+            ->where('user_id', $appointment->user_id)
+            ->where('status', 'Done')
+            ->orderBy('appointment_time', 'desc')
+            ->get();
+
+        return view('record')->with([
+            'appointment' => $appointment,
+            'dentist' => $dentist,
+            'schedules' => $schedule,
+            'appointmentHistory' => $appointmentHistory
+        ]);
+    }
+
+
+    private function isWithinClinicHours($clinicId, Carbon $appointmentStart, Carbon $appointmentEnd)
+    {
+        // Get the day of the week (e.g., "Monday")
+        $day = $appointmentStart->format('l');
+
+        // Retrieve the schedule for this clinic and day.
+        $schedule = Schedule::where('clinic_id', $clinicId)
+            ->where('day', $day)
+            ->first();
+
+        // If there is no schedule, assume the clinic is closed.
+        if (!$schedule) {
+            return false;
+        }
+
+        // Create Carbon instances from the schedule's start and end times.
+        // (These times are assumed to be stored in 'H:i:s' format.)
+        $clinicStart = Carbon::createFromFormat('H:i:s', $schedule->start);
+        $clinicEnd   = Carbon::createFromFormat('H:i:s', $schedule->end);
+
+        // Extract only the time part of the appointment times.
+        $appointmentStartTime = Carbon::createFromFormat('H:i:s', $appointmentStart->format('H:i:s'));
+        $appointmentEndTime   = Carbon::createFromFormat('H:i:s', $appointmentEnd->format('H:i:s'));
+
+        // Ensure the appointment does not start before or end after the clinic's hours.
+        if ($appointmentStartTime->lt($clinicStart) || $appointmentEndTime->gt($clinicEnd)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function reschedule_appointment_admin(Request $request, $id)
     {
         $appointment = Appointments::find($id);
+        $clinicId = $appointment->listing_id;
+        $dentistId = $appointment->dentist_id;
+        $service = Service::find($appointment->service_id);
+        $duration = $service->duration;
+
+        $newStart = Carbon::parse($request->schedule);
+        $newEnd = $newStart->copy()->addMinutes($duration);
+
+        // --- Business Hours Check ---
+        if (!$this->isWithinClinicHours($clinicId, $newStart, $newEnd)) {
+            return redirect()->back()->withErrors([
+                'msg' => 'The rescheduled time is outside the clinic\'s business hours.'
+            ]);
+        }
+
+        // --- Overlapping Appointment Check ---
+        $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')
+            ->where('appointments.listing_id', $clinicId)
+            ->where('appointments.dentist_id', $dentistId)
+            ->where('appointments.id', '!=', $id) // Exclude the current appointment being rescheduled
+            ->where(function ($query) use ($newStart, $newEnd) {
+                $query->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) < ?', [$newEnd->toDateTimeString()])
+                    ->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) + INTERVAL services.duration MINUTE > ?', [$newStart->toDateTimeString()]);
+            })
+            ->exists();
+
+        if ($overlapping) {
+            return redirect()->back()->withErrors([
+                'msg' => 'The selected time overlaps with an existing appointment. Please choose another time.'
+            ]);
+        }
+
         $appointment->rescheduled_time = $request->schedule;
         $appointment->reschedule_reason = $request->reschedule_reason;
         $appointment->status = 'Rescheduled';

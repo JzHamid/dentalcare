@@ -108,7 +108,7 @@
         <div class="d-flex flex-column align-items-center p-5 gap-4">
             @foreach ($listings as $listing)
                 <a class="text-decoration-none text-black d-flex rounded shadow-sm p-4 gap-3 w-75" href="{{ route('shop', $listing->id) }}">
-                    <img src="{{ '/storage/' . $listing->image_path }}" style="height: 200px; width: 200px; border-radius: 10px;">
+                    <img src="{{ asset('/' . $listing->image_path) }}" style="height: 200px; width: 200px; border-radius: 10px;">
                     
                     <div class="d-flex flex-column">
                         <h3 class="fw-bold">{{ $listing->name }}</h3>
@@ -123,7 +123,7 @@
                         <p class="fw-bold m-0" style="font-size: medium;">Location:</p>
                         <div class="container-fluid p-0 mb-1">{{ $listing->location }}</div>
 
-                        <p class="fw-bold m-0" style="font-size: medium;">Availability:</p>
+                        <p class="fw-bold m-0" style="font-size: medium;">Availability: {{ $listing->location }}</p>
                         <div class="container-fluid p-0">
                         </div>
                     </div>

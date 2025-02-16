@@ -89,7 +89,7 @@
                 Service
             </button>
 
-            <button class="nav-link text-white d-flex gap-4" id="nav-patients" data-bs-toggle="pill" data-bs-target="#tab-patients" type="button" role="tab" aria-controls="tab-patients" aria-selected="false">
+            <button class="nav-link text-white d-flex gap-4" id="nav-patient" data-bs-toggle="pill" data-bs-target="#tab-patients" type="button" role="tab" aria-controls="tab-patients" aria-selected="false">
                 <i class="bi-people-fill"></i>
                 Patient
             </button>
@@ -99,14 +99,19 @@
                 Dentist
             </button>
 
-            <button class="nav-link text-white d-flex gap-4" id="nav-dentist" data-bs-toggle="pill" data-bs-target="#tab-secretary" type="button" role="tab" aria-controls="tab-secretary" aria-selected="false">
-                <i class="bi-person-fill-add"></i>
+            <button class="nav-link text-white d-flex gap-4" id="nav-secretary" data-bs-toggle="pill" data-bs-target="#tab-secretary" type="button" role="tab" aria-controls="tab-secretary" aria-selected="false">
+                <i class="bi-person-lines-fill"></i>
                 Secretary
             </button>
 
             <button class="nav-link text-white d-flex gap-4" id="nav-listing" data-bs-toggle="pill" data-bs-target="#tab-listing" type="button" role="tab" aria-controls="tab-listing" aria-selected="false">
                 <i class="bi-building-fill"></i>
                 Clinic
+            </button>
+
+            <button class="nav-link text-white d-flex gap-4" id="nav-transactions" data-bs-toggle="pill" data-bs-target="#tab-transactions" type="button" role="tab" aria-controls="tab-transactions" aria-selected="false">
+                <i class="bi-cash-stack"></i>
+                Transactions
             </button>
 
             <a class="nav-link text-white d-flex gap-4 mt-auto" href="{{ route('logout') }}">
@@ -129,6 +134,18 @@
                                         <p class="lead text-center m-0 fw-bold text-default">Dentist</p>
                                     </div>
                                     <p class="display-5 fw-bold text-default">{{ $dentist->count() }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="bg-transparent rounded shadow-sm p-4">
+                                <div class="d-flex justify-content-between">
+                                    <div class="d-flex flex-column">
+                                        <img src="{{ asset('images/dentist_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
+                                        <p class="lead text-center m-0 fw-bold text-default">Secretary</p>
+                                    </div>
+                                    <p class="display-5 fw-bold text-default">{{ $secretary->count() }}</p>
                                 </div>
                             </div>
                         </div>
@@ -194,12 +211,12 @@
 
                     <div class="d-flex gap-2">
                         <select class="form-select fw-bold" name="filter" style="width: 200px;">
-                            <option class = "fw-bold" value="0">All</option>
-                            <option class = "fw-bold" value="1">Done</option>
-                            <option class = "fw-bold" value="2">Pending</option>
-                            <option class = "fw-bold" value="3">Rescheduled</option>
-                            <option class = "fw-bold" value="4">Cancelled</option>
-                            <option class = "fw-bold" value="5">Upcomming</option>
+                            <option class="fw-bold" value="0">All</option>
+                            <option class="fw-bold" value="1">Done</option>
+                            <option class="fw-bold" value="2">Pending</option>
+                            <option class="fw-bold" value="3">Rescheduled</option>
+                            <option class="fw-bold" value="4">Cancelled</option>
+                            <option class="fw-bold" value="5">Upcomming</option>
                         </select>
 
                         <div class="input-group">
@@ -238,6 +255,9 @@
                                 @switch ( $appointment->status )
                                 @case ('Pending')
                                 <span class="text-primary fw-bold text-uppercase">Pending</span>
+                                @break
+                                @case ('Deny')
+                                <span class="text-danger fw-bold text-uppercase">Denied</span>
                                 @break
                                 @case ('Done')
                                 <span class="text-success fw-bold text-uppercase">Done</span>
@@ -341,7 +361,7 @@
                             <td>{{ $user->email }}</td>
                             <td>{{ trim("{$user->street_name}, {$user->city}, {$user->province}", ', ') }}</td>
                             <td class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-sm btn-primary edit-button" data-id="{{ $user->id }}" data-bs-toggle="modal" data-bs-target="#edit-patient">
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-patient" onclick="get_patient('{{ $user->id }}')">
                                     <i class="bi-pencil-square"></i>
                                 </button>
 
@@ -407,6 +427,260 @@
                 </table>
             </div>
 
+            <div class="tab-pane gap-5 p-3" id="tab-transactions" role="tabpanel" aria-labelledby="tab-transactions" tabindex="0">
+                <h1 class="mb-5">Transactions</h1>
+
+                <div class="container-fluid p-4 mt-4">
+                    <h3 class="mb-4">Appointment History</h3>
+                    @if($appointments->isEmpty())
+                    <div class="alert alert-info" role="alert">
+                        No past appointments found.
+                    </div>
+                    @else
+                    @foreach ($appointments as $appointment)
+                    @php
+                    $serviceFee = $appointment->fees->whereNotNull('service_name')->first();
+                    $additionalFees = $appointment->fees->whereNull('service_name');
+                    @endphp
+
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">
+                                    {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y, g:i a') }}
+                                </h5>
+                                <span class="badge bg-primary">Completed</span>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="card-text mb-1"><strong>Patient:</strong> {{ $appointment->user->fname }} {{ $appointment->user->lname }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="card-text mb-1"><strong>Service:</strong> {{ $serviceFee->service_name ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="card-text mb-1"><strong>Service Amount:</strong> ₱{{ number_format($serviceFee->service_amount ?? 0, 2) }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="card-text mb-1"><strong>Service Discount:</strong> {{ $serviceFee->service_discount ?? '0' }}%</p>
+                                </div>
+                            </div>
+
+
+
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal-{{ $appointment->id }}">
+                                <i class="fas fa-eye me-2"></i>View Details
+                            </button>
+                        </div>
+                    </div>
+
+                    @php
+                    // Service price and discount calculation
+                    $servicePrice = $serviceFee->service_amount ?? 0;
+                    $serviceDiscount = $serviceFee->service_discount ?? 0;
+                    $serviceDiscountAmount = ($serviceDiscount / 100) * $servicePrice;
+                    $discountedServicePrice = $servicePrice - $serviceDiscountAmount;
+
+                    // Additional fees calculation
+                    $totalAdditionalFees = 0;
+                    $totalDiscountedFees = 0;
+                    $totalFeeDiscounts = 0;
+                    $feesWithDiscounts = [];
+
+                    if ($additionalFees->isNotEmpty()) {
+                    foreach ($additionalFees as $fee) {
+                    $feeAmount = $fee->fee_amount ?? 0;
+                    $feeDiscount = $fee->discount_percentage ?? 0;
+                    $feeDiscountAmount = ($feeDiscount / 100) * $feeAmount;
+                    $discountedFeeAmount = $feeAmount - $feeDiscountAmount;
+
+                    $totalAdditionalFees += $feeAmount;
+                    $totalDiscountedFees += $discountedFeeAmount;
+                    $totalFeeDiscounts += $feeDiscountAmount;
+
+                    // Store fee details for display
+                    $feesWithDiscounts[] = [
+                    'name' => $fee->fee_type ?? 'N/A',
+                    'original_price' => $feeAmount,
+                    'discount' => $feeDiscount,
+                    'discount_amount' => $feeDiscountAmount,
+                    'discounted_price' => $discountedFeeAmount,
+                    ];
+                    }
+                    }
+
+                    // Grand total before discount
+                    $grandTotal = $servicePrice + $totalAdditionalFees;
+                    // Total discount given
+                    $totalDiscountGiven = $serviceDiscountAmount + $totalFeeDiscounts;
+                    // Total after applying all discounts
+                    $totalAfterDiscount = $grandTotal - $totalDiscountGiven;
+                    @endphp
+
+                    <div class="modal fade" id="appointmentModal-{{ $appointment->id }}" tabindex="-1" aria-labelledby="appointmentModalLabel-{{ $appointment->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Wider modal -->
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="appointmentModalLabel-{{ $appointment->id }}">
+                                        <i class="fas fa-calendar-check me-2"></i>Appointment Details
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <!-- Appointment Date and Dentist -->
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body">
+                                                        <h6 class="text-muted mb-3"><i class="fas fa-calendar-day me-2"></i>Appointment Date</h6>
+                                                        <p class="lead mb-0">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y, g:i a') }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body">
+                                                        <h6 class="text-muted mb-3"><i class="fas fa-user-md me-2"></i>Dentist</h6>
+                                                        <p class="lead mb-0">Dr. {{ $appointment->dentist->fname }} {{ $appointment->dentist->lname }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Service Details -->
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-teeth me-2"></i>Service Details</h6>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p class="mb-2"><strong>Service Name:</strong> {{ $serviceFee->service_name ?? 'N/A' }}</p>
+                                                        <p class="mb-2"><strong>Service Price:</strong> ₱{{ number_format($servicePrice, 2) }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p class="mb-2"><strong>Service Discount:</strong> {{ $serviceDiscount }}%</p>
+                                                        <p class="mb-0 text-success"><strong>After Discount:</strong> ₱{{ number_format($discountedServicePrice, 2) }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Additional Fees -->
+                                        @if(!empty($feesWithDiscounts))
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-receipt me-2"></i>Additional Fees</h6>
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach($feesWithDiscounts as $fee)
+                                                    <li class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>{{ $fee['name'] }}</span>
+                                                            <span class="badge bg-primary rounded-pill">₱{{ number_format($fee['original_price'], 2) }}</span>
+                                                        </div>
+                                                        <small class="text-muted">Discount: {{ $fee['discount'] }}% (₱{{ number_format($fee['discount_amount'], 2) }})</small>
+                                                        <p class="text-success mb-0"><strong>After Discount:</strong> ₱{{ number_format($fee['discounted_price'], 2) }}</p>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        @else
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-receipt me-2"></i>Additional Fees</h6>
+                                                <p class="lead mb-0">N/A</p>
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        <!-- Payment History -->
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-history me-2"></i>Payment History</h6>
+                                                @if($appointment->payments && $appointment->payments->count() > 0)
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach($appointment->payments as $payment)
+                                                    <li class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>
+                                                                <strong>Amount:</strong> ₱{{ number_format($payment->amount_paid, 2) }}<br>
+                                                                <small class="text-muted">Date: {{ \Carbon\Carbon::parse($payment->created_at)->format('F j, Y, g:i a') }}</small>
+                                                            </span>
+                                                            <span class="badge bg-secondary rounded-pill">{{ ucfirst($payment->payment_type) }}</span>
+                                                        </div>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                                @else
+                                                <p class="lead mb-0">No payments made yet.</p>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <!-- Summary -->
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-file-invoice-dollar me-2"></i>Summary</h6>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p class="mb-2"><strong>Grand Total:</strong> ₱{{ number_format($grandTotal, 2) }}</p>
+                                                        <p class="mb-2 text-danger"><strong>Total Discount Given:</strong> ₱{{ number_format($totalDiscountGiven, 2) }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p class="mb-2 text-success"><strong>Total After Discount:</strong> ₱{{ number_format($totalAfterDiscount, 2) }}</p>
+                                                        <p class="mb-0"><strong>Remaining Balance:</strong> ₱{{ number_format($totalAfterDiscount - $appointment->total_paid, 2) }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Payment Form -->
+                                        <div class="card border-0 shadow-sm">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-credit-card me-2"></i>Payment</h6>
+                                                <form action="{{ route('store.payment', $appointment->id) }}" method="POST">
+                                                    @csrf
+                                                    <div class="mb-3">
+                                                        <label for="amount_paid" class="form-label">Payment Amount</label>
+                                                        <input type="number" step="0.01" class="form-control" name="amount_paid" required
+                                                            max="{{ $totalAfterDiscount - $appointment->total_paid }}">
+                                                        <small class="text-muted">Remaining Balance: ₱{{ number_format($totalAfterDiscount - $appointment->total_paid, 2) }}</small>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="payment_type" class="form-label">Payment Type</label>
+                                                        <select class="form-control" name="payment_type">
+                                                            <option value="full">Full</option>
+                                                            <option value="installment">Installment</option>
+                                                        </select>
+                                                    </div>
+                                                    <button type="submit" class="btn btn-primary w-100"><i class="fas fa-plus-circle me-2"></i>Add Payment</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="fas fa-times me-2"></i>Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                    @endif
+                </div>
+            </div>
+
             <div class="tab-pane gap-5 p-3" id="tab-secretary" role="tabpanel" aria-labelledby="tab-secretary" tabindex="0">
                 <h1 class="mb-5">Secretary</h1>
 
@@ -440,7 +714,7 @@
                             <td>{{ $sec->phone }}</td>
                             <td>{{ trim("{$sec->street_name}, {$sec->city}, {$sec->province}", ', ') }}</td>
                             <td class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-secretary" onclick="get_dentist('{{ $sec->id }}')">
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#edit-secretary" onclick="get_secretary('{{ $sec->id }}')">
                                     <i class="bi-pencil-square"></i>
                                 </button>
 
@@ -510,6 +784,8 @@
             </div>
         </div>
     </div>
+
+
 
     <!-- Create Service Modal -->
     <div class="modal fade" data-bs-backdrop="static" id="add-service" tabindex="-1">
@@ -754,19 +1030,24 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="streetName">Street Name</label>
+                        <label class="form-label" for="street_named">Street Name</label>
                         <input class="form-control" type="text" id="streetName" name="street_named" placeholder="Enter street name">
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="city">City</label>
-                        <input class="form-control" type="text" id="city" name="cityd" placeholder="Enter city">
+                        <label class="form-label" for="provinced">Province</label>
+                        <select class="form-select" id="province" name="provinced" required>
+                            <option value="">Select Province</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="cityd">City</label>
+                        <select class="form-select" id="city" name="cityd" required disabled>
+                            <option value="">Select City</option>
+                        </select>
                     </div>
                     <div class="form-group">
-                        <label class="form-label" for="province">Province</label>
-                        <input class="form-control" type="text" id="province" name="provinced" placeholder="Enter province">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="postalCode">Postal Code</label>
+                        <label class="form-label" for="postal_coded">Postal Code</label>
                         <input class="form-control" type="text" id="postalCode" name="postal_coded" placeholder="Enter postal code">
                     </div>
 
@@ -844,13 +1125,29 @@
                         <label class="form-label" for="streetName">Street Name</label>
                         <input class="form-control" type="text" id="streetName" name="street_names" placeholder="Enter street name">
                     </div>
-                    <div class="form-group">
+
+                    <!-- <div class="form-group">
                         <label class="form-label" for="city">City</label>
                         <input class="form-control" type="text" id="city" name="citys" placeholder="Enter city">
                     </div>
+
                     <div class="form-group">
                         <label class="form-label" for="province">Province</label>
                         <input class="form-control" type="text" id="province" name="provinces" placeholder="Enter province">
+                    </div> -->
+
+                    <div class="form-group">
+                        <label class="form-label" for="province">Province</label>
+                        <select class="form-select" id="provincesecre" name="provinces" required>
+                            <option value="">Select Province</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="city">City</label>
+                        <select class="form-select" id="citypsecre" name="citys" required disabled>
+                            <option value="">Select City</option>
+                        </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="postalCode">Postal Code</label>
@@ -928,7 +1225,7 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label class="form-label m-0" for="edit-street">Street Name</label>
                         <input class="form-control" name="street_namee" id="street_namee" type="text" placeholder="Street Name" required>
                     </div>
@@ -948,7 +1245,44 @@
                             <label class="form-label m-0" for="edit-postal-code">Postal Code</label>
                             <input class="form-control" name="postal_codee" id="postal_codee" type="text" placeholder="Postal Code" required>
                         </div>
+                    </div> -->
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold" for="location">Address</label>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label for="edit-street" class="form-label">Street Name</label>
+                                <input
+                                    class="form-control"
+                                    type="text"
+                                    name="street_namee"
+                                    id="street_namee"
+                                    placeholder="Street Name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-province" class="form-label">Province</label>
+                                <select class="form-control" id="provincee" name="provincee">
+                                    <option value="">Select Province</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-city" class="form-label">City</label>
+                                <select class="form-control" id="citye" name="citye" disabled>
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-postal-code" class="form-label">Postal Code</label>
+                                <input
+                                    class="form-control"
+                                    type="text"
+                                    name="postal_codee"
+                                    id="postal_codee"
+                                    placeholder="Postal Code">
+                            </div>
+                        </div>
                     </div>
+
                 </form>
 
                 <div class="modal-footer">
@@ -1016,27 +1350,64 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
+                    <!-- <div class="form-group">
                         <label class="form-label m-0" for="edit-street">Street Name</label>
-                        <input class="form-control" name="street_namesec" id="street_namesec" type="text" placeholder="Street Name" required>
+                        <input class="form-control" name="street_namee" id="street_namee" type="text" placeholder="Street Name" required>
                     </div>
 
                     <div class="form-group container-fluid p-0">
                         <label class="form-label m-0" for="edit-province">Province</label>
-                        <input class="form-control" name="provincesec" id="provincesec" type="text" placeholder="Province" required>
+                        <input class="form-control" name="provincee" id="provincee" type="text" placeholder="Province" required>
                     </div>
 
                     <div class="form-group container-fluid p-0">
                         <label class="form-label m-0" for="edit-city">City</label>
-                        <input class="form-control" name="citysec" id="citysec" type="text" placeholder="City" required>
+                        <input class="form-control" name="citye" id="citye" type="text" placeholder="City" required>
                     </div>
 
                     <div class="form-group container-fluid p-0">
                         <div class="form-group">
                             <label class="form-label m-0" for="edit-postal-code">Postal Code</label>
-                            <input class="form-control" name="postal_codesec" id="postal_codesec" type="text" placeholder="Postal Code" required>
+                            <input class="form-control" name="postal_codesec" id="postal_codee" type="text" placeholder="Postal Code" required>
+                        </div>
+                    </div> -->
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold" for="location">Address</label>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label for="edit-street" class="form-label">Street Name</label>
+                                <input
+                                    class="form-control"
+                                    type="text"
+                                    name="street_namesec"
+                                    id="street_namesec"
+                                    placeholder="Street Name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-province" class="form-label">Province</label>
+                                <select class="form-control" id="provincesec" name="provincesec">
+                                    <option value="">Select Province</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-city" class="form-label">City</label>
+                                <select class="form-control" id="citysec" name="citysec" disabled>
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-postal-code" class="form-label">Postal Code</label>
+                                <input
+                                    class="form-control"
+                                    type="text"
+                                    name="postal_codesec"
+                                    id="postal_codesec"
+                                    placeholder="Postal Code">
+                            </div>
                         </div>
                     </div>
+
                 </form>
 
                 <div class="modal-footer">
@@ -1141,7 +1512,7 @@
                     @endphp
 
                     <div class="form-group d-flex flex-column gap-2">
-                        <label for="listing-schedule" class = "fw-bold">Schedule</label>
+                        <label for="listing-schedule" class="fw-bold">Schedule</label>
 
                         @foreach (array_chunk($days, 2) as $dayPair)
                         <div class="d-flex gap-2">
@@ -1330,105 +1701,126 @@
         </div>
     </div>
 
-    <!-- Patient Edit Modal -->
-    <div class="container-fluid p-0">
-        <div class="modal fade" id="edit-patient" tabindex="-1" aria-labelledby="edit-service-label" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <form class="d-flex flex-column p-4 gap-3" id="edit-form" enctype="multipart/form-data" action="{{ route('update_patient.account') }}" method="post">
-                        @csrf
-                        @method('POST')
-                        <div class="modal-header">
-                            <h5 class="modal-title text-center w-100" id="edit-service-label">Edit Patient</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <input type="hidden" name="id" value="{{ $user->id }}" id="edit-id">
+    <!-- Edit Patient -->
+    <div class="modal fade" data-bs-backdrop="static" id="edit-patient" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Patient</h5>
+                </div>
 
-                            <!-- Profile Picture -->
-                            <div class="text-center">
-                                <img id="profile-preview"
-                                    alt="Profile Picture" class="rounded-circle mb-3" width="120" height="120">
-                                <input type="file" id="edit-profile-picture" name="profile" class="form-control">
-                            </div>
-
-                            <!-- First Name - Middle Name - Last Name -->
-                            <div class="d-flex gap-2">
-                                <div class="form-group container-fluid p-0">
-                                    <label class="form-label m-0" for="edit-fname">First Name</label>
-                                    <input class="form-control" name="fname" id="edit-fname" type="text" placeholder="First Name" value="{{ old('fname', $user->fname) }}" required>
-                                </div>
-                                <div class="form-group container-fluid p-0">
-                                    <label class="form-label m-0" for="edit-mname">Middle Name</label>
-                                    <input class="form-control" name="mname" id="edit-mname" type="text" placeholder="Middle Name" value="{{ old('mname', $user->mname) }}">
-                                </div>
-                                <div class="form-group container-fluid p-0">
-                                    <label class="form-label m-0" for="edit-lname">Last Name</label>
-                                    <input class="form-control" name="lname" id="edit-lname" type="text" placeholder="Last Name" value="{{ old('lname', $user->lname) }}" required>
-                                </div>
-                            </div>
-
-                            <!-- Date of Birth - Sexuality -->
-                            <div class="d-flex gap-2">
-                                <div class="form-group container-fluid p-0">
-                                    <label for="edit-birthdate" class="form-label">Date of Birth</label>
-                                    <input type="date" class="form-control" id="edit-birthdate" name="birth" value="{{ old('birth', $user->birthdate) }}">
-                                </div>
-                                <div class="form-group container-fluid p-0">
-                                    <label class="form-label m-0" for="edit-sexuality">Sexuality</label>
-                                    <select class="form-select" name="gender" id="edit-sexuality" required>
-                                        <option value="0" {{ $user->gender == 0 ? 'selected' : '' }}>Male</option>
-                                        <option value="1" {{ $user->gender == 1 ? 'selected' : '' }}>Female</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Contact No. - Email Address -->
-                            <div class="d-flex gap-2">
-                                <div class="form-group container-fluid p-0">
-                                    <label class="form-label m-0" for="edit-number">Contact No.</label>
-                                    <input class="form-control" name="phone" id="edit-number" type="tel" placeholder="Contact No." value="{{ old('phone', $user->phone) }}" required>
-                                </div>
-                                <div class="form-group container-fluid p-0">
-                                    <label class="form-label m-0" for="edit-email">Email Address</label>
-                                    <input class="form-control" name="email" id="edit-email" type="email" placeholder="Email Address" value="{{ old('email', $user->email) }}" required>
-                                </div>
-                            </div>
-
-                            <!-- Street Name -->
-                            <div class="form-group">
-                                <label class="form-label m-0" for="edit-street">Street Name</label>
-                                <input class="form-control" name="street_name" id="edit-street" type="text" placeholder="Street Name" value="{{ old('street_name', $user->street_name) }}" required>
-                            </div>
-
-                            <!-- Province - City -->
-                            <div class="d-flex gap-2">
-                                <div class="form-group container-fluid p-0">
-                                    <label class="form-label m-0" for="edit-province">Province</label>
-                                    <select class="form-control" name="province" id="edit-province" required>
-                                        <option value="">Select Province</option>
-                                    </select>
-                                </div>
-                                <div class="form-group container-fluid p-0">
-                                    <label class="form-label m-0" for="edit-city">City</label>
-                                    <select class="form-control" name="city" id="edit-city" disabled>
-                                        <option value="">Select City</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Postal Code -->
-                            <div class="form-group">
-                                <label class="form-label m-0" for="edit-postal-code">Postal Code</label>
-                                <input class="form-control" name="postal_code" id="edit-postal-code" type="text" placeholder="Postal Code" value="{{ old('postal_code', $user->postal_code) }}" required>
-                            </div>
+                <form class="modal-body d-flex flex-column gap-2" action="{{ route('update.patient') }}" method="post" id="edit-patient-form">
+                    @csrf
+                    @method('PUT')
+                    <input type="hidden" name="id" id="patient-id">
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="fnamed">First Name</label>
+                            <input class="form-control" type="text" name="fnamep" id="fnamep">
                         </div>
 
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="mnamed">Middle Name</label>
+                            <input class="form-control" type="text" name="mnamep" id="mnamep">
                         </div>
-                    </form>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="lnamed">Last Name</label>
+                            <input class="form-control" type="text" name="lnamep" id="lnamep">
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="birthdated">Date of Birth</label>
+                            <input class="form-control" type="date" name="birthdatep" id="birthdatep">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="sexd">Sexuality</label>
+                            <select class="form-select" name="sexp" id="sexp">
+                                <option selected disabled>-- Select --</option>
+                                <option value="0">Male</option>
+                                <option value="1">Female</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="phoned">Contact No.</label>
+                            <input class="form-control" type="tel" name="phonep" id="phonep">
+                        </div>
+
+                        <div class="form-group container-fluid p-0">
+                            <label class="form-label" for="emaild">Email Address</label>
+                            <input class="form-control" type="email" name="emailp" id="emailp">
+                        </div>
+                    </div>
+
+                    <!-- <div class="form-group">
+                        <label class="form-label m-0" for="edit-street">Street Name</label>
+                        <input class="form-control" name="street_namee" id="street_namee" type="text" placeholder="Street Name" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <label class="form-label m-0" for="edit-province">Province</label>
+                        <input class="form-control" name="provincee" id="provincee" type="text" placeholder="Province" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <label class="form-label m-0" for="edit-city">City</label>
+                        <input class="form-control" name="citye" id="citye" type="text" placeholder="City" required>
+                    </div>
+
+                    <div class="form-group container-fluid p-0">
+                        <div class="form-group">
+                            <label class="form-label m-0" for="edit-postal-code">Postal Code</label>
+                            <input class="form-control" name="postal_codee" id="postal_codee" type="text" placeholder="Postal Code" required>
+                        </div>
+                    </div> -->
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold" for="location">Address</label>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <label for="edit-street" class="form-label">Street Name</label>
+                                <input
+                                    class="form-control"
+                                    type="text"
+                                    name="street_namep"
+                                    id="street_namep"
+                                    placeholder="Street Name">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-province" class="form-label">Province</label>
+                                <select class="form-control" id="provincep" name="provincep">
+                                    <option value="">Select Province</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-city" class="form-label">City</label>
+                                <select class="form-control" id="cityp" name="cityp" disabled>
+                                    <option value="">Select City</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="edit-postal-code" class="form-label">Postal Code</label>
+                                <input
+                                    class="form-control"
+                                    type="text"
+                                    name="postal_codep"
+                                    id="postal_codep"
+                                    placeholder="Postal Code">
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+
+                <div class="modal-footer">
+                    <button class="btn btn-secondary w-25" type="button" data-bs-dismiss="modal">Cancel</button>
+                    <button class="btn btn-primary w-25" type="button" onclick="document.getElementById('edit-patient-form').submit()">Update</button>
                 </div>
             </div>
         </div>
@@ -1444,6 +1836,18 @@
                     break;
                 case 5:
                     document.getElementById('nav-listing').click();
+                    break;
+                case 6:
+                    document.getElementById('nav-secretary').click();
+                    break;
+                case 7:
+                    document.getElementById('nav-patient').click();
+                    break;
+                case 8:
+                    document.getElementById('nav-services').click();
+                    break;
+                case 9:
+                    document.getElementById('nav-transaction').click();
                     break;
                 default:
                     break;
@@ -1560,6 +1964,35 @@
             });
         }
 
+        function get_patient(id) {
+            fetch(`/get-patient/${parseInt(id, 10)}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(response => {
+                return response.json();
+            }).then(data => {
+                console.log("Fetched Data:", data);
+                $('#patient-id').val(data.user.id);
+                $('#fnamep').val(data.user.fname);
+                $('#mnamep').val(data.user.mname);
+                $('#lnamep').val(data.user.lname);
+
+                const birthdate = new Date(data.user.birthdate).toISOString().split('T')[0];
+                $('#birthdatep').val(birthdate);
+
+                $('#sexp').val(data.user.gender);
+                $('#phonep').val(data.user.phone);
+                $('#emailp').val(data.user.email);
+                $('#street_namep').val(data.user.street_name);
+                $('#provincep').val(data.user.province);
+                $('#cityp').val(data.user.city);
+                $('#postal_codep').val(data.user.postal_code);
+            });
+        }
+
         function get_listing(id) {
             fetch(`/get-listing/${parseInt(id, 10)}`, {
                 method: 'GET',
@@ -1598,37 +2031,37 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.edit-button').forEach(button => {
-                button.addEventListener('click', function() {
-                    const userId = this.getAttribute('data-id');
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     document.querySelectorAll('.edit-button').forEach(button => {
+        //         button.addEventListener('click', function() {
+        //             const userId = this.getAttribute('data-id');
 
-                    fetch(`/users/${userId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            const birthdate = new Date(data.birthdate);
-                            const today = new Date();
-                            const age = today.getFullYear() - birthdate.getFullYear();
-                            const defaultImage = "..\\profile_images\\blank_profile_default.png";
+        //             fetch(`/users/${userId}`)
+        //                 .then(response => response.json())
+        //                 .then(data => {
+        //                     const birthdate = new Date(data.birthdate);
+        //                     const today = new Date();
+        //                     const age = today.getFullYear() - birthdate.getFullYear();
+        //                     const defaultImage = "..\\profile_images\\blank_profile_default.png";
 
-                            document.getElementById('edit-id').value = data.id;
-                            document.getElementById('profile-preview').src = data.image_path ? data.image_path : defaultImage;
-                            document.getElementById('edit-fname').value = data.fname;
-                            document.getElementById('edit-mname').value = data.mname;
-                            document.getElementById('edit-lname').value = data.lname;
-                            document.getElementById('edit-birthdate').value = data.birthdate ? data.birthdate.split(' ')[0] : '';
-                            document.getElementById('edit-sexuality').value = data.gender;
-                            document.getElementById('edit-email').value = data.email;
-                            document.getElementById('edit-number').value = data.phone;
-                            document.getElementById('edit-street').value = data.street_name;
-                            document.getElementById('edit-province').value = data.province;
-                            document.getElementById('edit-city').value = data.city;
-                            document.getElementById('edit-postal-code').value = data.postal_code;
-                        })
-                        .catch(error => console.error('Error fetching user data:', error));
-                });
-            });
-        });
+        //                     document.getElementById('edit-id').value = data.id;
+        //                     document.getElementById('profile-preview').src = data.image_path ? data.image_path : defaultImage;
+        //                     document.getElementById('edit-fname').value = data.fname;
+        //                     document.getElementById('edit-mname').value = data.mname;
+        //                     document.getElementById('edit-lname').value = data.lname;
+        //                     document.getElementById('edit-birthdate').value = data.birthdate ? data.birthdate.split(' ')[0] : '';
+        //                     document.getElementById('edit-sexuality').value = data.gender;
+        //                     document.getElementById('edit-email').value = data.email;
+        //                     document.getElementById('edit-number').value = data.phone;
+        //                     document.getElementById('edit-street').value = data.street_name;
+        //                     document.getElementById('edit-province').value = data.province;
+        //                     document.getElementById('edit-city').value = data.city;
+        //                     document.getElementById('edit-postal-code').value = data.postal_code;
+        //                 })
+        //                 .catch(error => console.error('Error fetching user data:', error));
+        //         });
+        //     });
+        // });
 
         function setDeleteFormAction(action) {
             document.getElementById('delete-service-form').setAttribute('action', action);
@@ -1651,39 +2084,47 @@
         });
 
 
-
+        // DENTSIT
         document.addEventListener("DOMContentLoaded", function() {
-            const provinceSelect = document.getElementById("edit-province");
-            const citySelect = document.getElementById("edit-city");
-            const existingProvince = "{{ $user->province }}".trim();
-            const existingCity = "{{ $user->city }}".trim();
+            const provinceSelect = document.getElementById("provincee");
+            const citySelect = document.getElementById("citye");
+
+            // Get existing province and city from database (could be name or code)
+            const existingProvinceDB = $('#provincee').attr("data-selected"); // Name or Code
+            const existingCityName = $('#citye').attr("data-selected"); // City Name
+
+            let provinceMap = {}; // Map to store province code -> name
 
             fetch("https://psgc.gitlab.io/api/provinces/")
                 .then(response => response.json())
                 .then(provinces => {
-                    provinces.forEach(province => {
-                        let option = document.createElement("option");
-                        option.value = province.code;
-                        option.textContent = province.name;
-                        option.setAttribute("data-name", province.name);
+                    let selectedProvinceName = null;
 
-                        if (province.name === existingProvince) {
-                            option.selected = true;
+                    provinces.forEach(province => {
+                        provinceMap[province.code] = province.name; // Store mapping
+                        let option = document.createElement("option");
+                        option.value = province.name; // Store name in <option> value
+                        option.textContent = province.name; // Display name
+                        option.setAttribute("data-code", province.code); // Store code for fetching cities
+
+                        // Match by code or name
+                        if (province.code === existingProvinceDB || province.name === existingProvinceDB) {
+                            selectedProvinceName = province.name;
                         }
 
                         provinceSelect.appendChild(option);
                     });
 
-                    if (existingProvince) {
-                        let selectedProvince = provinces.find(p => p.name === existingProvince);
-                        if (selectedProvince) {
-                            loadCities(selectedProvince.code, existingCity);
-                        }
+                    // If we found a matching province, set it as selected
+                    if (selectedProvinceName) {
+                        provinceSelect.value = selectedProvinceName;
+                        let provinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                        loadCities(provinceCode, existingCityName);
                     }
                 })
                 .catch(error => console.error("Error fetching provinces:", error));
 
-            function loadCities(provinceCode, selectedCity = "") {
+            function loadCities(provinceCode, selectedCity = null) {
                 citySelect.innerHTML = '<option value="">Select City</option>';
                 citySelect.disabled = true;
 
@@ -1691,9 +2132,10 @@
                     fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities/`)
                         .then(response => response.json())
                         .then(cities => {
+
                             cities.forEach(city => {
                                 let option = document.createElement("option");
-                                option.value = city.name;
+                                option.value = city.name; // Save city name
                                 option.textContent = city.name;
 
                                 if (city.name === selectedCity) {
@@ -1713,20 +2155,367 @@
             }
 
             provinceSelect.addEventListener("change", function() {
-                let selectedProvinceCode = this.value;
-                citySelect.innerHTML = '<option value="">Select City</option>';
-                citySelect.disabled = true;
+                let selectedProvinceName = this.value;
+                let selectedProvinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
                 loadCities(selectedProvinceCode);
             });
 
-            document.getElementById("edit-form").addEventListener("submit", function(event) {
-                let selectedProvince = provinceSelect.options[provinceSelect.selectedIndex];
-                let provinceName = selectedProvince.getAttribute("data-name");
+            document.querySelector("form").addEventListener("submit", function(event) {
+                let selectedProvince = provinceSelect.value; // Get the province name
 
                 let provinceInput = document.createElement("input");
                 provinceInput.type = "hidden";
                 provinceInput.name = "province";
-                provinceInput.value = provinceName;
+                provinceInput.value = selectedProvince; // Save NAME, not CODE
+
+                this.appendChild(provinceInput);
+            });
+        });
+
+        // SECRETARY
+        document.addEventListener("DOMContentLoaded", function() {
+            const provinceSelect = document.getElementById("provincesec");
+            const citySelect = document.getElementById("citysec");
+
+            // Get existing province and city from database (could be name or code)
+            const existingProvinceDB = $('#provincesec').attr("data-selected"); // Name or Code
+            const existingCityName = $('#citysec').attr("data-selected"); // City Name
+
+            let provinceMap = {}; // Map to store province code -> name
+
+            fetch("https://psgc.gitlab.io/api/provinces/")
+                .then(response => response.json())
+                .then(provinces => {
+                    let selectedProvinceName = null;
+
+                    provinces.forEach(province => {
+                        provinceMap[province.code] = province.name; // Store mapping
+                        let option = document.createElement("option");
+                        option.value = province.name; // Store name in <option> value
+                        option.textContent = province.name; // Display name
+                        option.setAttribute("data-code", province.code); // Store code for fetching cities
+
+                        // Match by code or name
+                        if (province.code === existingProvinceDB || province.name === existingProvinceDB) {
+                            selectedProvinceName = province.name;
+                        }
+
+                        provinceSelect.appendChild(option);
+                    });
+
+                    // If we found a matching province, set it as selected
+                    if (selectedProvinceName) {
+                        provinceSelect.value = selectedProvinceName;
+                        let provinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                        loadCities(provinceCode, existingCityName);
+                    }
+                })
+                .catch(error => console.error("Error fetching provinces:", error));
+
+            function loadCities(provinceCode, selectedCity = null) {
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                citySelect.disabled = true;
+
+                if (provinceCode) {
+                    fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities/`)
+                        .then(response => response.json())
+                        .then(cities => {
+                            cities.forEach(city => {
+                                let option = document.createElement("option");
+                                option.value = city.name; // Save city name
+                                option.textContent = city.name;
+
+                                if (city.name === selectedCity) {
+                                    option.selected = true;
+                                }
+
+                                citySelect.appendChild(option);
+                            });
+
+                            citySelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error("Error fetching cities:", error);
+                            citySelect.innerHTML = '<option value="">Error loading cities</option>';
+                        });
+                }
+            }
+
+            provinceSelect.addEventListener("change", function() {
+                let selectedProvinceName = this.value;
+                let selectedProvinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                loadCities(selectedProvinceCode);
+            });
+
+            document.querySelector("form").addEventListener("submit", function(event) {
+                let selectedProvince = provinceSelect.value; // Get the province name
+
+                let provinceInput = document.createElement("input");
+                provinceInput.type = "hidden";
+                provinceInput.name = "province";
+                provinceInput.value = selectedProvince; // Save NAME, not CODE
+
+                this.appendChild(provinceInput);
+            });
+        });
+
+
+        // PATIENT 
+        document.addEventListener("DOMContentLoaded", function() {
+            const provinceSelect = document.getElementById("provincep");
+            const citySelect = document.getElementById("cityp");
+
+            // Get existing province and city from database (could be name or code)
+            const existingProvinceDB = $('#provincep').attr("data-selected"); // Name or Code
+            const existingCityName = $('#cityp').attr("data-selected"); // City Name
+
+            let provinceMap = {}; // Map to store province code -> name
+
+            fetch("https://psgc.gitlab.io/api/provinces/")
+                .then(response => response.json())
+                .then(provinces => {
+                    let selectedProvinceName = null;
+
+                    provinces.forEach(province => {
+                        provinceMap[province.code] = province.name; // Store mapping
+                        let option = document.createElement("option");
+                        option.value = province.name; // Store name in <option> value
+                        option.textContent = province.name; // Display name
+                        option.setAttribute("data-code", province.code); // Store code for fetching cities
+
+                        // Match by code or name
+                        if (province.code === existingProvinceDB || province.name === existingProvinceDB) {
+                            selectedProvinceName = province.name;
+                        }
+
+                        provinceSelect.appendChild(option);
+                    });
+
+                    // If we found a matching province, set it as selected
+                    if (selectedProvinceName) {
+                        provinceSelect.value = selectedProvinceName;
+                        let provinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                        loadCities(provinceCode, existingCityName);
+                    }
+                })
+                .catch(error => console.error("Error fetching provinces:", error));
+
+            function loadCities(provinceCode, selectedCity = null) {
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                citySelect.disabled = true;
+
+                if (provinceCode) {
+                    fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities/`)
+                        .then(response => response.json())
+                        .then(cities => {
+                            cities.forEach(city => {
+                                let option = document.createElement("option");
+                                option.value = city.name; // Save city name
+                                option.textContent = city.name;
+
+                                if (city.name === selectedCity) {
+                                    option.selected = true;
+                                }
+
+                                citySelect.appendChild(option);
+                            });
+
+                            citySelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error("Error fetching cities:", error);
+                            citySelect.innerHTML = '<option value="">Error loading cities</option>';
+                        });
+                }
+            }
+
+            provinceSelect.addEventListener("change", function() {
+                let selectedProvinceName = this.value;
+                let selectedProvinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                loadCities(selectedProvinceCode);
+            });
+
+            document.querySelector("form").addEventListener("submit", function(event) {
+                let selectedProvince = provinceSelect.value; // Get the province name
+
+                let provinceInput = document.createElement("input");
+                provinceInput.type = "hidden";
+                provinceInput.name = "province";
+                provinceInput.value = selectedProvince; // Save NAME, not CODE
+
+                this.appendChild(provinceInput);
+            });
+        });
+
+        // CREATE DENTIST
+        document.addEventListener("DOMContentLoaded", function() {
+            const provinceSelect = document.getElementById("province");
+            const citySelect = document.getElementById("city");
+
+            // Get existing province and city from database (could be name or code)
+            const existingProvinceDB = $('#province').attr("data-selected"); // Name or Code
+            const existingCityName = $('#city').attr("data-selected"); // City Name
+
+            let provinceMap = {}; // Map to store province code -> name
+
+            fetch("https://psgc.gitlab.io/api/provinces/")
+                .then(response => response.json())
+                .then(provinces => {
+                    let selectedProvinceName = null;
+
+                    provinces.forEach(province => {
+                        provinceMap[province.code] = province.name; // Store mapping
+                        let option = document.createElement("option");
+                        option.value = province.name; // Store name in <option> value
+                        option.textContent = province.name; // Display name
+                        option.setAttribute("data-code", province.code); // Store code for fetching cities
+
+                        // Match by code or name
+                        if (province.code === existingProvinceDB || province.name === existingProvinceDB) {
+                            selectedProvinceName = province.name;
+                        }
+
+                        provinceSelect.appendChild(option);
+                    });
+
+                    // If we found a matching province, set it as selected
+                    if (selectedProvinceName) {
+                        provinceSelect.value = selectedProvinceName;
+                        let provinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                        loadCities(provinceCode, existingCityName);
+                    }
+                })
+                .catch(error => console.error("Error fetching provinces:", error));
+
+            function loadCities(provinceCode, selectedCity = null) {
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                citySelect.disabled = true;
+
+                if (provinceCode) {
+                    fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities/`)
+                        .then(response => response.json())
+                        .then(cities => {
+                            cities.forEach(city => {
+                                let option = document.createElement("option");
+                                option.value = city.name; // Save city name
+                                option.textContent = city.name;
+
+                                if (city.name === selectedCity) {
+                                    option.selected = true;
+                                }
+
+                                citySelect.appendChild(option);
+                            });
+
+                            citySelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error("Error fetching cities:", error);
+                            citySelect.innerHTML = '<option value="">Error loading cities</option>';
+                        });
+                }
+            }
+
+            provinceSelect.addEventListener("change", function() {
+                let selectedProvinceName = this.value;
+                let selectedProvinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                loadCities(selectedProvinceCode);
+            });
+
+            document.querySelector("form").addEventListener("submit", function(event) {
+                let selectedProvince = provinceSelect.value; // Get the province name
+
+                let provinceInput = document.createElement("input");
+                provinceInput.type = "hidden";
+                provinceInput.name = "province";
+                provinceInput.value = selectedProvince; // Save NAME, not CODE
+
+                this.appendChild(provinceInput);
+            });
+        });
+
+        // CREATE SECRETARY
+        document.addEventListener("DOMContentLoaded", function() {
+            const provinceSelect = document.getElementById("provincesecre");
+            const citySelect = document.getElementById("citypsecre");
+
+            // Get existing province and city from database (could be name or code)
+            const existingProvinceDB = $('#provincesecre').attr("data-selected"); // Name or Code
+            const existingCityName = $('#citysecre').attr("data-selected"); // City Name
+
+            let provinceMap = {}; // Map to store province code -> name
+
+            fetch("https://psgc.gitlab.io/api/provinces/")
+                .then(response => response.json())
+                .then(provinces => {
+                    let selectedProvinceName = null;
+
+                    provinces.forEach(province => {
+                        provinceMap[province.code] = province.name; // Store mapping
+                        let option = document.createElement("option");
+                        option.value = province.name; // Store name in <option> value
+                        option.textContent = province.name; // Display name
+                        option.setAttribute("data-code", province.code); // Store code for fetching cities
+
+                        // Match by code or name
+                        if (province.code === existingProvinceDB || province.name === existingProvinceDB) {
+                            selectedProvinceName = province.name;
+                        }
+
+                        provinceSelect.appendChild(option);
+                    });
+
+                    // If we found a matching province, set it as selected
+                    if (selectedProvinceName) {
+                        provinceSelect.value = selectedProvinceName;
+                        let provinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                        loadCities(provinceCode, existingCityName);
+                    }
+                })
+                .catch(error => console.error("Error fetching provinces:", error));
+
+            function loadCities(provinceCode, selectedCity = null) {
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                citySelect.disabled = true;
+
+                if (provinceCode) {
+                    fetch(`https://psgc.gitlab.io/api/provinces/${provinceCode}/cities/`)
+                        .then(response => response.json())
+                        .then(cities => {
+                            cities.forEach(city => {
+                                let option = document.createElement("option");
+                                option.value = city.name; // Save city name
+                                option.textContent = city.name;
+
+                                if (city.name === selectedCity) {
+                                    option.selected = true;
+                                }
+
+                                citySelect.appendChild(option);
+                            });
+
+                            citySelect.disabled = false;
+                        })
+                        .catch(error => {
+                            console.error("Error fetching cities:", error);
+                            citySelect.innerHTML = '<option value="">Error loading cities</option>';
+                        });
+                }
+            }
+
+            provinceSelect.addEventListener("change", function() {
+                let selectedProvinceName = this.value;
+                let selectedProvinceCode = Object.keys(provinceMap).find(code => provinceMap[code] === selectedProvinceName);
+                loadCities(selectedProvinceCode);
+            });
+
+            document.querySelector("form").addEventListener("submit", function(event) {
+                let selectedProvince = provinceSelect.value; // Get the province name
+
+                let provinceInput = document.createElement("input");
+                provinceInput.type = "hidden";
+                provinceInput.name = "province";
+                provinceInput.value = selectedProvince; // Save NAME, not CODE
 
                 this.appendChild(provinceInput);
             });

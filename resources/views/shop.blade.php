@@ -90,7 +90,7 @@
 
             <div class="d-flex flex-column gap-5" id="about">  
                 <div class="d-flex mx-auto rounded shadow-sm p-4 gap-3 w-75">
-                    <img src="{{ '/storage/' . ($shop->image_path) }}" style="height: 250px; width: 250px; border-radius: 10px">
+                    <img src="{{ asset('/' . $shop->image_path) }}" style="height: 250px; width: 250px; border-radius: 10px">
                     
                     <div class="d-flex flex-column">
                         <h3></h3>
@@ -144,7 +144,7 @@
                     
                     @foreach ($assigns as $assign)
                         <div class="d-flex shadow-sm rounded gap-4 p-4">
-                            <img src="{{ '/storage/' . $assign->user->image_path }}" style="height: 200px; width: 200px; border-radius: 10px;" >
+                            <img src="{{ asset('/' . $assign->user->image_path) }}" style="height: 200px; width: 200px; border-radius: 10px;" >
 
                             <div class="d-flex flex-column">
                                 <h1>Dr. {{ $assign->user->lname . ' ' . $assign->user->fname }}</h1>

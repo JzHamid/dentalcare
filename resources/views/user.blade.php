@@ -136,31 +136,31 @@
                             <hr>
 
                             <div class="d-flex flex-column gap-2 overflow-y-scroll p-4" style="max-height: 300px;">
-                            @foreach ($appointments->where('status', '!=', 'Done') as $appointment)
+                                @foreach ($appointments->where('status', '!=', 'Done') as $appointment)
                                 <div class="container-fluid d-flex shadow-sm rounded p-4 gap-3">
                                     <img style="height: 100px; width: 100px; border-radius: 5px; border: solid black 2px;" src="{{ asset('/' . $appointment->service->image_path) }}">
 
                                     <div class="d-flex flex-column gap-2 w-100">
                                         <p class="fw-bold m-0">Service: <span class="fw-light">{{ $appointment->service->name }}</span></p>
                                         <p class="fw-bold m-0">Appointment Time: <span class="fw-light">{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}</span></p>
-                                        <p class="fw-bold m-0">Status: 
-                                        @switch ( $appointment->status )
-                                        @case ('Pending')
-                                        <span class="text-primary fw-bold text-uppercase">Pending</span>
-                                        @break
-                                        @case ('Done')
-                                        <span class="text-success fw-bold text-uppercase">Done</span>
-                                        @break
-                                        @case ('Upcoming')
-                                        <span class="text-warning fw-bold text-uppercase">Upcoming</span>
-                                        @break
-                                        @case ('Rescheduled')
-                                        <span class="text-info fw-bold text-uppercase">Rescheduled</span>
-                                        @break
-                                        @case ('Cancelled')
-                                        <span class="text-danger fw-bold text-uppercase">Cancelled</span>
-                                        @break
-                                        @endswitch
+                                        <p class="fw-bold m-0">Status:
+                                            @switch ( $appointment->status )
+                                            @case ('Pending')
+                                            <span class="text-primary fw-bold text-uppercase">Pending</span>
+                                            @break
+                                            @case ('Done')
+                                            <span class="text-success fw-bold text-uppercase">Done</span>
+                                            @break
+                                            @case ('Upcoming')
+                                            <span class="text-warning fw-bold text-uppercase">Upcoming</span>
+                                            @break
+                                            @case ('Rescheduled')
+                                            <span class="text-info fw-bold text-uppercase">Rescheduled</span>
+                                            @break
+                                            @case ('Cancelled')
+                                            <span class="text-danger fw-bold text-uppercase">Cancelled</span>
+                                            @break
+                                            @endswitch
                                         </p>
                                         <a class="btn btn-link btn-sm text-center align-self-end text-decoration-none fw-bold" href="{{ route('user.record', $appointment->id) }}">View Appointment</a>
                                     </div>
@@ -212,6 +212,7 @@
                             <th scope="col">Location</th>
                             <th scope="col">Services</th>
                             <th scope="col">Time</th>
+                            <th scope="col">Status</th>
                             <th class="text-center" scope="col">Action</th>
                         </tr>
                     </thead>
@@ -236,6 +237,28 @@
                             <td>
                                 {{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}
                             </td>
+                            <td>
+                                @switch ( $appointment->status )
+                                @case ('Pending')
+                                <span class="text-primary fw-bold text-uppercase">Pending</span>
+                                @break
+                                @case ('Deny')
+                                <span class="text-danger fw-bold text-uppercase">Denied</span>
+                                @break
+                                @case ('Done')
+                                <span class="text-success fw-bold text-uppercase">Done</span>
+                                @break
+                                @case ('Upcoming')
+                                <span class="text-warning fw-bold text-uppercase">Upcoming</span>
+                                @break
+                                @case ('Rescheduled')
+                                <span class="text-info fw-bold text-uppercase">Rescheduled</span>
+                                @break
+                                @case ('Cancelled')
+                                <span class="text-danger fw-bold text-uppercase">Cancelled</span>
+                                @break
+                                @endswitch
+                            </td>
                             <td class="d-flex justify-content-center gap-2">
                                 <a class="btn btn-primary btn-sm" href="{{ route('user.record', $appointment->id) }}">
                                     <i class="bi-eye-fill"></i>
@@ -250,23 +273,231 @@
             <div class="tab-pane gap-5 p-3" id="tab-transactions" role="tabpanel" aria-labelledby="tab-transactions" tabindex="0">
                 <h1 class="mb-5">Transactions</h1>
 
-                <div class="nav nav-pills gap-2" role="tablist">
-                    <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#transac-upcoming" type="button" aria-controls="transac-upcoming" aria-selected="true">Upcoming</button>
-                    <button class="nav-link" data-bs-toggle="pill" data-bs-target="#transac-history" type="button" aria-controls="transac-history" aria-selected="false">History</button>
-                </div>
+                <div class="container-fluid p-4 mt-4">
+                    <h3 class="mb-4">Appointment History</h3>
+                    @if($appointments->isEmpty())
+                    <div class="alert alert-info" role="alert">
+                        No past appointments found.
+                    </div>
+                    @else
+                    @foreach ($appointments as $appointment)
+                    @php
+                    $serviceFee = $appointment->fees->whereNotNull('service_name')->first();
+                    $additionalFees = $appointment->fees->whereNull('service_name');
+                    @endphp
 
-                <div class="tab-content">
-                    <div class="tab-pane show active" id="transac-upcoming" data-bs-toggle="tab" role="tabpanel" aria-labelledby="transac-upcoming" tabindex="0">
-                        <hr>
-                        Upcoming
+                    <div class="card mb-4 shadow-sm">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="card-title mb-0">
+                                    {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y, g:i a') }}
+                                </h5>
+                                <span class="badge bg-primary">Completed</span>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="card-text mb-1"><strong>Service:</strong> {{ $serviceFee->service_name ?? 'N/A' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <p class="card-text mb-1"><strong>Service Amount:</strong> ₱{{ number_format($serviceFee->service_amount ?? 0, 2) }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+
+                                <div class="col-md-6">
+                                    <p class="card-text mb-1"><strong>Service Discount:</strong> {{ $serviceFee->service_discount ?? '0' }}%</p>
+                                </div>
+                            </div>
+
+
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal-{{ $appointment->id }}">
+                                <i class="fas fa-eye me-2"></i>View Details
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="tab-pane" id="transac-history" data-bs-toggle="tab" role="tabpanel" aria-labelledby="transac-history" tabindex="0">
-                        <hr>
-                        History
+                    @php
+                    // Service price and discount calculation
+                    $servicePrice = $serviceFee->service_amount ?? 0;
+                    $serviceDiscount = $serviceFee->service_discount ?? 0;
+                    $serviceDiscountAmount = ($serviceDiscount / 100) * $servicePrice;
+                    $discountedServicePrice = $servicePrice - $serviceDiscountAmount;
+
+                    // Additional fees calculation
+                    $totalAdditionalFees = 0;
+                    $totalDiscountedFees = 0;
+                    $totalFeeDiscounts = 0;
+                    $feesWithDiscounts = [];
+
+                    if ($additionalFees->isNotEmpty()) {
+                    foreach ($additionalFees as $fee) {
+                    $feeAmount = $fee->fee_amount ?? 0;
+                    $feeDiscount = $fee->discount_percentage ?? 0;
+                    $feeDiscountAmount = ($feeDiscount / 100) * $feeAmount;
+                    $discountedFeeAmount = $feeAmount - $feeDiscountAmount;
+
+                    $totalAdditionalFees += $feeAmount;
+                    $totalDiscountedFees += $discountedFeeAmount;
+                    $totalFeeDiscounts += $feeDiscountAmount;
+
+                    // Store fee details for display
+                    $feesWithDiscounts[] = [
+                    'name' => $fee->fee_type ?? 'N/A',
+                    'original_price' => $feeAmount,
+                    'discount' => $feeDiscount,
+                    'discount_amount' => $feeDiscountAmount,
+                    'discounted_price' => $discountedFeeAmount,
+                    ];
+                    }
+                    }
+
+                    // Grand total before discount
+                    $grandTotal = $servicePrice + $totalAdditionalFees;
+                    // Total discount given
+                    $totalDiscountGiven = $serviceDiscountAmount + $totalFeeDiscounts;
+                    // Total after applying all discounts
+                    $totalAfterDiscount = $grandTotal - $totalDiscountGiven;
+                    @endphp
+
+                    <div class="modal fade" id="appointmentModal-{{ $appointment->id }}" tabindex="-1" aria-labelledby="appointmentModalLabel-{{ $appointment->id }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg"> <!-- Wider modal -->
+                            <div class="modal-content">
+                                <!-- Modal Header -->
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="appointmentModalLabel-{{ $appointment->id }}">
+                                        <i class="fas fa-calendar-check me-2"></i>Appointment Details
+                                    </h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <!-- Modal Body -->
+                                <div class="modal-body">
+                                    <div class="container-fluid">
+                                        <!-- Appointment Date and Dentist -->
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body">
+                                                        <h6 class="text-muted mb-3"><i class="fas fa-calendar-day me-2"></i>Appointment Date</h6>
+                                                        <p class="lead mb-0">{{ \Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y, g:i a') }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card border-0 shadow-sm">
+                                                    <div class="card-body">
+                                                        <h6 class="text-muted mb-3"><i class="fas fa-user-md me-2"></i>Dentist</h6>
+                                                        <p class="lead mb-0">Dr. {{ $appointment->dentist->fname }} {{ $appointment->dentist->lname }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Service Details -->
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-teeth me-2"></i>Service Details</h6>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p class="mb-2"><strong>Service Name:</strong> {{ $serviceFee->service_name ?? 'N/A' }}</p>
+                                                        <p class="mb-2"><strong>Service Price:</strong> ₱{{ number_format($servicePrice, 2) }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p class="mb-2"><strong>Service Discount:</strong> {{ $serviceDiscount }}%</p>
+                                                        <p class="mb-0 text-success"><strong>After Discount:</strong> ₱{{ number_format($discountedServicePrice, 2) }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Additional Fees -->
+                                        @if(!empty($feesWithDiscounts))
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-receipt me-2"></i>Additional Fees</h6>
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach($feesWithDiscounts as $fee)
+                                                    <li class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>{{ $fee['name'] }}</span>
+                                                            <span class="badge bg-primary rounded-pill">₱{{ number_format($fee['original_price'], 2) }}</span>
+                                                        </div>
+                                                        <small class="text-muted">Discount: {{ $fee['discount'] }}% (₱{{ number_format($fee['discount_amount'], 2) }})</small>
+                                                        <p class="text-success mb-0"><strong>After Discount:</strong> ₱{{ number_format($fee['discounted_price'], 2) }}</p>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        @else
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-receipt me-2"></i>Additional Fees</h6>
+                                                <p class="lead mb-0">N/A</p>
+                                            </div>
+                                        </div>
+                                        @endif
+
+                                        <!-- Payment History -->
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-history me-2"></i>Payment History</h6>
+                                                @if($appointment->payments && $appointment->payments->count() > 0)
+                                                <ul class="list-group list-group-flush">
+                                                    @foreach($appointment->payments as $payment)
+                                                    <li class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>
+                                                                <strong>Amount:</strong> ₱{{ number_format($payment->amount_paid, 2) }}<br>
+                                                                <small class="text-muted">Date: {{ \Carbon\Carbon::parse($payment->created_at)->format('F j, Y, g:i a') }}</small>
+                                                            </span>
+                                                            <span class="badge bg-secondary rounded-pill">{{ ucfirst($payment->payment_type) }}</span>
+                                                        </div>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                                @else
+                                                <p class="lead mb-0">No payments made yet.</p>
+                                                @endif
+                                            </div>
+                                        </div>
+
+                                        <!-- Summary -->
+                                        <div class="card border-0 shadow-sm mb-4">
+                                            <div class="card-body">
+                                                <h6 class="text-muted mb-3"><i class="fas fa-file-invoice-dollar me-2"></i>Summary</h6>
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <p class="mb-2"><strong>Grand Total:</strong> ₱{{ number_format($grandTotal, 2) }}</p>
+                                                        <p class="mb-2 text-danger"><strong>Total Discount Given:</strong> ₱{{ number_format($totalDiscountGiven, 2) }}</p>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p class="mb-2 text-success"><strong>Total After Discount:</strong> ₱{{ number_format($totalAfterDiscount, 2) }}</p>
+                                                        <p class="mb-0"><strong>Remaining Balance:</strong> ₱{{ number_format($totalAfterDiscount - $appointment->total_paid, 2) }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal Footer -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        <i class="fas fa-times me-2"></i>Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                    @endforeach
+                    @endif
                 </div>
             </div>
+
 
             <div class="tab-pane gap-5 p-3" id="tab-profile" role="tabpanel" aria-labelledby="tab-profile" tabindex="0">
                 <h1 class="mb-5">Profile</h1>
@@ -369,10 +600,11 @@
                                     placeholder="Postal Code">
                             </div>
                         </div>
+                    </div>
 
-                        <div class="d-flex w-100 justify-content-end">
-                            <button class="btn btn-default w-25" type="submit" style="margin-top: 20px;">Save Profile</button>
-                        </div>
+                    <div class="d-flex w-100 justify-content-end">
+                        <button class="btn btn-default w-25" type="submit" style="margin-top: 20px;">Save Profile</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -440,7 +672,7 @@
                 .then(provinces => {
                     provinces.forEach(province => {
                         let option = document.createElement("option");
-                        option.value = province.code;
+                        option.value = province.name;
                         option.textContent = province.name;
                         option.setAttribute("data-name", province.name);
 

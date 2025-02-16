@@ -88,7 +88,7 @@
                 <select class="form-select" name="whofor" id="whofor" onchange="show_button()" required>
                     <option value="0">For Myself</option>
                     <option value="1">For Others</option>
-                    <option value="2" disabled>For Multiple People</option>
+                    <option value="2">For Multiple People</option>
                 </select>
             </div>
 
@@ -230,7 +230,7 @@
                         <label class="form-label" for="appointments[0][dentist]">Dentist</label>
                         <select class="form-select" name="appointments[0][dentist]" required>
                             <option selected disabled>-- Select Dentist --</option>
-                            <option value="0">Any</option>
+                            <!-- <option value="0">Any</option> -->
                             @foreach ($assign as $assi)
                             <option value="{{ $assi->user->id }}">Dr. {{ $assi->user->fname }}</option>
                             @endforeach

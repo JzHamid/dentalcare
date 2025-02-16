@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 
@@ -27,11 +28,21 @@ Route::get('/user-record/{id}', [AdminController::class, 'record_user'])->name('
 Route::get('/superadmin', [PageController::class, 'superadmin'])->name('superadmin')->middleware('auth');
 Route::post('/reset-password', [PageController::class]);
 
+// Transactions
+Route::get('/users', [AppointmentController::class, 'showUsers']);
+Route::post('/appointments/{id}/payment', [AppointmentController::class, 'storePayment'])->name('store.payment');
 
 // Appointment
 Route::post('/create-appointment/{id}', [AdminController::class, 'create_appointment'])->name('create.appointment')->middleware(['auth']);
 Route::post('/reschedule-appointment/{id}', [AdminController::class, 'reschedule_appointment'])->name('reschedule.appointment')->middleware(['auth']);
 Route::post('/reschedule-appointment-admin/{id}', [PageController::class, 'reschedule_appointment_admin'])->name('reschedule.appointment.admin')->middleware(['auth']);
+Route::post('/reschedule-appointment-dentist/{id}', [AdminController::class, 'reschedule_appointment_dentist'])->name('reschedule.appointment.dentist')->middleware(['auth']);
+Route::get('/appointment/{appointment}', [AdminController::class, 'show'])->name('appointment.show');
+Route::post('/appointment/{appointment}', [AdminController::class, 'update'])->name('appointment.update');
+
+Route::get('/appointments/{id}/record', [AppointmentController::class, 'viewRecord'])->name('appointments.record');
+Route::post('/appointments/{id}/save-record', [AppointmentController::class, 'saveRecord'])->name('save.record');
+Route::post('/appointments/{id}/update-status', [AppointmentController::class, 'updateStatus'])->name('update.status');
 
 
 Route::group(['middleware' => 'auth', 'admin'], function () {
@@ -48,11 +59,14 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::get('/get-dentist/{id}', [AdminController::class, 'get_dentist'])->name('get.dentist');
     Route::put('/update-dentist', [AdminController::class, 'update_dentist'])->name('update.dentist');
 
-    // secretary
+    // Secretary
     Route::post('/create-secretary', [AdminController::class, 'create_secretary'])->name('create.secretary');
     Route::get('/get-secretary/{id}', [AdminController::class, 'get_secretary'])->name('get.secretary');
     Route::put('/update-secretary', [AdminController::class, 'update_secretary'])->name('update.secretary');
 
+    // Patient
+    Route::get('/get-patient/{id}', [AdminController::class, 'get_patient'])->name('get.patient');
+    Route::put('/update-patient', [AdminController::class, 'update_patient'])->name('update.patient');
 
     // Listing
     Route::post('/create-listing', [AdminController::class, 'create_listing'])->name('create.listing');
@@ -69,6 +83,7 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
     // Record
     Route::get('/record/{id}', [PageController::class, 'record'])->name('record.appointment');
     Route::post('/update-status/{id}', [AdminController::class, 'appointment_status'])->name('update.status');
+    Route::post('/update-status-admin/{id}', [AdminController::class, 'appointment_status_admin'])->name('update.status.admin');
 });
 
 Route::get('/', [PageController::class, 'index'])->name('landing');

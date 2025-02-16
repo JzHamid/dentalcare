@@ -116,7 +116,7 @@
                 </div>
 
                 <div class="d-flex align-items-center mx-auto">
-                    <img class="d-flex align-self-center" src="{{ asset('storage/images/' . $appointment->user->image_path) }}" style="height: 200px; width: 200px;">
+                    <img class="d-flex align-self-center" src="{{ asset($appointment->user->image_path ?: 'profile_images/blank_profile_default.png') }}" style="height: 100px; width: 100px;">
                 </div>
             </div>
 
