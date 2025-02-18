@@ -59,11 +59,11 @@
                 </div>
 
                 <div class="dropdown">
-                    <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn dropdown-toggle fs-4 p-0 px-2 shadow-none border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi-person-circle"></i>
                     </button>
 
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu shadow-sm border-0">
                         <li><a class="dropdown-item" href="">Dashboard</a></li>
                         <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                     </ul>

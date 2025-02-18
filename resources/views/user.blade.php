@@ -58,11 +58,11 @@
                 </div>
 
                 <div class="dropdown">
-                    <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn dropdown-toggle fs-4 p-0 px-2 shadow-none border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi-person-circle"></i>
                     </button>
 
-                    <ul class="dropdown-menu dropdown-end">
+                    <ul class="dropdown-menu dropdown-end shadow-sm border-0">
                         <li><a class="dropdown-item" href="{{ route('user') }}">My Profile</a></li>
                         <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                     </ul>
@@ -95,7 +95,7 @@
 
             <button class="nav-link text-white d-flex gap-4" id="nav-appointments" data-bs-toggle="pill" data-bs-target="#tab-appointments" type="button" role="tab" aria-controls="tab-appointments" aria-selected="false">
                 <i class="bi-calendar-event-fill"></i>
-                Appointments
+                Appointment
             </button>
 
             <button class="nav-link text-white d-flex gap-4" id="nav-transactions" data-bs-toggle="pill" data-bs-target="#tab-transactions" type="button" role="tab" aria-controls="tab-transactions" aria-selected="false">
@@ -116,22 +116,23 @@
 
         <div class="col-md-10 bg-light tab-content p-0 overflow-y-scroll h-100">
             <div class="tab-pane show active gap-5 p-3" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
-                <h1>Dashboard</h1>
+                <h1 class="fw-bold">Dashboard</h1>
 
                 <div class="d-flex flex-column p-5 gap-5">
-                    <div class="rounded bg-white shadow p-3">
+                    <div class="rounded bg-white shadow-sm p-3">
                         <div class="d-flex justify-content-between">
-                            <h4>Health Record</h4>
+                            <h4 class="fw-bold"><i class="bi bi-heart-pulse me-2"></i>Health Record</h4>
                             <button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#create-record">Add</button>
                         </div>
                         <hr>
+
                     </div>
 
                     <div class="container-fluid d-flex p-0 gap-5">
-                        <div class="container-fluid rounded bg-white shadow p-3">
+                        <div class="container-fluid rounded bg-white shadow-sm p-3">
                             <div class="d-flex justify-content-between align-items-center">
-                                <h4 class="m-0">Appointments</h4>
-                                <a class="btn btn-default d-flex gap-2" href="{{ route('listing') }}">New</a>
+                                <h4 class="m-0 fw-bold"><i class="bi bi-calendar-heart me-2"></i>Appointments</h4>
+                                <a class="btn btn-default d-flex gap-2 shadow-sm" href="{{ route('listing') }}">Book a new appointment</a>
                             </div>
                             <hr>
 
@@ -204,14 +205,14 @@
             <div class="tab-pane gap-5 p-3" id="tab-appointments" role="tabpanel" aria-labelledby="tab-appointments" tabindex="0">
                 <h1 class="mb-5">Appointments</h1>
 
-                <table class="table table-bordered">
+                <table class="table table-bordered shadow-sm">
                     <thead class="table-primary">
                         <tr>
                             <th scope="col">Dentist Name</th>
                             <th scope="col">Patient Name</th>
                             <th scope="col">Location</th>
                             <th scope="col">Services</th>
-                            <th scope="col">Time</th>
+                            <th scope="col">Appointment Time</th>
                             <th scope="col">Status</th>
                             <th class="text-center" scope="col">Action</th>
                         </tr>
@@ -220,6 +221,7 @@
                     <tbody>
                         @foreach ($appointments as $appointment)
                         <tr>
+
                             <td>Dr. {{ ($appointment->dentist->fname ?? '') . ' ' . ($appointment->dentist->mname ?? '') . ' ' . ($appointment->dentist->lname ?? '') }}</td>
 
                             @if ($appointment->temporary)
@@ -227,7 +229,7 @@
                             $temp = json_decode($appointment->temporary, true);
                             @endphp
 
-                            <td>{{ ($temp['fname'] ?? 'N/A') . ' ' . ($temp['mname'] ?? 'N/A') . ' ' . ($temp['fname'] ?? 'N/A') }}</td>
+                            <td>{{ ($temp['fname'] ?? 'N/A') . ' ' . ($temp['mname'] ?? 'N/A') . ' ' . ($temp['lname'] ?? 'N/A') }}</td>
                             @else
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                             @endif
@@ -235,7 +237,7 @@
                             <td>{{ $appointment->clinic->location }}</td>
                             <td>{{ $appointment->service->name }}</td>
                             <td>
-                                {{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y') }}
+                                {{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y - h:i A') }}
                             </td>
                             <td>
                                 @switch ( $appointment->status )
@@ -260,8 +262,8 @@
                                 @endswitch
                             </td>
                             <td class="d-flex justify-content-center gap-2">
-                                <a class="btn btn-primary btn-sm" href="{{ route('user.record', $appointment->id) }}">
-                                    <i class="bi-eye-fill"></i>
+                                <a class="text-primary fs-4" href="{{ route('user.record', $appointment->id) }}">
+                                    <i class="bi bi-eye-fill"></i>
                                 </a>
                             </td>
                         </tr>

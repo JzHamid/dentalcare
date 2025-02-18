@@ -52,11 +52,11 @@
                 </div>
 
                 <div class="dropdown d-flex">
-                    <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn dropdown-toggle fs-4 p-0 px-2 shadow-none border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi-person-circle"></i>
                     </button>
 
-                    <ul class="dropdown-menu dropdown-end">
+                    <ul class="dropdown-menu dropdown-end shadow-sm border-0">
                         @if (Auth::user()->status == 0)
                         <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
                         @else
@@ -256,28 +256,33 @@
     </div>
 
     <footer class="row bg-body-secondary bottom-0 p-4">
-        <div class="col">
-            <h5 class="text-default">DentalCare</h5>
-            <p style="text-align: justify;">Your health is our mission partner with us for exceptional healthcare, Schedule your appointment today and experience the difference of exceptional healthcare.</p>
-        </div>
-
-        <div class="col">
-            <h5 class="text-center fw-bold">Quick Links</h5>
-            <div class="d-flex flex-column align-items-center">
-                <a href="#home" class="text-decoration-none">Home</a>
-                <a href="#services" class="text-decoration-none">Services</a>
-                <a href="#faqp" class="text-decoration-none">FAQ</a>
+    <div class="col">
+                <h5 class="text-default fw-bold">DentalCare</h5>
+                <p style="text-align: justify;">Your health is our mission partner with us for exceptional healthcare, Schedule your appointment today and experience the difference of exceptional healthcare.</p>
             </div>
 
-        </div>
-
-        <div class="col">
-            <h5 class="fw-bold">Contact Us</h5>
-            <div class="d-flex flex-column">
-                <p class="m-0"><span class="fw-medium">Phone: </span>+63 123 456 7890</p>
-                <p><span class="fw-medium">Email: </span>dentalcare@gmail.com</p>
+            <div class="col">
+                <h5 class="text-center fw-bold">Quick Links</h5>
+                <div class="d-flex flex-column align-items-center">
+                    <a href="#home" class="text-decoration-none fw-bold">Home</a>
+                    <a href="#services" class="text-decoration-none fw-bold">Services</a>
+                    <a href="#faqp" class="text-decoration-none fw-bold">FAQ</a>
+                </div>
             </div>
-        </div>
+
+            <div class="col">
+                <h5 class="fw-bold mb-3">Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-1">
+                        <i class="bi bi-telephone me-2"></i>
+                        <span class="fw-bold">Phone:</span> +63 123 456 7890
+                    </li>
+                    <li>
+                        <i class="bi bi-envelope me-2"></i>
+                        <span class="fw-bold">Email:</span> dentalcare@gmail.com
+                    </li>
+                </ul>
+            </div>
 
         <div class="col">
             <h5 class="text-center fw-bold">Follow Us</h5>

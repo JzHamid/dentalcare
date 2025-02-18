@@ -52,11 +52,11 @@
                 </div>
 
                 <div class="dropdown d-flex">
-                    <button class="btn dropdown-toggle fs-4 p-0 px-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn dropdown-toggle fs-4 p-0 px-2 border-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="bi-person-circle"></i>
                     </button>
 
-                    <ul class="dropdown-menu dropdown-end">
+                    <ul class="dropdown-menu dropdown-end shadow-sm border">
                         @if (Auth::user()->status == 0)
                         <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
                         @else
@@ -81,7 +81,7 @@
         <div class="d-flex flex-column mx-auto w-75 gap-3">
             <form class="d-flex justify-content-between" action="{{ route('update.status', $appointment->id) }}" method="post">
                 @csrf
-                <h3>Patient Info</h3>
+                <h3 class = "fw-bold">Patient Info</h3>
 
                 @if ($appointment->status != 'Cancelled')
                 <button class="btn btn-danger">Cancel Appointment</button>
@@ -90,7 +90,7 @@
                 <input type="hidden" name="status" value="Cancelled">
             </form>
 
-            <div class="d-flex rounded shadow p-4 gap-4">
+            <div class="d-flex rounded shadow p-4 gap-4 shadow-sm">
                 <div class="d-flex flex-column gap-1">
                     @if ($appointment->temporary)
                     @php
@@ -121,10 +121,10 @@
             </div>
 
             <div class="mt-3">
-                <h3>Procedures</h3>
+                <h3 class = "fw-bold">Procedures</h3>
             </div>
 
-            <div class="d-flex rounded shadow p-4 gap-4">
+            <div class="d-flex rounded shadow p-4 gap-4 shadow-sm">
                 <img style="height: 500px; min-width: 500px;">
 
                 <div class="container-fluid d-flex flex-column">

@@ -15,7 +15,13 @@ class Listing extends Model
         'location',
     ];
 
-    public function availabilities () {
+    public function availabilities()
+    {
         return $this->hasMany(Available::class, 'listing_id', 'id');
+    }
+
+    public function schedules()
+    {
+        return $this->hasMany(Schedule::class, 'clinic_id', 'id');
     }
 }

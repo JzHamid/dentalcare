@@ -76,13 +76,13 @@ class PageController extends Controller
 
         $assign = Assign::where('user_id', $log->id)->get();
         // Check if the logged-in user is a **dentist or a secretary**
-        if ($log->status == 2) { // Dentist
-            $appointments = Appointments::where('dentist_id', $log->id)->get();
-        } elseif ($log->status == 1) { // Secretary
-            $appointments = Appointments::where('dentist_id', $log->id)->get(); // Secretary sees all appointments
-        } else {
-            $appointments = collect(); // Empty collection if not authorized
-        }
+    if ($log->status == 2) { // Dentist
+        $appointments = Appointments::where('dentist_id', $log->id)->get();
+    } elseif ($log->status == 1) { // Secretary
+        $appointments = Appointments::all(); // Secretary sees all appointments
+    } else {
+        $appointments = collect(); // Empty collection if not authorized
+    }
 
         // Get all users who have appointments with the logged-in dentist. feb. 11
         $users = User::where('status', 0)
@@ -115,9 +115,8 @@ class PageController extends Controller
 
     public function listing()
     {
-        $listings = Listing::with('availabilities.service')->get();
+        $listings = Listing::with('schedules')->get();
         $services = Service::all();
-
 
         return view('listing')->with(['services' => $services, 'listings' => $listings]);
     }
