@@ -111,16 +111,6 @@
 
             <div class="d-flex flex-column gap-2">
                 <a class="btn btn-default w-100 fw-bold" href="{{ route('signup') }}">Create Account</a>
-
-                <div class="d-flex gap-2 w-100">
-                    <button class="btn btn-default w-100">
-                        <img src="{{ asset('images/google-removebg-preview.png') }}" alt="google" style="width: 25px; height: 25px;">
-                    </button>
-
-                    <button class="btn btn-default w-100">
-                        <img src="{{ asset('images/fbimg.png') }}" alt="google" style="width: 20px; height: 20px;">
-                    </button>
-                </div>
             </div>
         </form>
     </div>
