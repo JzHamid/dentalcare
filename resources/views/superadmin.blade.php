@@ -172,7 +172,7 @@
                 <div class="container">
                     <div class="row g-4">
                         <div class="col-md-4">
-                            <div class="bg-transparent rounded shadow-sm p-4">
+                            <button class="bg-transparent w-100 border-none border-0 rounded shadow-sm p-4" onclick="document.getElementById('nav-dentist').click()">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex flex-column">
                                         <img src="{{ asset('images/dentist_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
@@ -180,11 +180,11 @@
                                     </div>
                                     <p class="display-5 fw-bold text-default">{{ $dentist->count() }}</p>
                                 </div>
-                            </div>
+                            </button>
                         </div>
 
                         <div class="col-md-4">
-                            <div class="bg-transparent rounded shadow-sm p-4">
+                            <button class="bg-transparent w-100 border-none border-0 rounded shadow-sm p-4" onclick="document.getElementById('nav-secretary').click()">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex flex-column">
                                         <img src="{{ asset('images/dentist_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
@@ -192,11 +192,11 @@
                                     </div>
                                     <p class="display-5 fw-bold text-default">{{ $secretary->count() }}</p>
                                 </div>
-                            </div>
+                            </button>
                         </div>
 
                         <div class="col-md-4">
-                            <div class="bg-white rounded shadow-sm p-4">
+                            <button class="bg-transparent w-100 border-none border-0 rounded shadow-sm p-4" onclick="document.getElementById('nav-patient').click()">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex flex-column">
                                         <img src="{{ asset('images/patient_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
@@ -204,11 +204,11 @@
                                     </div>
                                     <p class="display-5 fw-bold text-default">{{ $users->count() }}</p>
                                 </div>
-                            </div>
+                            </button>
                         </div>
 
                         <div class="col-md-4">
-                            <div class="bg-white rounded shadow-sm p-4">
+                            <button class="bg-transparent w-100 border-none border-0 rounded shadow-sm p-4" onclick="document.getElementById('nav-appointments').click()">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex flex-column">
                                         <img src="{{ asset('images/event_icon.png') }}" class="mb-2" style="height: 100px; width: 100px;">
@@ -216,12 +216,12 @@
                                     </div>
                                     <p class="display-5 fw-bold text-default">{{ $appointments->count() }}</p>
                                 </div>
-                            </div>
+                            </button>
                         </div>
 
                         <!-- Second Row -->
                         <div class="col-md-4">
-                            <div class="bg-white rounded shadow-sm p-4">
+                            <button class="bg-transparent w-100 border-none border-0 rounded shadow-sm p-4" onclick="document.getElementById('nav-services').click()">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex flex-column">
                                         <img src="{{ asset('images/images.png') }}" class="mb-2" style="height: 100px; width: 100px;">
@@ -229,11 +229,11 @@
                                     </div>
                                     <p class="display-5 fw-bold text-default">{{ $services->count() }}</p>
                                 </div>
-                            </div>
+                            </button>
                         </div>
 
                         <div class="col-md-4">
-                            <div class="bg-white rounded shadow-sm p-4">
+                            <button class="bg-transparent w-100 border-none border-0 rounded shadow-sm p-4" onclick="document.getElementById('nav-listing').click()">
                                 <div class="d-flex justify-content-between">
                                     <div class="d-flex flex-column">
                                         <img src="{{ asset('images/download.png') }}" class="mb-2" style="height: 100px; width: 100px;">
@@ -241,7 +241,7 @@
                                     </div>
                                     <p class="display-5 fw-bold text-default">{{ $listings->count() }}</p>
                                 </div>
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
