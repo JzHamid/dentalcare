@@ -39,6 +39,23 @@
     <div class="container-fluid p-0 vh-100">
         <img class="w-100" style="object-fit: cover; height: 100vh;" src="{{ asset('images/dentist_office.jpg') }}">
 
+        @if (session('success'))
+        <div id="success-alert" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 text-center shadow-lg" role="alert" style="z-index: 1050;">
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
+        @if ($errors->any())
+        <div id="error-alert" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 text-center shadow-lg" role="alert" style="z-index: 1050;">
+            <ul class="m-0 p-0" style="list-style: none;">
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
         <form class="d-flex flex-column position-absolute w-50 gap-2" style="top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; padding: 20px;" action="{{ route('create.account') }}" method="post">
             @csrf
 
@@ -131,10 +148,6 @@
             </div>
 
             <button class="btn btn-default align-self-center w-50" id="btn-create" disabled>Create Account</button>
-
-            @if ($errors->any())
-            <h1>{{ $errors }}</h1>
-            @endif
         </form>
     </div>
 
@@ -181,6 +194,9 @@
             fetch("https://psgc.gitlab.io/api/provinces/")
                 .then(response => response.json())
                 .then(provinces => {
+                    // Sort provinces alphabetically by name
+                    provinces.sort((a, b) => a.name.localeCompare(b.name));
+
                     provinces.forEach(province => {
                         let option = document.createElement("option");
                         option.value = province.code; // Keep province code as value for fetching cities
@@ -201,6 +217,9 @@
                         .then(response => response.json())
                         .then(cities => {
                             if (cities.length > 0) {
+                                // Sort cities alphabetically by name
+                                cities.sort((a, b) => a.name.localeCompare(b.name));
+
                                 cities.forEach(city => {
                                     let option = document.createElement("option");
                                     option.value = city.name; // Store city name as value
@@ -217,7 +236,7 @@
                             }
                         })
                         .catch(error => {
-                            console.error('Error fetching cities:', error);
+                            console.error("Error fetching cities:", error);
                             citySelect.disabled = true;
                         });
                 }
@@ -235,6 +254,23 @@
 
                 this.appendChild(provinceInput);
             });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                let successAlert = document.getElementById("success-alert");
+                let errorAlert = document.getElementById("error-alert");
+
+                if (successAlert) {
+                    successAlert.classList.remove("show");
+                    successAlert.classList.add("fade");
+                }
+
+                if (errorAlert) {
+                    errorAlert.classList.remove("show");
+                    errorAlert.classList.add("fade");
+                }
+            }, 5000); // Auto-hide after 5 seconds
         });
     </script>
 </body>

@@ -71,35 +71,100 @@ class PageController extends Controller
         $log = Auth::user();
         $user = Auth::user();
 
-        // Instead of showing all services, get only those available for the logged-in dentist.
+        // Fetch services for the logged-in dentist
         $services = $this->getServicesForDentist($log->id);
 
         $assign = Assign::where('user_id', $log->id)->get();
-        // Check if the logged-in user is a **dentist or a secretary**
-    if ($log->status == 2) { // Dentist
-        $appointments = Appointments::where('dentist_id', $log->id)->get();
-    } elseif ($log->status == 1) { // Secretary
-        $appointments = Appointments::all(); // Secretary sees all appointments
-    } else {
-        $appointments = collect(); // Empty collection if not authorized
-    }
 
-        // Get all users who have appointments with the logged-in dentist. feb. 11
-        $users = User::where('status', 0)
-            ->whereHas('appointments', function ($query) use ($log) {
-                $query->where('dentist_id', $log->id);
+        // Initialize appointments collection
+        $appointments = collect();
+
+        // Check if the logged-in user is a **dentist or a secretary**
+        if ($log->status == 2) { // Dentist
+            $appointments = Appointments::where('dentist_id', $log->id)->get();
+        } elseif ($log->status == 1) { // Secretary
+            // Fetch the dentist_id associated with the secretary from the available_dentist table
+            $dentistId = DB::table('available_dentist')
+                ->where('secretary_id', $log->id)
+                ->value('user_id');
+
+            if ($dentistId) {
+                // Fetch appointments for the corresponding dentist
+                $appointments = Appointments::where('dentist_id', $dentistId)->get();
+            }
+        }
+
+        // Fetch patients for the logged-in dentist or secretary
+        if ($log->status == 2) { // Dentist
+            $users = User::where('status', 0)
+                ->whereHas('appointments', function ($query) use ($log) {
+                    $query->where('dentist_id', $log->id);
+                })
+                ->get();
+        } elseif ($log->status == 1) { // Secretary
+            // Get the dentist assigned to the secretary
+            $dentistId = Assign::where('secretary_id', $log->id)->value('user_id');
+
+            if ($dentistId) {
+                $users = User::where('status', 0)
+                    ->whereHas('appointments', function ($query) use ($dentistId) {
+                        $query->where('dentist_id', $dentistId);
+                    })
+                    ->get();
+            } else {
+                $users = collect(); // Empty collection if no assigned dentist
+            }
+        }
+
+        // Fetch all secretaries (status = 1)
+        $secretaries = User::where('status', 1)->get();
+
+        // Fetch collaborators (dentists, secretaries, and co-dentists in the same clinic)
+        $collaborators = DB::table('available_dentist')
+            ->join('users', function ($join) {
+                $join->on('users.id', '=', 'available_dentist.user_id')
+                    ->orOn('users.id', '=', 'available_dentist.secretary_id');
             })
+            ->where(function ($query) use ($log) {
+                $query->where(function ($subQuery) use ($log) {
+                    // For dentists: only show their assigned secretaries
+                    $subQuery->where('available_dentist.user_id', $log->id)
+                        ->whereColumn('users.id', 'available_dentist.secretary_id');
+                })
+                    ->orWhere(function ($subQuery) use ($log) {
+                        // For secretaries: show their assigned dentists
+                        $subQuery->where('available_dentist.secretary_id', $log->id)
+                            ->whereColumn('users.id', 'available_dentist.user_id');
+                    })
+                    ->orWhere(function ($subQuery) use ($log) {
+                        // For dentists: show other dentists in same clinic
+                        $subQuery->whereIn('available_dentist.clinic_id', function ($clinicQuery) use ($log) {
+                            $clinicQuery->select('clinic_id')
+                                ->from('available_dentist')
+                                ->where('user_id', $log->id);
+                        })
+                            ->whereColumn('users.id', 'available_dentist.user_id')
+                            ->where('available_dentist.user_id', '!=', $log->id);
+                    });
+            })
+            ->where('users.id', '!=', $log->id)
+            ->select('users.*')
+            ->distinct()
             ->get();
 
+
         return view('admin', compact('user'))->with([
-            'appointments' => $appointments,
-            'services'     => $services,
-            'listings'     => $assign,
-            'users'        => $users,
-            'log'          => $log,
-            'is_online'    => $log->is_online,
+            'appointments'  => $appointments,
+            'services'      => $services,
+            'listings'      => $assign,
+            'users'         => $users,
+            'log'           => $log,
+            'is_online'     => $log->is_online,
+            'secretaries'   => $secretaries,
+            'collaborators' => $collaborators,
         ]);
     }
+
 
     public function superadmin()
     {

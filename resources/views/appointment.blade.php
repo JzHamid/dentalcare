@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
@@ -34,6 +35,7 @@
 </head>
 
 <body class="overflow-x-hidden">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
@@ -164,28 +166,31 @@
                         <div id="services-date-container" class="d-flex flex-column"></div>
 
                         @php
-                        $availableDays = $schedules->pluck('day')->map(function ($day) {
-                        return strtolower($day);
-                        })->toArray();
+                        $availableDays = $schedules->pluck('day')->map(fn($day) => strtolower($day))->toArray();
                         @endphp
 
                         <script>
                             const availableDays = @json($availableDays);
 
                             function initializeDatePickers() {
-                                document.querySelectorAll('.service-date').forEach((dateInput) => {
-                                    flatpickr(dateInput, {
-                                        dateFormat: 'Y-m-d H:i',
+                                document.querySelectorAll('.service-date-display').forEach((displayInput) => {
+                                    flatpickr(displayInput, {
+                                        dateFormat: 'l, F j - H:i', // Display format: "Day, Month Date - Hour:Minute"
                                         enableTime: true,
                                         enable: [
                                             function(date) {
                                                 const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                                                const dayName = dayNames[date.getDay()];
-                                                return availableDays.includes(dayName);
+                                                return availableDays.includes(dayNames[date.getDay()]);
                                             }
                                         ],
                                         minDate: 'today',
                                         maxDate: new Date(new Date().getFullYear(), 11, 31),
+                                        onChange: function(selectedDates, dateStr, instance) {
+                                            let hiddenInput = instance.input.nextElementSibling; // Get the hidden input
+                                            if (hiddenInput) {
+                                                hiddenInput.value = instance.formatDate(selectedDates[0], "Y-m-d\\TH:i"); // Set correct submission format
+                                            }
+                                        }
                                     });
                                 });
                             }
@@ -201,9 +206,12 @@
                                         const serviceDateDiv = document.createElement('div');
                                         serviceDateDiv.classList.add('mb-3');
                                         serviceDateDiv.innerHTML = `
-                <label class="form-label" for="appointments[0][time][${serviceId}]">Select date for ${serviceName}</label>
-                <input class="form-control service-date" type="text" name="appointments[0][time][${serviceId}]" placeholder="Select a date for ${serviceName}">
-            `;
+                        <label class="form-label" for="appointments[0][time][${serviceId}]">
+                            Select date for ${serviceName}
+                        </label>
+                        <input class="form-control service-date-display" type="text" placeholder="Select a date for ${serviceName}">
+                        <input class="service-date-hidden" type="hidden" name="appointments[0][time][${serviceId}]">
+                    `;
                                         servicesDateContainer.appendChild(serviceDateDiv);
 
                                         initializeDatePickers();
@@ -215,7 +223,95 @@
                                     }
                                 });
                             });
+
+                            document.getElementById('app-form').addEventListener('submit', function(e) {
+                                e.preventDefault();
+
+                                const form = this;
+                                const formData = new FormData(form);
+
+                                fetch(form.action, {
+                                        method: 'POST',
+                                        body: formData,
+                                        headers: {
+                                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                            'Accept': 'application/json'
+                                        }
+                                    })
+                                    .then(response => {
+                                        console.log('Raw response:', response); // Log the response object
+                                        return response.json(); // Parse it to JSON
+                                    })
+                                    .then(data => {
+                                        console.log('Parsed data:', data); // Log the parsed JSON
+                                        const swalConfig = {
+                                            customClass: {
+                                                popup: 'blue-swal',
+                                                confirmButton: 'btn btn-primary'
+                                            },
+                                            buttonsStyling: false
+                                        };
+
+                                        if (data.status === 'success') {
+                                            Swal.fire({
+                                                ...swalConfig,
+                                                icon: 'success',
+                                                title: 'Success!',
+                                                text: data.message,
+                                                confirmButtonText: 'OK'
+                                            }).then(() => {
+                                                if (data.redirect) {
+                                                    window.location.href = data.redirect;
+                                                }
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                ...swalConfig,
+                                                icon: 'error',
+                                                title: 'Oops...',
+                                                text: data.message,
+                                                confirmButtonText: 'Try Again'
+                                            });
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Fetch error:', error); // Log any fetch errors
+                                        Swal.fire({
+                                            ...swalConfig,
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: 'Something went wrong. Please try again.',
+                                            confirmButtonText: 'OK'
+                                        });
+                                    });
+                            });
+
+                            // Add custom CSS for blue theme
+                            const style = document.createElement('style');
+                            style.innerHTML = `
+    .blue-swal {
+        background-color: #f0f8ff !important;
+        border: 2px solid #007bff !important;
+    }
+    .blue-swal .swal2-title {
+        color: #0056b3 !important;
+    }
+    .blue-swal .swal2-content {
+        color: #003087 !important;
+    }
+    .blue-swal .btn-primary {
+        background-color: #007bff !important;
+        border-color: #007bff !important;
+        color: white !important;
+    }
+    .blue-swal .btn-primary:hover {
+        background-color: #0056b3 !important;
+        border-color: #0056b3 !important;
+    }
+`;
+                            document.head.appendChild(style);
                         </script>
+
 
                         @if ($errors->any())
                         <script>
@@ -256,33 +352,33 @@
     </div>
 
     <footer class="row bg-body-secondary bottom-0 p-4">
-    <div class="col">
-                <h5 class="text-default fw-bold">DentalCare</h5>
-                <p style="text-align: justify;">Your health is our mission partner with us for exceptional healthcare, Schedule your appointment today and experience the difference of exceptional healthcare.</p>
-            </div>
+        <div class="col">
+            <h5 class="text-default fw-bold">DentalCare</h5>
+            <p style="text-align: justify;">Your health is our mission partner with us for exceptional healthcare, Schedule your appointment today and experience the difference of exceptional healthcare.</p>
+        </div>
 
-            <div class="col">
-                <h5 class="text-center fw-bold">Quick Links</h5>
-                <div class="d-flex flex-column align-items-center">
-                    <a href="#home" class="text-decoration-none fw-bold">Home</a>
-                    <a href="#services" class="text-decoration-none fw-bold">Services</a>
-                    <a href="#faqp" class="text-decoration-none fw-bold">FAQ</a>
-                </div>
+        <div class="col">
+            <h5 class="text-center fw-bold">Quick Links</h5>
+            <div class="d-flex flex-column align-items-center">
+                <a href="#home" class="text-decoration-none fw-bold">Home</a>
+                <a href="#services" class="text-decoration-none fw-bold">Services</a>
+                <a href="#faqp" class="text-decoration-none fw-bold">FAQ</a>
             </div>
+        </div>
 
-            <div class="col">
-                <h5 class="fw-bold mb-3">Contact Us</h5>
-                <ul class="list-unstyled">
-                    <li class="mb-1">
-                        <i class="bi bi-telephone me-2"></i>
-                        <span class="fw-bold">Phone:</span> +63 123 456 7890
-                    </li>
-                    <li>
-                        <i class="bi bi-envelope me-2"></i>
-                        <span class="fw-bold">Email:</span> dentalcare@gmail.com
-                    </li>
-                </ul>
-            </div>
+        <div class="col">
+            <h5 class="fw-bold mb-3">Contact Us</h5>
+            <ul class="list-unstyled">
+                <li class="mb-1">
+                    <i class="bi bi-telephone me-2"></i>
+                    <span class="fw-bold">Phone:</span> +63 123 456 7890
+                </li>
+                <li>
+                    <i class="bi bi-envelope me-2"></i>
+                    <span class="fw-bold">Email:</span> dentalcare@gmail.com
+                </li>
+            </ul>
+        </div>
 
         <div class="col">
             <h5 class="text-center fw-bold">Follow Us</h5>

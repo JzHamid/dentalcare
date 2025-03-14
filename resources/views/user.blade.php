@@ -71,6 +71,39 @@
         </div>
     </nav>
 
+    @if (session('success'))
+    <div id="success-alert" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 text-center shadow-lg" role="alert" style="z-index: 1050;">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    @if ($errors->has('invalid'))
+    <div id="error-alert" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 text-center shadow-lg" role="alert" style="z-index: 1050;">
+        {{ $errors->first('invalid') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            setTimeout(function() {
+                let successAlert = document.getElementById("success-alert");
+                let errorAlert = document.getElementById("error-alert");
+
+                if (successAlert) {
+                    successAlert.classList.remove("show");
+                    successAlert.classList.add("fade");
+                }
+
+                if (errorAlert) {
+                    errorAlert.classList.remove("show");
+                    errorAlert.classList.add("fade");
+                }
+            }, 5000); // Auto-hide after 5 seconds
+        });
+    </script>
+
     <div class="row m-0" style="height: 93%;">
         <div class="col-md-2 bg-default nav flex-column p-3 gap-2" role="tablist" aria-orientation="vertical" id="navbar">
             <div class="container-fluid d-flex flex-column align-items-center py-4">
@@ -137,7 +170,7 @@
                             <hr>
 
                             <div class="d-flex flex-column gap-2 overflow-y-scroll p-4" style="max-height: 300px;">
-                                @foreach ($appointments->where('status', '!=', 'Done') as $appointment)
+                                @foreach ($appointments->where('status', '!=', '' && 'status', '!=', '') as $appointment)
                                 <div class="container-fluid d-flex shadow-sm rounded p-4 gap-3">
                                     <img style="height: 100px; width: 100px; border-radius: 5px; border: solid black 2px;" src="{{ asset('/' . $appointment->service->image_path) }}">
 
@@ -160,6 +193,9 @@
                                             @break
                                             @case ('Cancelled')
                                             <span class="text-danger fw-bold text-uppercase">Cancelled</span>
+                                            @break
+                                            @case ('Deny')
+                                            <span class="text-danger fw-bold text-uppercase">Denied</span>
                                             @break
                                             @endswitch
                                         </p>
@@ -221,14 +257,14 @@
                     <tbody>
                         @foreach ($appointments as $appointment)
                         <tr>
-
                             <td>Dr. {{ ($appointment->dentist->fname ?? '') . ' ' . ($appointment->dentist->mname ?? '') . ' ' . ($appointment->dentist->lname ?? '') }}</td>
 
-                            @if ($appointment->temporary)
+                            @if ($appointment->guest)
+                            <td>{{ $appointment->guest->name . ' ' . $appointment->guest->middlename . ' ' . $appointment->guest->lastname }}</td>
+                            @elseif ($appointment->temporary)
                             @php
                             $temp = json_decode($appointment->temporary, true);
                             @endphp
-
                             <td>{{ ($temp['fname'] ?? 'N/A') . ' ' . ($temp['mname'] ?? 'N/A') . ' ' . ($temp['lname'] ?? 'N/A') }}</td>
                             @else
                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
@@ -272,6 +308,31 @@
                 </table>
             </div>
 
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    sortAppointmentsByNearestTime();
+                });
+
+                function sortAppointmentsByNearestTime() {
+                    const table = document.querySelector(".table-bordered.shadow-sm"); // Select the table
+                    const tbody = table.querySelector("tbody");
+                    const rows = Array.from(tbody.querySelectorAll("tr"));
+
+                    rows.sort((rowA, rowB) => {
+                        const timeA = extractDateTime(rowA.cells[4].textContent); // 5th column = Appointment Time
+                        const timeB = extractDateTime(rowB.cells[4].textContent);
+                        return timeA - timeB;
+                    });
+
+                    // Append sorted rows back to the table
+                    rows.forEach(row => tbody.appendChild(row));
+                }
+
+                function extractDateTime(dateTimeStr) {
+                    return new Date(Date.parse(dateTimeStr.replace("-", "")));
+                }
+            </script>
+
             <div class="tab-pane gap-5 p-3" id="tab-transactions" role="tabpanel" aria-labelledby="tab-transactions" tabindex="0">
                 <h1 class="mb-5">Transactions</h1>
 
@@ -288,6 +349,7 @@
                     $additionalFees = $appointment->fees->whereNull('service_name');
                     @endphp
 
+                    @if($serviceFee) <!-- Check if serviceFee exists -->
                     <div class="card mb-4 shadow-sm">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-3">
@@ -299,7 +361,21 @@
 
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <p class="card-text mb-1"><strong>Service:</strong> {{ $serviceFee->service_name ?? 'N/A' }}</p>
+                                    <p class="card-text mb-1"><strong>Patient:</strong>
+                                        @if ($appointment->guest)
+                                        {{ $appointment->guest->name . ' ' . $appointment->guest->middlename . ' ' . $appointment->guest->lastname }}
+                                        @elseif ($appointment->temporary)
+                                        @php
+                                        $temp = json_decode($appointment->temporary, true);
+                                        @endphp
+                                        {{ ($temp['fname'] ?? 'N/A') }} {{ ($temp['lname'] ?? 'N/A') }}
+                                        @else
+                                        {{ $appointment->user->fname }} {{ $appointment->user->lname }}
+                                        @endif
+                                    </p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p class="card-text mb-1"><strong>Service:</strong> {{ $serviceFee->service_name }}</p>
                                 </div>
                             </div>
 
@@ -307,20 +383,17 @@
                                 <div class="col-md-6">
                                     <p class="card-text mb-1"><strong>Service Amount:</strong> ₱{{ number_format($serviceFee->service_amount ?? 0, 2) }}</p>
                                 </div>
-                            </div>
-                            <div class="row mb-3">
-
                                 <div class="col-md-6">
                                     <p class="card-text mb-1"><strong>Service Discount:</strong> {{ $serviceFee->service_discount ?? '0' }}%</p>
                                 </div>
                             </div>
-
 
                             <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal-{{ $appointment->id }}">
                                 <i class="fas fa-eye me-2"></i>View Details
                             </button>
                         </div>
                     </div>
+                    @endif <!-- End of serviceFee check -->
 
                     @php
                     // Service price and discount calculation
@@ -634,6 +707,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             switch (parseInt("{{ session('page') }}", 10)) {

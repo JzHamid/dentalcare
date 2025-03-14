@@ -82,22 +82,91 @@
                         </select>
                         <button class="btn btn-primary" type="submit">Update</button>
                     </form>
+                    @elseif ($appointment->status == 'Deny')
+                    <span class="text-danger fw-bold">Denied</span>
                     @endif
                 </div>
+
             </div>
 
-            <div class="d-flex rounded shadow p-4 gap-4">
+            <div class="d-flex rounded shadow p-4 gap-4 shadow-sm">
                 <div class="d-flex flex-column gap-1">
-                    <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ \Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}</p>
+                    @if ($appointment->guest)
+                    {{-- Display guest details --}}
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Patient Name: </span>
+                        {{ $appointment->guest->name . ' ' . $appointment->guest->middlename . ' ' . $appointment->guest->lastname }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Email Address: </span>
+                        {{ $appointment->guest->email }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Contact No.: </span>
+                        {{ $appointment->guest->contact }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Sex: </span>
+                        {{ $appointment->guest->sex == 0 ? 'Male' : 'Female' }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Set By: </span>
+                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
+                    </p>
+                    @elseif ($appointment->temporary)
+                    {{-- Display temporary details (old logic) --}}
+                    @php
+                    $temp = json_decode($appointment->temporary, true);
+                    @endphp
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Patient Name: </span>
+                        {{ ($temp['fname'] ?? '') . ' ' . ($temp['mname'] ?? '') . ' ' . ($temp['lname'] ?? '') }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Birthday: </span>
+                        {{ Carbon\Carbon::parse($temp['birth'])->format('F j, Y') }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Email Address: </span>
+                        {{ $temp['email'] }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Contact No.: </span>
+                        {{ $temp['phone'] }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Set By: </span>
+                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
+                    </p>
+                    @else
+                    {{-- Display user details --}}
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Patient Name: </span>
+                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Birthday: </span>
+                        {{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}
+                    </p>
                     <p class="fw-light m-0">
                         <span class="fw-bold">Address: </span>
                         {{ $appointment->user->street_name }}, {{ $appointment->user->city }}, {{ $appointment->user->province }}
                     </p>
-                    <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $appointment->user->email }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $appointment->user->phone }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Medical Records: </span>{{ $appointment->user->notes }}</p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Email Address: </span>
+                        {{ $appointment->user->email }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Contact No.: </span>
+                        {{ $appointment->user->phone }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Medical Records: </span>
+                        {{ $appointment->user->notes }}
+                    </p>
+                    @endif
                 </div>
+
                 <div class="d-flex align-items-center mx-auto">
                     <img class="d-flex align-self-center" src="{{ asset($appointment->user->image_path ?: 'profile_images/blank_profile_default.png') }}" style="height: 100px; width: 100px;">
                 </div>
@@ -122,11 +191,19 @@
                                         <div class="input-group">
                                             <input
                                                 class="form-control"
-                                                type="datetime-local"
+                                                type="text"
                                                 name="schedule"
                                                 id="schedule"
-                                                value="{{ \Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('Y-m-d\TH:i') }}">
-                                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#rescheduleModal">Reschedule</button>
+                                                value="{{ \Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('l, F j - H:i') }}">
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#rescheduleModal"
+                                                @if(in_array($appointment->status, ['Done', 'Deny', 'Upcoming'])) disabled @endif>
+                                                Reschedule
+                                            </button>
                                         </div>
                                     </div>
 
@@ -175,7 +252,7 @@
                                         <!-- Additional fee inputs will be added dynamically here -->
                                     </div>
 
-                                    <button type="button" class="btn btn-outline-secondary mb-3" data-bs-toggle="modal" data-bs-target="#addFeeModal">
+                                    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addFeeModal">
                                         <i class="fas fa-plus"></i> Add Fee
                                     </button>
 
@@ -270,19 +347,22 @@
             @endphp
 
             <script>
-                flatpickr('#schedule', {
-                    dateFormat: 'Y-m-d H:i',
-                    enableTime: true,
-                    enable: [
-                        function(date) {
-                            const allowedDays = @json($availableDays);
-                            const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                            const dayName = dayNames[date.getDay()];
-                            return allowedDays.includes(dayName);
-                        }
-                    ],
-                    minDate: 'today',
-                    maxDate: new Date(new Date().getFullYear(), 11, 31),
+                document.addEventListener("DOMContentLoaded", function() {
+                    flatpickr('#schedule', {
+                        dateFormat: 'Y-m-d H:i',
+                        enableTime: true,
+                        enable: [
+                            function(date) {
+                                const availableDays = @json($availableDays);
+                                const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                                const dayName = dayNames[date.getDay()];
+
+                                return availableDays.includes(dayName);
+                            }
+                        ],
+                        minDate: 'today',
+                        maxDate: new Date(new Date().getFullYear(), 11, 31),
+                    });
                 });
             </script>
 
@@ -354,7 +434,7 @@
                                 </p>
                             </div>
                         </div>
-                        
+
                         <!-- Procedure Notes -->
                         <div class="mb-3">
                             <p class="card-text">
@@ -480,63 +560,63 @@
         });
 
         document.addEventListener("DOMContentLoaded", function() {
-    const feesTableBody = document.getElementById("feesTableBody");
-    const feeForm = document.getElementById("feeForm");
-    const mainForm = document.querySelector("form[action='{{ route('save.record', $appointment->id) }}']");
+            const feesTableBody = document.getElementById("feesTableBody");
+            const feeForm = document.getElementById("feeForm");
+            const mainForm = document.querySelector("form[action='{{ route('save.record', $appointment->id) }}']");
 
-    let totalAmount = 0;
-    let totalDiscounted = 0;
+            let totalAmount = 0;
+            let totalDiscounted = 0;
 
-    function updateTotal() {
-        totalAmount = 0;
-        totalDiscounted = 0;
+            function updateTotal() {
+                totalAmount = 0;
+                totalDiscounted = 0;
 
-        // Sum the additional fees
-        document.querySelectorAll(".fee-row").forEach(row => {
-            let amount = parseFloat(row.getAttribute("data-amount")) || 0;
-            let discount = parseFloat(row.getAttribute("data-discount")) || 0;
-            let discountedAmount = amount - (amount * (discount / 100));
-            totalAmount += amount;
-            totalDiscounted += discountedAmount;
-        });
+                // Sum the additional fees
+                document.querySelectorAll(".fee-row").forEach(row => {
+                    let amount = parseFloat(row.getAttribute("data-amount")) || 0;
+                    let discount = parseFloat(row.getAttribute("data-discount")) || 0;
+                    let discountedAmount = amount - (amount * (discount / 100));
+                    totalAmount += amount;
+                    totalDiscounted += discountedAmount;
+                });
 
-        // Include the service price and its discount if available
-        const servicePriceElem = document.getElementById("servicePrice");
-        const serviceDiscountInput = document.getElementById("serviceDiscount");
-        if (servicePriceElem && serviceDiscountInput) {
-            let servicePrice = parseFloat(servicePriceElem.innerText) || 0;
-            let serviceDiscount = parseFloat(serviceDiscountInput.value) || 0;
-            let discountedServicePrice = servicePrice - (servicePrice * (serviceDiscount / 100));
-            
-            totalAmount += servicePrice;
-            totalDiscounted += discountedServicePrice;
+                // Include the service price and its discount if available
+                const servicePriceElem = document.getElementById("servicePrice");
+                const serviceDiscountInput = document.getElementById("serviceDiscount");
+                if (servicePriceElem && serviceDiscountInput) {
+                    let servicePrice = parseFloat(servicePriceElem.innerText) || 0;
+                    let serviceDiscount = parseFloat(serviceDiscountInput.value) || 0;
+                    let discountedServicePrice = servicePrice - (servicePrice * (serviceDiscount / 100));
 
-            // Update the displayed discounted service price
-            const servicePriceDiscountedElem = document.getElementById("servicePriceDiscounted");
-            if (servicePriceDiscountedElem) {
-                servicePriceDiscountedElem.innerText = discountedServicePrice.toFixed(2);
+                    totalAmount += servicePrice;
+                    totalDiscounted += discountedServicePrice;
+
+                    // Update the displayed discounted service price
+                    const servicePriceDiscountedElem = document.getElementById("servicePriceDiscounted");
+                    if (servicePriceDiscountedElem) {
+                        servicePriceDiscountedElem.innerText = discountedServicePrice.toFixed(2);
+                    }
+                }
+
+                document.getElementById("grandTotal").innerText = `₱${totalAmount.toFixed(2)}`;
+                document.getElementById("grandTotalDiscounted").innerText = `₱${totalDiscounted.toFixed(2)}`;
             }
-        }
 
-        document.getElementById("grandTotal").innerText = `₱${totalAmount.toFixed(2)}`;
-        document.getElementById("grandTotalDiscounted").innerText = `₱${totalDiscounted.toFixed(2)}`;
-    }
+            // Listen for changes in the service discount input to recalc totals on the fly
+            const serviceDiscountInput = document.getElementById("serviceDiscount");
+            if (serviceDiscountInput) {
+                serviceDiscountInput.addEventListener("input", updateTotal);
+            }
 
-    // Listen for changes in the service discount input to recalc totals on the fly
-    const serviceDiscountInput = document.getElementById("serviceDiscount");
-    if (serviceDiscountInput) {
-        serviceDiscountInput.addEventListener("input", updateTotal);
-    }
+            function addFeeToTable(feeType, amount, discount) {
+                let discountedAmount = amount - (amount * (discount / 100));
 
-    function addFeeToTable(feeType, amount, discount) {
-        let discountedAmount = amount - (amount * (discount / 100));
+                let newRow = document.createElement("tr");
+                newRow.classList.add("fee-row");
+                newRow.setAttribute("data-amount", amount);
+                newRow.setAttribute("data-discount", discount);
 
-        let newRow = document.createElement("tr");
-        newRow.classList.add("fee-row");
-        newRow.setAttribute("data-amount", amount);
-        newRow.setAttribute("data-discount", discount);
-
-        newRow.innerHTML = `
+                newRow.innerHTML = `
             <td>${feeType}</td>
             <td>₱${amount.toFixed(2)}</td>
             <td>${discount.toFixed(2)}%</td>
@@ -544,57 +624,57 @@
             <td><button class="btn btn-danger btn-sm remove-fee">X</button></td>
         `;
 
-        feesTableBody.appendChild(newRow);
-        updateTotal();
+                feesTableBody.appendChild(newRow);
+                updateTotal();
 
-        newRow.querySelector(".remove-fee").addEventListener("click", function() {
-            newRow.remove();
+                newRow.querySelector(".remove-fee").addEventListener("click", function() {
+                    newRow.remove();
+                    updateTotal();
+                });
+
+                addHiddenInputsToForm(feeType, amount, discount);
+            }
+
+            function addHiddenInputsToForm(feeType, amount, discount) {
+                const feeTypeInput = document.createElement("input");
+                feeTypeInput.type = "hidden";
+                feeTypeInput.name = "fee_type[]";
+                feeTypeInput.value = feeType;
+
+                const feeAmountInput = document.createElement("input");
+                feeAmountInput.type = "hidden";
+                feeAmountInput.name = "fee_amount[]";
+                feeAmountInput.value = amount;
+
+                const feeDiscountInput = document.createElement("input");
+                feeDiscountInput.type = "hidden";
+                feeDiscountInput.name = "discount_percentage[]";
+                feeDiscountInput.value = discount;
+
+                mainForm.appendChild(feeTypeInput);
+                mainForm.appendChild(feeAmountInput);
+                mainForm.appendChild(feeDiscountInput);
+            }
+
+            feeForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                let feeType = document.getElementById("feeType").value;
+                let amount = parseFloat(document.getElementById("feeAmount").value) || 0;
+                let discount = parseFloat(document.getElementById("feeDiscount").value) || 0;
+
+                addFeeToTable(feeType, amount, discount);
+
+                feeForm.reset();
+
+                let modalElement = document.getElementById("addFeeModal");
+                let modal = bootstrap.Modal.getInstance(modalElement);
+                modal.hide();
+            });
+
+            // Initialize the totals on page load
             updateTotal();
         });
-
-        addHiddenInputsToForm(feeType, amount, discount);
-    }
-
-    function addHiddenInputsToForm(feeType, amount, discount) {
-        const feeTypeInput = document.createElement("input");
-        feeTypeInput.type = "hidden";
-        feeTypeInput.name = "fee_type[]";
-        feeTypeInput.value = feeType;
-
-        const feeAmountInput = document.createElement("input");
-        feeAmountInput.type = "hidden";
-        feeAmountInput.name = "fee_amount[]";
-        feeAmountInput.value = amount;
-
-        const feeDiscountInput = document.createElement("input");
-        feeDiscountInput.type = "hidden";
-        feeDiscountInput.name = "discount_percentage[]";
-        feeDiscountInput.value = discount;
-
-        mainForm.appendChild(feeTypeInput);
-        mainForm.appendChild(feeAmountInput);
-        mainForm.appendChild(feeDiscountInput);
-    }
-
-    feeForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        let feeType = document.getElementById("feeType").value;
-        let amount = parseFloat(document.getElementById("feeAmount").value) || 0;
-        let discount = parseFloat(document.getElementById("feeDiscount").value) || 0;
-
-        addFeeToTable(feeType, amount, discount);
-
-        feeForm.reset();
-
-        let modalElement = document.getElementById("addFeeModal");
-        let modal = bootstrap.Modal.getInstance(modalElement);
-        modal.hide();
-    });
-
-    // Initialize the totals on page load
-    updateTotal();
-});
 
 
         document.addEventListener("DOMContentLoaded", function() {

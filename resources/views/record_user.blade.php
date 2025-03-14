@@ -81,37 +81,97 @@
         <div class="d-flex flex-column mx-auto w-75 gap-3">
             <form class="d-flex justify-content-between" action="{{ route('update.status', $appointment->id) }}" method="post">
                 @csrf
-                <h3 class = "fw-bold">Patient Info</h3>
+                <h3 class="fw-bold">Patient Info</h3>
 
-                @if ($appointment->status != 'Cancelled')
+                @if ($appointment->status != 'Cancelled' && $appointment->status != 'Done' && $appointment->status != 'Upcoming' && $appointment->status != 'Deny')
                 <button class="btn btn-danger">Cancel Appointment</button>
                 @endif
+
+                @if ($appointment->status == 'Deny')
+                <span class="text-danger font-weight-bold" style="font-size: 1.2em; background-color: #ffe6e6; padding: 5px 10px; border-radius: 5px; border: 1px solid #ff4d4d;">
+                    Denied
+                </span>
+                @endif
+
 
                 <input type="hidden" name="status" value="Cancelled">
             </form>
 
             <div class="d-flex rounded shadow p-4 gap-4 shadow-sm">
                 <div class="d-flex flex-column gap-1">
-                    @if ($appointment->temporary)
+                    @if ($appointment->guest)
+                    {{-- Display guest details --}}
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Patient Name: </span>
+                        {{ $appointment->guest->name . ' ' . $appointment->guest->middlename . ' ' . $appointment->guest->lastname }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Email Address: </span>
+                        {{ $appointment->guest->email }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Contact No.: </span>
+                        {{ $appointment->guest->contact }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Sex: </span>
+                        {{ $appointment->guest->sex == 0 ? 'Male' : 'Female' }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Set By: </span>
+                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
+                    </p>
+                    @elseif ($appointment->temporary)
+                    {{-- Display temporary details (old logic) --}}
                     @php
                     $temp = json_decode($appointment->temporary, true);
                     @endphp
-
-                    <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ ($temp['fname'] ?? '') . ' ' . ($temp['mname'] ?? '') . ' ' . ($temp['lname'] ?? '') }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ Carbon\Carbon::parse($temp['birth'])->format('F j, Y') }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $temp['email'] }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $temp['phone'] }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Set By: </span>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Patient Name: </span>
+                        {{ ($temp['fname'] ?? '') . ' ' . ($temp['mname'] ?? '') . ' ' . ($temp['lname'] ?? '') }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Birthday: </span>
+                        {{ Carbon\Carbon::parse($temp['birth'])->format('F j, Y') }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Email Address: </span>
+                        {{ $temp['email'] }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Contact No.: </span>
+                        {{ $temp['phone'] }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Set By: </span>
+                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
+                    </p>
                     @else
-                    <p class="fw-light m-0"><span class="fw-bold">Patient Name: </span>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Birthday: </span>{{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}</p>
+                    {{-- Display user details --}}
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Patient Name: </span>
+                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Birthday: </span>
+                        {{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}
+                    </p>
                     <p class="fw-light m-0">
                         <span class="fw-bold">Address: </span>
                         {{ $appointment->user->street_name }}, {{ $appointment->user->city }}, {{ $appointment->user->province }}
                     </p>
-                    <p class="fw-light m-0"><span class="fw-bold">Email Address: </span>{{ $appointment->user->email }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Contact No.: </span>{{ $appointment->user->phone }}</p>
-                    <p class="fw-light m-0"><span class="fw-bold">Medical Records: </span>{{ $appointment->user->notes }}</p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Email Address: </span>
+                        {{ $appointment->user->email }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Contact No.: </span>
+                        {{ $appointment->user->phone }}
+                    </p>
+                    <p class="fw-light m-0">
+                        <span class="fw-bold">Medical Records: </span>
+                        {{ $appointment->user->notes }}
+                    </p>
                     @endif
                 </div>
 
@@ -121,70 +181,92 @@
             </div>
 
             <div class="mt-3">
-                <h3 class = "fw-bold">Procedures</h3>
+                <h3 class="fw-bold">Procedures</h3>
             </div>
 
             <div class="d-flex rounded shadow p-4 gap-4 shadow-sm">
-                <img style="height: 500px; min-width: 500px;">
-
-                <div class="container-fluid d-flex flex-column">
+                <div class="container-fluid">
                     <h5>Appointment Details</h5>
 
-                    <div class="container-fluid d-flex flex-column p-0 gap-2 h-100">
-                        <div class="form-group">
-                            <label class="form-label" for="schedule">Schedule</label>
-                            <form class="input-group" id="rescheduleForm" action="{{ route('reschedule.appointment', $appointment->id) }}" method="post">
-                                @csrf
+                    <div class="row g-3">
+                        <!-- Left Side: Schedule, Dentist, and Service -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label" for="schedule">Schedule</label>
+                                <form class="input-group" id="rescheduleForm" action="{{ route('reschedule.appointment', $appointment->id) }}" method="post">
+                                    @csrf
+                                    <input
+                                        class="form-control"
+                                        type="text"
+                                        name="schedule"
+                                        id="schedule"
+                                        value="{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('l, F j - H:i') }}">
 
-                                <input
-                                    class="form-control"
-                                    type="datetime-local"
-                                    name="schedule"
-                                    id="schedule"
-                                    value="{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('Y-m-d\TH:i') }}">
-                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#rescheduleModal">Reschedule</button>
-                            </form>
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#rescheduleModal"
+                                        @if(in_array($appointment->status, ['Done', 'Deny', 'Upcoming'])) disabled @endif>
+                                        Reschedule
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="dentist">Dentist</label>
+                                <input class="form-control" type="text" name="dentist" value="Dr. {{ $dentist->fname ?? 'Any' }}" disabled>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="service">Service</label>
+                                <input class="form-control" type="text" name="service" value="{{ $appointment->service->name }}" disabled>
+                            </div>
                         </div>
 
-                        @php
-                        $availableDays = $schedules->pluck('day')->map(function ($day) {
-                        return strtolower($day);
-                        })->toArray();
-                        @endphp
-
-                        <script>
-                            flatpickr('#schedule', {
-                                dateFormat: 'Y-m-d H:i',
-                                enableTime: true,
-                                enable: [
-                                    function(date) {
-                                        const allowedDays = @json($availableDays);
-                                        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                                        const dayName = dayNames[date.getDay()];
-
-                                        return allowedDays.includes(dayName);
-                                    }
-                                ],
-                                minDate: 'today',
-                                maxDate: new Date(new Date().getFullYear(), 11, 31),
-                            });
-                        </script>
-
-                        <div class="form-group">
-                            <label class="form-label" for="dentist">Dentist</label>
-                            <input class="form-control" type="text" name="dentist" value="Dr. {{ $dentist->fname ?? 'Any' }}" disabled>
+                        <!-- Right Side: Procedure Notes -->
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="procedure_notes" class="form-label">Procedure Notes</label>
+                                <textarea class="form-control" name="procedure_notes" id="procedure_notes" rows="5" disabled>{{ old('procedure_notes', $appointment->procedure_notes) }}</textarea>
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label class="form-label" for="service">Service</label>
-                            <input class="form-control" type="text" name="service" value="{{ $appointment->service->name }}" disabled>
-                        </div>
-
-                        @if (Auth::user()->status > 0)
-                        <button class="btn btn-primary mt-auto" type="submit">Save Record</button>
-                        @endif
                     </div>
+
+                    <!-- Save Record Button (Only if User Status > 0) -->
+                    @if (Auth::user()->status > 0)
+                    <div class="text-end mt-3">
+                        <button class="btn btn-primary" type="submit">Save Record</button>
+                    </div>
+                    @endif
                 </div>
+
+                @php
+                $availableDays = $schedules->pluck('day')->map(function ($day) {
+                return strtolower($day);
+                })->toArray();
+                @endphp
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        flatpickr('#schedule', {
+                            dateFormat: 'Y-m-d H:i',
+                            enableTime: true,
+                            enable: [
+                                function(date) {
+                                    const availableDays = @json($availableDays);
+                                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                                    const dayName = dayNames[date.getDay()];
+
+                                    return availableDays.includes(dayName);
+                                }
+                            ],
+                            minDate: 'today',
+                            maxDate: new Date(new Date().getFullYear(), 11, 31),
+                        });
+                    });
+                </script>
+
 
                 <!-- Reschedule Modal -->
                 <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">

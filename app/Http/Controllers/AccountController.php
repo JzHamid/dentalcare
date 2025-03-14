@@ -22,16 +22,20 @@ class AccountController extends Controller
             $user->is_online = true;
             $user->save();
 
+            $successMessage = 'Welcome back, ' . $user->fname . '!';
+
             if ($user->status > 0 && $user->status < 3) {
-                return redirect()->intended('/admin');
+                return redirect()->intended('/admin')->with('success', $successMessage);
             } else if ($user->status == 3) {
-                return redirect()->intended('/superadmin');
-            } else
-                return redirect()->intended('/')->with('logged', true);
+                return redirect()->intended('/superadmin')->with('success', $successMessage);
+            } else {
+                return redirect()->intended('/')->with('success', $successMessage); // Redirect regular users to /user
+            }
         }
 
-        return back()->withErrors(['invalid' => 'Account not found.']);
+        return back()->withErrors(['invalid' => 'Invalid email or password.']);
     }
+
 
     public function logout()
     {
@@ -60,37 +64,32 @@ class AccountController extends Controller
             'postal_code' => 'required|string|max:10',
             'password' => 'required|string|min:8|confirmed',
         ]);
+        try {
+            $user = new User();
+            $user->fname = $request->fname;
+            $user->mname = $request->mname;
+            $user->lname = $request->lname;
+            $user->birthdate = $request->birth;
+            $user->gender = $request->sexuality;
+            $user->phone = $request->phone;
+            $user->email = $request->email;
+            $user->street_name = $request->street_name;
+            $user->city = $request->city;
+            $user->province = $request->province;
+            $user->postal_code = $request->postal_code;
+            $user->password = bcrypt($request->password);
 
-        $user = new User();
-        $user->fname = $validData['fname'];
-        $user->mname = $validData['mname'];
-        $user->lname = $validData['lname'];
-        $user->birthdate = $validData['birth'];
-        $user->gender = $validData['sexuality'];
-        $user->phone = $validData['phone'];
-        $user->email = $validData['email'];
-        $user->street_name = $validData['street_name'];
-        $user->city = $validData['city'];
-        $user->province = $validData['province'];
-        $user->postal_code = $validData['postal_code'];
-        $user->password = bcrypt($validData['password']);
+            $user->save();
 
-        $user->save();
-
-        return redirect('login');
+            return redirect()->route('login')->with('success', 'Account created successfully! Please log in.');
+        } catch (\Exception $e) {
+            return back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
+        }
     }
 
     public function update(Request $request)
     {
         $user = User::find(Auth::user()->id);
-
-        // $request->validate([
-        //     'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',
-        //     'street_name' => 'required|string|max:255',
-        //     'city' => 'required|string|max:255',
-        //     'province' => 'required|string|max:255',
-        //     'postal_code' => 'required|string|max:10',
-        // ]);
 
         if ($request->hasFile('profile')) {
             $file = $request->file('profile');
@@ -124,9 +123,9 @@ class AccountController extends Controller
         $user->save();
 
         if (Auth::user()->status == 0) {
-            return redirect('/user-profile')->with(['page' => 4]);
+            return redirect('/user-profile')->with(['page' => 4, 'success' => 'Successfully updated profile!']);
         } else {
-            return redirect('/admin')->with(['page' => 8]);
+            return redirect('/admin')->with(['page' => 8, 'success' => 'Successfully updated profile!']);
         }
     }
 

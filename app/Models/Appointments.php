@@ -69,4 +69,9 @@ class Appointments extends Model
     {
         return $this->fees()->sum('fee_amount') - $this->getTotalPaidAttribute();
     }
+
+    public function guest()
+    {
+        return $this->hasOne(AppointmentGuest::class, 'appointment_id');
+    }
 }

@@ -12,7 +12,7 @@ Route::get('/users/{id}', function ($id) {
 });
 Route::post('/users/update', [AdminController::class, 'update'])->name('users.update');
 Route::delete('/users/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
-Route::delete('/dentist/{id}', [AdminController::class, 'destroy'])->name('users.destroy');
+Route::delete('/dentist/{id}', [AdminController::class, 'destroy'])->name('dentists.destroy');
 Route::post('/update-patient', [AdminController::class, 'update_patient'])->name('update_patient.account');
 
 Route::post('/create-account', [AccountController::class, 'signup'])->name('create.account');
@@ -80,6 +80,10 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::get('/get-collab/{id}', [AdminController::class, 'get_collab'])->name('get.collab');
     Route::delete('/delete-collab/{id}', [AdminController::class, 'remove_collab'])->name('destroy.collab');
 
+    Route::get('/admin/add-collab', [AdminController::class, 'showAddCollaboratorModal'])->name('admin.add-collab');
+    Route::post('/admin/create-collab', [AdminController::class, 'create_collab'])->name('create.collab');
+    Route::post('/save-collaboration', [AdminController::class, 'saveCollaboration'])->name('save.collaboration');
+    
     // Record
     Route::get('/record/{id}', [PageController::class, 'record'])->name('record.appointment');
     Route::post('/update-status/{id}', [AdminController::class, 'appointment_status'])->name('update.status');

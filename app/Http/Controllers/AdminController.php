@@ -53,12 +53,15 @@ class AdminController extends Controller
         $service->price_end = $request->service_price_end;
         $service->save();
 
+        $successMessage = 'Service "' . $service->name . '" has been successfully created!';
+
         if (Auth::user()->status == 3) {
-            return redirect('/superadmin')->with(['page' => 8]);
+            return redirect('/superadmin')->with(['page' => 8, 'success' => $successMessage]);
         } else {
-            return redirect('/admin')->with(['page' => 3]);
+            return redirect('/admin')->with(['page' => 3, 'success' => $successMessage]);
         }
     }
+
 
     public function update(Request $request)
     {
@@ -115,6 +118,10 @@ class AdminController extends Controller
     {
         $service = Service::find($id);
 
+        if (!$service) {
+            return redirect()->back()->with('error', 'Service not found.');
+        }
+
         $service->name = $request->eservice_name;
         $service->description = $request->eservice_description;
 
@@ -134,7 +141,6 @@ class AdminController extends Controller
             }
 
             $filename = time() . '_' . $file->getClientOriginalName();
-
             $file->move($destinationPath, $filename);
 
             $service->image_path = 'services_image/' . $filename;
@@ -142,12 +148,15 @@ class AdminController extends Controller
 
         $service->save();
 
+        $successMessage = 'Service "' . $service->name . '" has been successfully updated!';
+
         if (Auth::user()->status == 3) {
-            return redirect('/superadmin')->with(['page' => 8]);
+            return redirect('/superadmin')->with(['page' => 8, 'success' => $successMessage]);
         } else {
-            return redirect('/admin')->with(['page' => 3]);
+            return redirect('/admin')->with(['page' => 3, 'success' => $successMessage]);
         }
     }
+
 
     public function get_service($id)
     {
@@ -158,18 +167,27 @@ class AdminController extends Controller
 
     public function delete_service($id)
     {
-        Service::where('id', $id)->delete();
+        $service = Service::findOrFail($id);
+        $serviceName = $service->name; // Get the service name before deletion
+        $service->delete();
 
-        return redirect('/superadmin')->with(['page' => 8]);
+        $successMessage = "Service '$serviceName' has been successfully deleted!";
+
+        return redirect('/superadmin')->with(['page' => 8, 'success' => $successMessage]);
     }
+
 
     public function destroy($id)
     {
         $user = User::findOrFail($id);
+        $userName = $user->fname . ' ' . $user->lname; // Get the user's full name before deletion
         $user->delete();
 
-        return redirect()->back()->with('success', 'User deleted successfully.');
+        $successMessage = "User $userName has been successfully deleted!";
+
+        return redirect()->back()->with(['page' => 4, 'success' => $successMessage]);
     }
+
 
     public function create_dentist(Request $request)
     {
@@ -206,8 +224,11 @@ class AdminController extends Controller
 
         $user->save();
 
-        return redirect('superadmin')->with(['page' => 4]);
+        $successMessage = 'Dentist ' . $user->fname . ' ' . $user->lname . ' has been successfully created!';
+
+        return redirect('superadmin')->with(['page' => 4, 'success' => $successMessage]);
     }
+
 
 
     public function create_secretary(Request $request)
@@ -246,7 +267,9 @@ class AdminController extends Controller
 
         $user->save();
 
-        return redirect('superadmin')->with(['page' => 5]);
+        $successMessage = "Secretary {$user->fname} {$user->lname} has been successfully created!";
+
+        return redirect('superadmin')->with(['page' => 6, 'success' => $successMessage]);
     }
 
     public function update_dentist(Request $request)
@@ -260,10 +283,6 @@ class AdminController extends Controller
             'sexe' => 'required|integer|in:0,1',
             'phonee' => 'required|string|max:15',
             'emaile' => 'required|email|max:255',
-            // 'street_namee' => 'required|string|max:255',
-            // 'provincee' => 'required|string|max:255',
-            // // 'citye' => 'required|string|max:255',
-            // // 'postal_codee' => 'required|string|max:10',
             'profile' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',  // Add validation for profile image
         ]);
 
@@ -285,8 +304,9 @@ class AdminController extends Controller
         // Save the changes to the user record
         $dentist->save();
 
-        // Redirect based on status
-        return redirect('superadmin')->with(['page' => 4]);
+        $successMessage = 'Dentist ' . $dentist->fname . ' ' . $dentist->lname . ' has been successfully updated!';
+
+        return redirect('superadmin')->with(['page' => 4, 'success' => $successMessage]);
     }
 
     public function update_secretary(Request $request)
@@ -300,34 +320,33 @@ class AdminController extends Controller
             'sexsec' => 'required|integer|in:0,1',
             'phonesec' => 'required|string|max:15',
             'emailsec' => 'required|email|max:255',
-            // 'street_namesec' => 'required|string|max:255',
-            // 'provincesec' => 'required|string|max:255',
-            // 'citysec' => 'required|string|max:255',
-            // 'postal_codesec' => 'required|string|max:10',
             'profilesec' => 'nullable|image|mimes:jpg,png,jpeg,gif,svg|max:4096',  // Add validation for profile image
         ]);
 
-        $dentist = User::find($request->id);
+        $secretary = User::find($request->id);
 
-        // Update the rest of the fields
-        $dentist->fname = $request->fnamesec;
-        $dentist->mname = $request->mnamesec;
-        $dentist->lname = $request->lnamesec;
-        $dentist->birthdate = $request->birthdatesec;
-        $dentist->gender = $request->sexsec;
-        $dentist->phone = $request->phonesec;
-        $dentist->email = $request->emailsec;
-        $dentist->street_name = $request->street_namesec;
-        $dentist->province = $request->provincesec;
-        $dentist->city = $request->citysec;
-        $dentist->postal_code = $request->postal_codesec;
+        // Update the fields
+        $secretary->fname = $request->fnamesec;
+        $secretary->mname = $request->mnamesec;
+        $secretary->lname = $request->lnamesec;
+        $secretary->birthdate = $request->birthdatesec;
+        $secretary->gender = $request->sexsec;
+        $secretary->phone = $request->phonesec;
+        $secretary->email = $request->emailsec;
+        $secretary->street_name = $request->street_namesec;
+        $secretary->province = $request->provincesec;
+        $secretary->city = $request->citysec;
+        $secretary->postal_code = $request->postal_codesec;
 
-        // Save the changes to the user record
-        $dentist->save();
+        // Save the changes
+        $secretary->save();
 
-        // Redirect based on status
-        return redirect('superadmin')->with(['page' => 6]);
+        // Success message
+        $successMessage = "Secretary {$secretary->fname} {$secretary->lname} has been successfully updated!";
+
+        return redirect('superadmin')->with(['page' => 6, 'success' => $successMessage]);
     }
+
 
     public function update_patient(Request $request)
     {
@@ -403,9 +422,18 @@ class AdminController extends Controller
 
         if ($request->hasFile('listing-thumbnail')) {
             $file = $request->file('listing-thumbnail');
-            $path = $file->storeAs('images', time() . '_' . $file->getClientOriginalName(), 'public');
-            $listing->image_path = $path;
+            $destinationPath = public_path('services_image');
+
+            if (!File::exists($destinationPath)) {
+                File::makeDirectory($destinationPath, 0755, true, true);
+            }
+
+            $path = time() . '_' . $file->getClientOriginalName();
+            $file->move($destinationPath, $path);
+            $listing->image_path = 'services_image/' . $path;
         }
+
+
 
         $listing->save();
 
@@ -449,17 +477,17 @@ class AdminController extends Controller
             }
         }
 
-        if (Auth::user()->status == 2) {
-            return redirect('/admin')->with(['page' => 5]);
-        } else if (Auth::user()->status == 3) {
-            return redirect('/superadmin')->with(['page' => 5]);
-        }
+        $redirectPath = Auth::user()->status == 2 ? '/admin' : '/superadmin';
+
+        // Success message
+        $successMessage = "Listing '{$listing->name}' has been successfully created!";
+
+        return redirect($redirectPath)->with(['page' => 5, 'success' => $successMessage]);
     }
 
     public function edit_listing(Request $request, $id)
     {
         $listing = Listing::find($id);
-        $assign = Assign::where('clinic_id', $id)->first();
 
         $listing->name = $request->input('vlisting-name');
         $listing->email = $request->input('vlisting-email');
@@ -467,15 +495,8 @@ class AdminController extends Controller
         $listing->location = $request->input('vlisting-location');
         $listing->description = $request->input('vlisting-about');
 
-        // if ($request->hasFile('vlisting-thumbnail')) {
-        //     $file = $request->file('vlisting-thumbnail');
-        //     $path = $file->storeAs('services_image', time() . '_' . $file->getClientOriginalName(), 'public');
-        //     $listing->image_path = $path;
-        // }
-
         if ($request->hasFile('vlisting-thumbnail')) {
             $file = $request->file('vlisting-thumbnail');
-
             $destinationPath = public_path('services_image');
 
             if (!File::exists($destinationPath)) {
@@ -483,16 +504,14 @@ class AdminController extends Controller
             }
 
             $path = time() . '_' . $file->getClientOriginalName();
-
             $file->move($destinationPath, $path);
-
             $listing->image_path = 'services_image/' . $path;
         }
 
         $listing->save();
 
+        // Handle services
         $services = $request->input('vservice', []);
-
         $current = $listing->availabilities()->pluck('service_id')->toArray();
         $toAdd = array_diff($services, $current);
         $toDelete = array_diff($current, $services);
@@ -500,23 +519,26 @@ class AdminController extends Controller
         Available::where('listing_id', $id)->whereIn('service_id', $toDelete)->delete();
 
         foreach ($toAdd as $toAddId) {
-            $available = new Available();
-
-            $available->listing_id = $listing->id;
-            $available->service_id = $toAddId;
-
-            $available->save();
+            Available::create([
+                'listing_id' => $listing->id,
+                'service_id' => $toAddId
+            ]);
         }
 
-        $dentistIds = $request->input('vdent', []);
+        // **Fix: Handle multiple dentists properly**
+        $dentistIds = $request->input('vdent', []); // This should be an array
 
+        // Retrieve currently assigned dentists
         $currentDentists = Assign::where('clinic_id', $id)->pluck('user_id')->toArray();
 
+        // Find dentists to add and remove
         $dentistsToAdd = array_diff($dentistIds, $currentDentists);
         $dentistsToRemove = array_diff($currentDentists, $dentistIds);
 
+        // Remove unselected dentists
         Assign::where('clinic_id', $id)->whereIn('user_id', $dentistsToRemove)->delete();
 
+        // Add new dentists
         foreach ($dentistsToAdd as $dentistId) {
             Assign::create([
                 'clinic_id' => $id,
@@ -527,17 +549,16 @@ class AdminController extends Controller
         return redirect('/superadmin')->with(['page' => 5]);
     }
 
+
     public function get_listing($id)
     {
         $listing = Listing::find($id);
-        $available = Available::where('listing_id', $id)->first();
-        $assign = Assign::where('clinic_id', $id)->first();
 
+        // Get all available services for the listing
+        $available = Available::where('listing_id', $id)->first(); // This could stay as first() if you just need to check existence
         if ($available) {
             $selectedServiceIds = Available::where('listing_id', $id)->pluck('service_id')->toArray();
-
             $services = Service::whereIn('id', $selectedServiceIds)->get();
-
             $services->each(function ($service) {
                 $service->is_selected = true;
             });
@@ -545,37 +566,86 @@ class AdminController extends Controller
             $services = Service::all();
         }
 
-        if ($assign) {
-            $assigns = $assign->user_id ? User::where('id', $assign->user_id)->get() : collect();
-        } else {
-            $assigns = collect();
-        }
+        // Get all assigned dentists (not just the first one)
+        $assigns = Assign::where('clinic_id', $id)->get(); // Use get() to retrieve all assignments
+        $dentistIds = $assigns->pluck('user_id')->toArray(); // Extract all user_ids
+        $assignedDentists = $dentistIds ? User::whereIn('id', $dentistIds)->get() : collect();
 
+        // Get all schedules
         $schedule = Schedule::where('clinic_id', $id)->get();
 
-        return response()->json(['listing' => $listing, 'services' => $services, 'schedules' => $schedule, 'assign' => $assigns]);
+        return response()->json([
+            'listing' => $listing,
+            'services' => $services,
+            'schedules' => $schedule,
+            'assign' => $assignedDentists // Return all assigned dentists
+        ]);
     }
 
 
     public function delete_listing($id)
     {
-        Listing::where('id', $id)->delete();
+        // Find the listing
+        $listing = Listing::find($id);
 
-        return redirect('/superadmin')->with(['page' => 5]);
-    }
-
-    public function create_collab(Request $request)
-    {
-        $user = User::where('email', $request->input('collab-email'))->where('status', 0)->first();
-
-        if ($user) {
-            $user->status = $request->input('collab-position');
-            $user->date_collab = Carbon::now();
-            $user->save();
+        if (!$listing) {
+            return redirect('/superadmin')->with(['page' => 5, 'error' => 'Listing not found.']);
         }
 
-        return redirect('/admin')->with(['page' => 7]);
+        // Delete related records to maintain data integrity
+        Available::where('listing_id', $listing->id)->delete();  // Remove associated services
+        Assign::where('clinic_id', $listing->id)->delete();      // Remove assigned dentists
+        Schedule::where('clinic_id', $listing->id)->delete();    // Remove associated schedules
+
+        // Delete the listing itself
+        $listing->delete();
+
+        // Success message
+        return redirect('/superadmin')->with(['page' => 5, 'success' => "Listing '{$listing->name}' has been deleted successfully."]);
     }
+
+
+    public function showAddCollaboratorModal()
+    {
+        // Fetch all secretaries (status = 1)
+        $secretaries = User::where('status', 1)->get();
+
+        // Pass the secretaries to the view
+        return view('admin', compact('secretaries'));
+    }
+
+    public function saveCollaboration(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'secretary_id' => 'required|exists:users,id',
+        ]);
+
+        // Get the logged-in user (dentist)
+        $dentist = Auth::user();
+
+        // Check if the dentist already has a record in the available_dentist table
+        $existingAssignment = Assign::where('user_id', $dentist->id)->first();
+
+        if ($existingAssignment) {
+            // Update the existing record with the new secretary_id
+            $existingAssignment->update([
+                'secretary_id' => $request->input('secretary_id'),
+            ]);
+        } else {
+            // Create a new record if no existing entry is found
+            Assign::create([
+                'user_id' => $dentist->id, // Dentist's ID
+                'clinic_id' => $request->input('clinic_id'), // Clinic ID
+                'secretary_id' => $request->input('secretary_id'), // Secretary's ID
+            ]);
+        }
+
+        // Redirect back with a success message
+        return redirect('/admin')->with(['page' => 9, 'success' => 'Successfully added a Secretary']);
+    }
+
+
 
     public function edit_collab(Request $request, $id)
     {
@@ -640,75 +710,11 @@ class AdminController extends Controller
 
     public function create_appointment(Request $request, $id)
     {
-        if ($request->whofor != 2) {
-            $services = $request->appointments[0]['services'] ?? [];
-            $appointmentTimes = $request->appointments[0]['time'] ?? [];
-            $dentistId = $request->appointments[0]['dentist'] ?? null;
-
-            foreach ($services as $serviceId) {
-                $appointmentTime = $appointmentTimes[$serviceId] ?? null;
-
-                if ($appointmentTime) {
-                    $service = Service::findOrFail($serviceId);
-                    $duration = $service->duration;
-                    $newStart = Carbon::parse($appointmentTime);
-                    $newEnd = $newStart->copy()->addMinutes($duration);
-
-                    // --- Business Hours Check Start ---
-                    if (!$this->isWithinClinicHours($id, $newStart, $newEnd)) {
-                        return redirect()->back()->withErrors([
-                            'msg' => 'The appointment time is outside the clinic\'s business hours.'
-                        ]);
-                    }
-                    // --- Business Hours Check End ---
-
-                    $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')
-                        ->where('appointments.listing_id', $id)
-                        ->where('appointments.dentist_id', $dentistId)
-                        ->where(function ($query) use ($newStart, $newEnd) {
-                            $query->where(function ($q) use ($newStart, $newEnd) {
-                                $q->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) < ?', [$newEnd->toDateTimeString()])
-                                    ->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) + INTERVAL services.duration MINUTE > ?', [$newStart->toDateTimeString()]);
-                            });
-                        })
-                        ->exists();
-
-                    if ($overlapping) {
-                        return redirect()->back()->withErrors([
-                            'msg' => 'There is already a scheduled appointment for the chosen Date and Time, please choose another.'
-                        ]);
-                    }
-
-                    $appointment = new Appointments();
-                    $appointment->user_id = Auth::user()->id;
-                    $appointment->service_id = $service->id;
-                    $appointment->listing_id = Listing::find($id)->id;
-                    $appointment->appointment_time = $appointmentTime;
-                    $appointment->dentist_id = $dentistId;
-                    $appointment->status = 'Pending';
-
-                    if ($request->whofor == 1) {
-                        $appointment->temporary = json_encode([
-                            'fname' => $request->fname,
-                            'mname' => $request->mname ?? '',
-                            'lname' => $request->lname,
-                            'email' => $request->email,
-                            'phone' => $request->contact,
-                            'birth' => $request->birthdate,
-                        ]);
-                    }
-
-                    $appointment->save();
-
-                    // Send email to patient, dentist, and superadmin
-                    $this->sendAppointmentEmail($appointment);
-                }
-            }
-        } else {
-            foreach ($request->appointments as $appointmentData) {
-                $services = $appointmentData['services'] ?? [];
-                $appointmentTimes = $appointmentData['time'] ?? [];
-                $dentistId = $appointmentData['dentist'] ?? null;
+        try {
+            if ($request->whofor != 2) {
+                $services = $request->appointments[0]['services'] ?? [];
+                $appointmentTimes = $request->appointments[0]['time'] ?? [];
+                $dentistId = $request->appointments[0]['dentist'] ?? null;
 
                 foreach ($services as $serviceId) {
                     $appointmentTime = $appointmentTimes[$serviceId] ?? null;
@@ -719,14 +725,15 @@ class AdminController extends Controller
                         $newStart = Carbon::parse($appointmentTime);
                         $newEnd = $newStart->copy()->addMinutes($duration);
 
-                        // --- Business Hours Check Start ---
+                        // Check business hours
                         if (!$this->isWithinClinicHours($id, $newStart, $newEnd)) {
-                            return redirect()->back()->withErrors([
-                                'msg' => 'The appointment time is outside the clinics business hours.'
-                            ]);
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'The appointment time is outside the clinic\'s business hours.'
+                            ], 400);
                         }
-                        // --- Business Hours Check End ---
 
+                        // Check for overlapping appointments
                         $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')
                             ->where('appointments.listing_id', $id)
                             ->where('appointments.dentist_id', $dentistId)
@@ -739,44 +746,116 @@ class AdminController extends Controller
                             ->exists();
 
                         if ($overlapping) {
-                            return redirect()->back()->withErrors([
-                                'msg' => 'The selected time overlaps with an existing appointment.'
-                            ]);
+                            return response()->json([
+                                'status' => 'error',
+                                'message' => 'There is already a scheduled appointment for the chosen Date and Time, please choose another.'
+                            ], 400);
                         }
 
+                        // Create appointment
                         $appointment = new Appointments();
-                        $existing = User::where('fname', $appointmentData['fname'])
-                            ->where('lname', $appointmentData['lname'])
-                            ->first();
-
                         $appointment->user_id = Auth::user()->id;
                         $appointment->service_id = $service->id;
                         $appointment->listing_id = Listing::find($id)->id;
                         $appointment->appointment_time = $appointmentTime;
                         $appointment->dentist_id = $dentistId;
                         $appointment->status = 'Pending';
+                        $appointment->save();
 
-                        if (!$existing) {
-                            $appointment->temporary = json_encode([
-                                'fname' => $appointmentData['fname'],
-                                'mname' => $appointmentData['mname'] ?? '',
-                                'lname' => $appointmentData['lname'],
-                                'email' => $appointmentData['email'],
-                                'phone' => $appointmentData['contact'],
-                                'birth' => $appointmentData['birthdate'],
+                        // Handle guest details
+                        if ($request->whofor == 1) {
+                            $guestData = $request->appointments[0];
+                            $appointment->guest()->create([
+                                'name' => $guestData['fname'],
+                                'middlename' => $guestData['mname'] ?? '',
+                                'lastname' => $guestData['lname'],
+                                'email' => $guestData['email'],
+                                'contact' => $guestData['contact'],
+                                'sex' => $guestData['sex'],
                             ]);
                         }
 
-                        $appointment->save();
-
-                        // Send email to patient, dentist, and superadmin
                         $this->sendAppointmentEmail($appointment);
                     }
                 }
-            }
-        }
+            } else {
+                // Handle multiple appointments (for multiple people)
+                foreach ($request->appointments as $appointmentData) {
+                    $services = $appointmentData['services'] ?? [];
+                    $appointmentTimes = $appointmentData['time'] ?? [];
+                    $dentistId = $appointmentData['dentist'] ?? null;
 
-        return redirect('user-profile');
+                    foreach ($services as $serviceId) {
+                        $appointmentTime = $appointmentTimes[$serviceId] ?? null;
+
+                        if ($appointmentTime) {
+                            $service = Service::findOrFail($serviceId);
+                            $duration = $service->duration;
+                            $newStart = Carbon::parse($appointmentTime);
+                            $newEnd = $newStart->copy()->addMinutes($duration);
+
+                            // --- Business Hours Check Start ---
+                            if (!$this->isWithinClinicHours($id, $newStart, $newEnd)) {
+                                return redirect()->back()->withErrors([
+                                    'msg' => 'The appointment time is outside the clinics business hours.'
+                                ]);
+                            }
+                            // --- Business Hours Check End ---
+
+                            $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')
+                                ->where('appointments.listing_id', $id)
+                                ->where('appointments.dentist_id', $dentistId)
+                                ->where(function ($query) use ($newStart, $newEnd) {
+                                    $query->where(function ($q) use ($newStart, $newEnd) {
+                                        $q->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) < ?', [$newEnd->toDateTimeString()])
+                                            ->whereRaw('COALESCE(appointments.rescheduled_time, appointments.appointment_time) + INTERVAL services.duration MINUTE > ?', [$newStart->toDateTimeString()]);
+                                    });
+                                })
+                                ->exists();
+
+                            if ($overlapping) {
+                                return redirect()->back()->withErrors([
+                                    'msg' => 'The selected time overlaps with an existing appointment.'
+                                ]);
+                            }
+
+                            $appointment = new Appointments();
+                            $appointment->user_id = Auth::user()->id;
+                            $appointment->service_id = $service->id;
+                            $appointment->listing_id = Listing::find($id)->id;
+                            $appointment->appointment_time = $appointmentTime;
+                            $appointment->dentist_id = $dentistId;
+                            $appointment->status = 'Pending';
+                            $appointment->save();
+
+                            // Save guest details for each appointment
+                            $appointment->guest()->create([
+                                'name' => $appointmentData['fname'],
+                                'middlename' => $appointmentData['mname'] ?? '',
+                                'lastname' => $appointmentData['lname'],
+                                'email' => $appointmentData['email'],
+                                'contact' => $appointmentData['contact'],
+                                'sex' => $appointmentData['sex'],
+                            ]);
+
+                            // Send email to patient, dentist, and superadmin
+                            $this->sendAppointmentEmail($appointment);
+                        }
+                    }
+                }
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Appointment booked successfully!',
+                'redirect' => route('user')
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'An error occurred while booking the appointment.'
+            ], 500);
+        }
     }
 
 
@@ -856,8 +935,6 @@ class AdminController extends Controller
             return redirect('/user-record/' . $id);
         }
     }
-
-
 
     public function record_user($id)
     {
