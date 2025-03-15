@@ -24,7 +24,7 @@
             --light-gray: #f8f9fa;
             --border-color: #e0e0e0;
         }
-        
+
         body {
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
@@ -33,14 +33,14 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .text-default,
         .text-default:hover,
         .text-default:focus,
         .text-default:active {
             color: var(--primary-color);
         }
-        
+
         .btn-default,
         .btn-default:hover,
         .btn-default:focus,
@@ -53,17 +53,17 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .btn-default:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
         }
-        
+
         .bg-default {
             background-color: var(--primary-color);
         }
-        
+
         /* Navbar styling */
         .navbar {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -71,7 +71,7 @@
             background-color: white !important;
             z-index: 1030;
         }
-        
+
         .navbar-brand {
             font-size: 24px;
             font-weight: 700;
@@ -80,29 +80,29 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         nav .dropdown-toggle::after {
             content: none;
         }
-        
+
         .dropdown-menu {
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
             padding: 10px;
         }
-        
+
         .dropdown-item {
             border-radius: 6px;
             padding: 8px 15px;
             transition: all 0.2s;
         }
-        
+
         .dropdown-item:hover {
             background-color: var(--primary-light);
             color: var(--primary-color);
         }
-        
+
         /* Sidebar styling */
         .sidebar {
             background: linear-gradient(to bottom, var(--primary-color), var(--primary-dark));
@@ -112,24 +112,24 @@
             transition: all 0.3s ease;
             z-index: 1020;
         }
-        
+
         .sidebar::-webkit-scrollbar {
             width: 6px;
         }
-        
+
         .sidebar::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
         }
-        
+
         .sidebar::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
         }
-        
+
         .sidebar::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
         }
-        
+
         .nav-link {
             color: rgba(255, 255, 255, 0.8);
             padding: 12px 20px;
@@ -140,23 +140,23 @@
             align-items: center;
             gap: 12px;
         }
-        
+
         .nav-link:hover {
             color: white;
             background-color: rgba(255, 255, 255, 0.1);
             transform: translateX(5px);
         }
-        
+
         .nav-link.active {
             color: white;
             background-color: rgba(255, 255, 255, 0.2);
             font-weight: 600;
         }
-        
+
         .nav-link i {
             font-size: 18px;
         }
-        
+
         /* Content area */
         .content-wrapper {
             flex: 1;
@@ -165,24 +165,24 @@
             background-color: #f5f7fa;
             height: calc(100vh - 76px);
         }
-        
+
         .content-wrapper::-webkit-scrollbar {
             width: 8px;
         }
-        
+
         .content-wrapper::-webkit-scrollbar-track {
             background: #f1f1f1;
         }
-        
+
         .content-wrapper::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 4px;
         }
-        
+
         .content-wrapper::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
-        
+
         /* Dashboard cards */
         .dashboard-card {
             background-color: white;
@@ -194,13 +194,13 @@
             cursor: pointer;
             border: 1px solid var(--border-color);
         }
-        
+
         .dashboard-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             border-color: var(--primary-light);
         }
-        
+
         .dashboard-card .icon-container {
             width: 80px;
             height: 80px;
@@ -209,19 +209,19 @@
             justify-content: center;
             margin-bottom: 15px;
         }
-        
+
         .dashboard-card .card-title {
             font-weight: 600;
             color: var(--primary-color);
             margin-bottom: 5px;
         }
-        
+
         .dashboard-card .card-count {
             font-size: 2rem;
             font-weight: 700;
             color: var(--primary-color);
         }
-        
+
         /* Tables */
         .table-container {
             background-color: white;
@@ -230,25 +230,25 @@
             padding: 20px;
             margin-bottom: 30px;
         }
-        
+
         .table-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-        
+
         .table-title {
             font-weight: 600;
             color: var(--primary-color);
             margin: 0;
         }
-        
+
         .table {
             border-collapse: separate;
             border-spacing: 0;
         }
-        
+
         .table thead th {
             background-color: var(--primary-light);
             color: var(--primary-color);
@@ -256,29 +256,29 @@
             border: none;
             padding: 12px 15px;
         }
-        
+
         .table thead th:first-child {
             border-top-left-radius: 8px;
         }
-        
+
         .table thead th:last-child {
             border-top-right-radius: 8px;
         }
-        
+
         .table tbody tr {
             transition: all 0.2s;
         }
-        
+
         .table tbody tr:hover {
             background-color: rgba(52, 93, 149, 0.05);
         }
-        
+
         .table tbody td {
             padding: 12px 15px;
             vertical-align: middle;
             border-top: 1px solid var(--border-color);
         }
-        
+
         /* Status badges */
         .status-badge {
             padding: 5px 10px;
@@ -288,39 +288,39 @@
             text-transform: uppercase;
             display: inline-block;
         }
-        
+
         .status-pending {
             background-color: rgba(255, 193, 7, 0.2);
             color: #ff9800;
         }
-        
+
         .status-done {
             background-color: rgba(76, 175, 80, 0.2);
             color: #4caf50;
         }
-        
+
         .status-cancelled {
             background-color: rgba(244, 67, 54, 0.2);
             color: #f44336;
         }
-        
+
         .status-upcoming {
             background-color: rgba(33, 150, 243, 0.2);
             color: #2196f3;
         }
-        
+
         .status-rescheduled {
             background-color: rgba(156, 39, 176, 0.2);
             color: #9c27b0;
         }
-        
+
         /* Action buttons */
         .action-buttons {
             display: flex;
             gap: 5px;
             justify-content: center;
         }
-        
+
         .btn-action {
             width: 32px;
             height: 32px;
@@ -331,84 +331,86 @@
             transition: all 0.2s;
             padding: 0;
         }
-        
+
         .btn-view {
             background-color: var(--primary-light);
             color: var(--primary-color);
         }
-        
+
         .btn-view:hover {
             background-color: var(--primary-color);
             color: white;
         }
-        
+
         .btn-edit {
             background-color: rgba(33, 150, 243, 0.1);
             color: #2196f3;
         }
-        
+
         .btn-edit:hover {
             background-color: #2196f3;
             color: white;
         }
-        
+
         .btn-delete {
             background-color: rgba(244, 67, 54, 0.1);
             color: #f44336;
         }
-        
+
         .btn-delete:hover {
             background-color: #f44336;
             color: white;
         }
-        
+
         /* Modals */
         .modal-content {
             border-radius: 12px;
             border: none;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
-        
+
         .modal-header {
             border-bottom: 1px solid var(--border-color);
             padding: 15px 20px;
             background-color: var(--primary-light);
         }
-        
+
         .modal-title {
             color: var(--primary-color);
             font-weight: 600;
         }
-        
+
         .modal-body {
             padding: 20px;
         }
-        
+
         .modal-footer {
             border-top: 1px solid var(--border-color);
             padding: 15px 20px;
         }
-        
+
         /* Form controls */
         .form-label {
             font-weight: 500;
             color: var(--text-color);
             margin-bottom: 8px;
         }
-        
-        .form-control, .form-select {
+
+        .form-control,
+        .form-select {
             padding: 10px 15px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             transition: all 0.3s;
             font-size: 14px;
         }
-        
-        .form-control:focus, .form-select:focus {
+
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(52, 93, 149, 0.2);
         }
-        
+
         /* Alerts */
         .custom-alert {
             border-radius: 10px;
@@ -422,34 +424,63 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
         /* Print styles */
         @media print {
             .no-print {
                 display: none !important;
             }
-            
+
             body {
                 background-color: white;
             }
-            
+
             .content-wrapper {
                 padding: 0;
                 overflow: visible;
                 height: auto;
             }
-            
+
             .table-container {
                 box-shadow: none;
                 padding: 0;
             }
-            
+
             .table thead th {
                 background-color: #f1f1f1;
                 color: black;
             }
         }
-    
+
+        .card {
+            border: none;
+            border-radius: 8px;
+            background-color: #ffffff;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        .card-header {
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            padding: 1rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .lead {
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        canvas {
+            max-height: 400px;
+        }
     </style>
 </head>
 
@@ -576,7 +607,7 @@
                 Transactions
             </button>
 
-            <button class="nav-link" id="nav-transactions" data-bs-toggle="pill" data-bs-target="#tab-statistics" type="button" role="tab" aria-controls="tab-statistics" aria-selected="false">
+            <button class="nav-link" id="nav-statistics" data-bs-toggle="pill" data-bs-target="#tab-statistics" type="button" role="tab" aria-controls="tab-statistics" aria-selected="false">
                 <i class="bi bi-cash-stack"></i>
                 Statistics
             </button>
@@ -593,7 +624,7 @@
             <div class="tab-pane fade show active" id="tab-dashboard" role="tabpanel" aria-labelledby="tab-dashboard" tabindex="0">
                 <h1 class="mb-4">Welcome Admin!</h1>
                 <hr class="mb-4">
-                
+
                 <div class="row g-4">
                     <div class="col-md-4">
                         <div class="dashboard-card" onclick="document.getElementById('nav-dentist').click()">
@@ -685,11 +716,11 @@
             <div class="tab-pane fade" id="tab-appointments" role="tabpanel" aria-labelledby="tab-appointments" tabindex="0">
                 <div id="printTable">
                     <h1 class="mb-4">Appointments</h1>
-                    
+
                     <div class="table-container">
                         <div class="table-header">
                             <h5 class="table-title">Appointment History</h5>
-                            
+
                             <div class="d-flex gap-2">
                                 <!-- Status Filter Dropdown -->
                                 <select class="form-select no-print" id="statusFilter" style="width: 200px;">
@@ -710,7 +741,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <button class="btn btn-success mb-3 no-print" onclick="printTable()">
                             <i class="bi bi-printer me-2"></i>Print Table
                         </button>
@@ -789,7 +820,7 @@
             <div class="tab-pane fade" id="tab-services" role="tabpanel" aria-labelledby="tab-services" tabindex="0">
                 <div id="printServices">
                     <h1 class="mb-4">Services</h1>
-                    
+
                     <div class="table-container">
                         <div class="table-header">
                             <h5 class="table-title">List of Services</h5>
@@ -797,7 +828,7 @@
                                 <i class="bi bi-plus-lg me-2"></i>Add Service
                             </button>
                         </div>
-                        
+
                         <button class="btn btn-success mb-3 no-print" onclick="printTableServices()">
                             <i class="bi bi-printer me-2"></i>Print Table
                         </button>
@@ -841,12 +872,12 @@
             <div class="tab-pane fade" id="tab-patients" role="tabpanel" aria-labelledby="tab-patients" tabindex="0">
                 <div id="printPatients">
                     <h1 class="mb-4">Patients</h1>
-                    
+
                     <div class="table-container">
                         <div class="table-header">
                             <h5 class="table-title">List of Patients</h5>
                         </div>
-                        
+
                         <button class="btn btn-success mb-3 no-print" onclick="printTablePatients()">
                             <i class="bi bi-printer me-2"></i>Print Table
                         </button>
@@ -904,7 +935,7 @@
                         <button class="btn btn-success mb-3 no-print" onclick="printTableDentists()">
                             <i class="bi bi-printer me-2"></i>Print Table
                         </button>
-                        
+
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -961,7 +992,7 @@
                         <button class="btn btn-success mb-3 no-print" onclick="printTableSecretaries()">
                             <i class="bi bi-printer me-2"></i>Print Table
                         </button>
-                        
+
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -1016,7 +1047,7 @@
                         <button class="btn btn-success mb-3 no-print" onclick="printTableClinics()">
                             <i class="bi bi-printer me-2"></i>Print Table
                         </button>
-                        
+
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -1064,11 +1095,11 @@
                         <div class="table-header">
                             <h5 class="table-title">Appointment History</h5>
                         </div>
-                        
+
                         <button class="btn btn-success mb-3 no-print" onclick="printTableTransactions()">
                             <i class="bi bi-printer me-2"></i>Print Table
                         </button>
-                        
+
                         @if($appointments->isEmpty())
                         <div class="alert alert-info" role="alert">
                             No past appointments found.
@@ -1135,6 +1166,77 @@
                     </div>
                 </div>
             </div>
+
+
+            <!-- Statistics Tab -->
+            <div class="tab-pane fade" id="tab-statistics" role="tabpanel" aria-labelledby="nav-statistics">
+                <div class="container-fluid py-4">
+                    <h2 class="text-center mb-4" style="color: var(--primary-color);">Statistics Dashboard</h2>
+
+                    <div class="row g-4">
+
+                        <!-- Most Profitable Procedure -->
+                        <div class="col-md-6 col-lg-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                    <h5 class="card-title mb-0">Most Profitable Procedure</h5>
+                                </div>
+                                <div class="card-body d-flex align-items-center justify-content-center">
+                                    <p class="lead mb-0" style="color: var(--primary-color);" id="mostProfitableProcedure"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Most Profitable Procedure This Month -->
+                        <div class="col-md-6 col-lg-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                    <h5 class="card-title mb-0">Most Profitable Procedure (This Month)</h5>
+                                </div>
+                                <div class="card-body d-flex align-items-center justify-content-center">
+                                    <p class="lead mb-0" style="color: var(--primary-color);" id="mostProfitableMonth"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Revenue per Procedure (Bar Chart) -->
+                        <div class="col-md-6 col-lg-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                    <h5 class="card-title mb-0">Revenue per Procedure</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="revenueChart" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Most Booked Services (Pie Chart) -->
+                        <div class="col-md-6 col-lg-6">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                    <h5 class="card-title mb-0">Most Booked Services</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="servicesPieChart" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Service Comparison (Bar Chart) -->
+                        <div class="col-12">
+                            <div class="card shadow-sm">
+                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                    <h5 class="card-title mb-0">Service Comparison (Revenue vs Bookings)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="serviceComparisonChart" height="400"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1150,7 +1252,7 @@
 
                 <form class="modal-body" action="{{ route('create.service') }}" method="post" id="create-service" enctype="multipart/form-data">
                     @csrf
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Service Image</label>
                         <div class="d-flex align-items-center gap-3">
@@ -1216,7 +1318,7 @@
 
                 <form class="modal-body" method="post" id="edit-service-form" enctype="multipart/form-data">
                     @csrf
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Service Image</label>
                         <div class="d-flex align-items-center gap-3">
@@ -1336,7 +1438,7 @@
                         <div class="col-md-6">
                             <label class="form-label" for="sexd">Gender</label>
                             <select class="form-select" name="sexd" required>
-                                <option value="" selected disabled>-- Select Gender  required>
+                                <option value="" selected disabled>-- Select Gender required>
                                 <option value="" selected disabled>-- Select Gender --</option>
                                 <option value="0">Male</option>
                                 <option value="1">Female</option>
@@ -1360,7 +1462,7 @@
                         <label class="form-label" for="street_named">Street Name</label>
                         <input class="form-control" type="text" id="streetName" name="street_named" placeholder="Enter street name">
                     </div>
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-6">
                             <label class="form-label" for="provinced">Province</label>
@@ -1376,7 +1478,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label" for="postal_coded">Postal Code</label>
                         <input class="form-control" type="text" id="postalCode" name="postal_coded" placeholder="Enter postal code">
@@ -1411,7 +1513,7 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id" id="dentist-id">
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label" for="fnamee">First Name</label>
@@ -1608,7 +1710,7 @@
                             </select>
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label" for="postal_codes">Postal Code</label>
                         <input class="form-control" type="text" id="postalCode" name="postal_codes" placeholder="Enter postal code">
@@ -1643,7 +1745,7 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id" id="secretary-id">
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label" for="fnamesec">First Name</label>
@@ -1776,7 +1878,7 @@
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id" id="patient-id">
-                    
+
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label class="form-label" for="fnamep">First Name</label>
@@ -2229,48 +2331,48 @@
     @php
     $serviceFee = $appointment->fees->whereNotNull('service_name')->first();
     $additionalFees = $appointment->fees->whereNull('service_name');
-    
+
     if ($serviceFee) {
-        // Service price and discount calculation
-        $servicePrice = $serviceFee->service_amount ?? 0;
-        $serviceDiscount = $serviceFee->service_discount ?? 0;
-        $serviceDiscountAmount = ($serviceDiscount / 100) * $servicePrice;
-        $discountedServicePrice = $servicePrice - $serviceDiscountAmount;
+    // Service price and discount calculation
+    $servicePrice = $serviceFee->service_amount ?? 0;
+    $serviceDiscount = $serviceFee->service_discount ?? 0;
+    $serviceDiscountAmount = ($serviceDiscount / 100) * $servicePrice;
+    $discountedServicePrice = $servicePrice - $serviceDiscountAmount;
 
-        // Additional fees calculation
-        $totalAdditionalFees = 0;
-        $totalDiscountedFees = 0;
-        $totalFeeDiscounts = 0;
-        $feesWithDiscounts = [];
+    // Additional fees calculation
+    $totalAdditionalFees = 0;
+    $totalDiscountedFees = 0;
+    $totalFeeDiscounts = 0;
+    $feesWithDiscounts = [];
 
-        if ($additionalFees->isNotEmpty()) {
-            foreach ($additionalFees as $fee) {
-                $feeAmount = $fee->fee_amount ?? 0;
-                $feeDiscount = $fee->discount_percentage ?? 0;
-                $feeDiscountAmount = ($feeDiscount / 100) * $feeAmount;
-                $discountedFeeAmount = $feeAmount - $feeDiscountAmount;
+    if ($additionalFees->isNotEmpty()) {
+    foreach ($additionalFees as $fee) {
+    $feeAmount = $fee->fee_amount ?? 0;
+    $feeDiscount = $fee->discount_percentage ?? 0;
+    $feeDiscountAmount = ($feeDiscount / 100) * $feeAmount;
+    $discountedFeeAmount = $feeAmount - $feeDiscountAmount;
 
-                $totalAdditionalFees += $feeAmount;
-                $totalDiscountedFees += $discountedFeeAmount;
-                $totalFeeDiscounts += $feeDiscountAmount;
+    $totalAdditionalFees += $feeAmount;
+    $totalDiscountedFees += $discountedFeeAmount;
+    $totalFeeDiscounts += $feeDiscountAmount;
 
-                // Store fee details for display
-                $feesWithDiscounts[] = [
-                    'name' => $fee->fee_type ?? 'N/A',
-                    'original_price' => $feeAmount,
-                    'discount' => $feeDiscount,
-                    'discount_amount' => $feeDiscountAmount,
-                    'discounted_price' => $discountedFeeAmount,
-                ];
-            }
-        }
+    // Store fee details for display
+    $feesWithDiscounts[] = [
+    'name' => $fee->fee_type ?? 'N/A',
+    'original_price' => $feeAmount,
+    'discount' => $feeDiscount,
+    'discount_amount' => $feeDiscountAmount,
+    'discounted_price' => $discountedFeeAmount,
+    ];
+    }
+    }
 
-        // Grand total before discount
-        $grandTotal = $servicePrice + $totalAdditionalFees;
-        // Total discount given
-        $totalDiscountGiven = $serviceDiscountAmount + $totalFeeDiscounts;
-        // Total after applying all discounts
-        $totalAfterDiscount = $grandTotal - $totalDiscountGiven;
+    // Grand total before discount
+    $grandTotal = $servicePrice + $totalAdditionalFees;
+    // Total discount given
+    $totalDiscountGiven = $serviceDiscountAmount + $totalFeeDiscounts;
+    // Total after applying all discounts
+    $totalAfterDiscount = $grandTotal - $totalDiscountGiven;
     @endphp
 
     <div class="modal fade" id="appointmentModal-{{ $appointment->id }}" tabindex="-1" aria-labelledby="appointmentModalLabel-{{ $appointment->id }}" aria-hidden="true">
@@ -2421,6 +2523,7 @@
                     </div>
                 </div>
 
+
                 <!-- Modal Footer -->
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -2435,8 +2538,7 @@
     @endphp
     @endforeach
 
-
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             // Auto-hide alerts after 5 seconds
@@ -2454,7 +2556,7 @@
                     errorAlert.classList.remove("show");
                     errorAlert.classList.add("fade");
                 }
-                
+
                 if (errorMessage) {
                     errorMessage.classList.remove("show");
                     errorMessage.classList.add("fade");
@@ -2517,7 +2619,7 @@
         function sortAppointmentsByNearestTime() {
             const table = document.getElementById("appointmentTable");
             if (!table) return;
-            
+
             const tbody = table.querySelector("tbody");
             const rows = Array.from(tbody.querySelectorAll("tr"));
 
@@ -2767,7 +2869,7 @@
                     console.log('Checking dentist ID:', assign.id);
                     $(`#vdent${assign.id}`).prop('checked', true);
                 });
-                
+
                 data.schedules.forEach(schedule => {
                     const day = schedule.day.toLowerCase();
 
@@ -3268,6 +3370,181 @@
                 provinceInput.value = selectedProvince; // Save NAME, not CODE
 
                 this.appendChild(provinceInput);
+            });
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('nav-statistics').addEventListener('click', function() {
+                console.log("Statistics button clicked!");
+
+                fetch("{{ route('statistics.data') }}")
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Data fetched:", data);
+
+                        // Most Profitable Procedure
+                        const mostProfitableProcedureEl = document.getElementById('mostProfitableProcedure');
+                        if (mostProfitableProcedureEl && data.mostProfitableProcedure) {
+                            mostProfitableProcedureEl.innerText = `${data.mostProfitableProcedure.name}: ₱${data.mostProfitableProcedure.total_revenue}`;
+                        }
+
+                        // Most Profitable This Month
+                        const mostProfitableMonthEl = document.getElementById('mostProfitableMonth');
+                        if (mostProfitableMonthEl && data.mostProfitableThisMonth) {
+                            mostProfitableMonthEl.innerText = `${data.mostProfitableThisMonth.name}: ₱${data.mostProfitableThisMonth.total_revenue}`;
+                        }
+
+                        // Revenue per Procedure (Bar Chart)
+                        const revenueChartEl = document.getElementById('revenueChart');
+                        if (revenueChartEl && data.revenuePerProcedure.length > 0) {
+                            new Chart(revenueChartEl.getContext('2d'), {
+                                type: 'bar',
+                                data: {
+                                    labels: data.revenuePerProcedure.map(proc => proc.name),
+                                    datasets: [{
+                                        label: 'Revenue (₱)',
+                                        data: data.revenuePerProcedure.map(proc => parseFloat(proc.total_revenue)),
+                                        backgroundColor: 'rgba(var(--primary-color-rgb), 0.2)',
+                                        borderColor: 'var(--primary-color)',
+                                        borderWidth: 1
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            ticks: {
+                                                color: 'var(--primary-color)'
+                                            } // Change tick color
+                                        },
+                                        x: {
+                                            ticks: {
+                                                color: 'var(--primary-color)'
+                                            } // Change tick color
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            labels: {
+                                                color: 'var(--primary-color)'
+                                            } // Change legend color
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
+                        // Most Booked Services (Pie Chart)
+                        const servicesPieChartEl = document.getElementById('servicesPieChart');
+                        if (servicesPieChartEl && data.mostBookedServices.length > 0) {
+                            new Chart(servicesPieChartEl.getContext('2d'), {
+                                type: 'pie',
+                                data: {
+                                    labels: data.mostBookedServices.map(service => service.name),
+                                    datasets: [{
+                                        data: data.mostBookedServices.map(service => service.total_bookings),
+                                        backgroundColor: [
+                                            'var(--primary-color)',
+                                            'rgba(var(--primary-color-rgb), 0.8)',
+                                            'rgba(var(--primary-color-rgb), 0.6)',
+                                            'rgba(var(--primary-color-rgb), 0.4)',
+                                            'rgba(var(--primary-color-rgb), 0.2)'
+                                        ]
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    plugins: {
+                                        legend: {
+                                            labels: {
+                                                color: 'var(--primary-color)'
+                                            } // Change legend color
+                                        }
+                                    }
+                                }
+                            });
+                        }
+
+                        // Service Comparison (Bar Chart)
+                        const serviceComparisonChartEl = document.getElementById('serviceComparisonChart');
+                        if (serviceComparisonChartEl) {
+                            const services = [...new Set([
+                                ...data.revenuePerProcedure.map(proc => proc.name),
+                                ...data.mostBookedServices.map(service => service.name)
+                            ])];
+
+                            const revenueData = services.map(service => {
+                                const proc = data.revenuePerProcedure.find(p => p.name === service);
+                                return proc ? parseFloat(proc.total_revenue) : 0;
+                            });
+
+                            const bookingsData = services.map(service => {
+                                const booked = data.mostBookedServices.find(s => s.name === service);
+                                return booked ? booked.total_bookings : 0;
+                            });
+
+                            new Chart(serviceComparisonChartEl.getContext('2d'), {
+                                type: 'bar',
+                                data: {
+                                    labels: services,
+                                    datasets: [{
+                                            label: 'Revenue (₱)',
+                                            data: revenueData,
+                                            backgroundColor: 'rgba(var(--primary-color-rgb), 0.2)',
+                                            borderColor: 'var(--primary-color)',
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Bookings',
+                                            data: bookingsData,
+                                            backgroundColor: 'rgba(var(--primary-color-rgb), 0.5)',
+                                            borderColor: 'var(--primary-color)',
+                                            borderWidth: 1
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true,
+                                    scales: {
+                                        y: {
+                                            beginAtZero: true,
+                                            title: {
+                                                display: true,
+                                                text: 'Value',
+                                                color: 'var(--primary-color)'
+                                            },
+                                            ticks: {
+                                                color: 'var(--primary-color)'
+                                            } // Change tick color
+                                        },
+                                        x: {
+                                            title: {
+                                                display: true,
+                                                text: 'Services',
+                                                color: 'var(--primary-color)'
+                                            },
+                                            ticks: {
+                                                color: 'var(--primary-color)'
+                                            } // Change tick color
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: {
+                                            position: 'top',
+                                            labels: {
+                                                color: 'var(--primary-color)'
+                                            } // Change legend color
+                                        },
+                                        title: {
+                                            display: false
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    })
+                    .catch(error => console.error("Error loading statistics:", error));
             });
         });
     </script>
