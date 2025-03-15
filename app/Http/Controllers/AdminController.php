@@ -220,6 +220,7 @@ class AdminController extends Controller
         $user->province = $validData['provinced'];
         $user->postal_code = $validData['postal_coded'];
         $user->password = bcrypt($validData['passwordd']);
+        $user->verified = 1;
         $user->status = 2;
 
         $user->save();
@@ -261,7 +262,7 @@ class AdminController extends Controller
         $user->city = $validData['citys'];
         $user->province = $validData['provinces'];
         $user->postal_code = $validData['postal_codes'];
-
+        $user->verified = 1;
         $user->password = bcrypt($validData['passwords']);
         $user->status = 1;
 
