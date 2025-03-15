@@ -30,7 +30,7 @@
                     </tr>
                     <tr>
                         <td style="background-color: #345D95; color: white; text-align: center; padding: 10px;">
-                            <p style="margin: 0;">&copy; 2025 Your Company. All rights reserved.</p>
+                            <p style="margin: 0;">&copy; 2025 DentalCare WMSU. All rights reserved.</p>
                         </td>
                     </tr>
                 </table>

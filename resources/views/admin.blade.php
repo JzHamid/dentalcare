@@ -246,16 +246,6 @@
                         </div>
                     </div>
 
-                    <div class="col bg-white rounded shadow p-4">
-                        <div class="d-flex justify-content-between">
-                            <div class="d-flex flex-column">
-                                <img src="{{ asset('images/images.png') }}" class="mb-2" style="height: 100px; width: 100px;">
-                                <p class="lead text-center m-0 fw-bold text-default">Services</p>
-                            </div>
-
-                            <p class="display-5 fw-bold text-default">{{ $services->count() }}</p>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -569,10 +559,18 @@
 
                 <div class="d-flex justify-content-between align-items-center mb-2 gap-2">
                     <h5 class="m-0">List of Staffs</h5>
+                    @switch(auth()->user()->status)
+                    @case(1) {{-- Status 1 = Secretary --}}
+                    {{-- Do nothing (button is hidden) --}}
+                    @break
+
+                    @default {{-- Status is NOT Secretary, show the button --}}
                     <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#add-collab">
                         <i class="bi-plus-lg"></i>
                         Add
                     </button>
+                    @endswitch
+
                 </div>
 
                 <table class="table table-bordered">

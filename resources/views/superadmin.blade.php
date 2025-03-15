@@ -449,23 +449,7 @@
                 color: black;
             }
         }
-        
-        /* Responsive adjustments */
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 250px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            .dashboard-card {
-                margin-bottom: 20px;
-            }
-            
-            .table-responsive {
-                overflow-x: auto;
-            }
-        }
+    
     </style>
 </head>
 
@@ -592,7 +576,12 @@
                 Transactions
             </button>
 
-            <a class="nav-link mt-auto" href="{{ route('logout') }}">C
+            <button class="nav-link" id="nav-transactions" data-bs-toggle="pill" data-bs-target="#tab-statistics" type="button" role="tab" aria-controls="tab-statistics" aria-selected="false">
+                <i class="bi bi-cash-stack"></i>
+                Statistics
+            </button>
+
+            <a class="nav-link mt-auto" href="{{ route('logout') }}">
                 <i class="bi bi-box-arrow-right"></i>
                 Logout
             </a>
@@ -611,7 +600,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="icon-container">
-                                        <img src="{{ asset('public/images/dentist_icon.png') }}" style="height: 80px; width: 80px;">
+                                        <img src="{{ asset('images/dentist_icon.png') }}" style="height: 80px; width: 80px;">
                                     </div>
                                     <h5 class="card-title">Dentists</h5>
                                 </div>
@@ -625,7 +614,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="icon-container">
-                                        <img src="{{ asset('public/images/dentist_icon.png') }}" style="height: 80px; width: 80px;">
+                                        <img src="{{ asset('images/dentist_icon.png') }}" style="height: 80px; width: 80px;">
                                     </div>
                                     <h5 class="card-title">Secretaries</h5>
                                 </div>
@@ -639,7 +628,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="icon-container">
-                                        <img src="{{ asset('public/images/patient_icon.png') }}" style="height: 80px; width: 80px;">
+                                        <img src="{{ asset('images/patient_icon.png') }}" style="height: 80px; width: 80px;">
                                     </div>
                                     <h5 class="card-title">Patients</h5>
                                 </div>
@@ -653,7 +642,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="icon-container">
-                                        <img src="{{ asset('public/images/event_icon.png') }}" style="height: 80px; width: 80px;">
+                                        <img src="{{ asset('images/event_icon.png') }}" style="height: 80px; width: 80px;">
                                     </div>
                                     <h5 class="card-title">Appointments</h5>
                                 </div>
@@ -667,7 +656,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="icon-container">
-                                        <img src="{{ asset('public/images/images.png') }}" style="height: 80px; width: 80px;">
+                                        <img src="{{ asset('images/images.png') }}" style="height: 80px; width: 80px;">
                                     </div>
                                     <h5 class="card-title">Services</h5>
                                 </div>
@@ -681,7 +670,7 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <div class="icon-container">
-                                        <img src="{{ asset('public/images/download.png') }}" style="height: 80px; width: 80px;">
+                                        <img src="{{ asset('images/download.png') }}" style="height: 80px; width: 80px;">
                                     </div>
                                     <h5 class="card-title">Clinics</h5>
                                 </div>
@@ -1231,7 +1220,7 @@
                     <div class="mb-3">
                         <label class="form-label">Service Image</label>
                         <div class="d-flex align-items-center gap-3">
-                            <img src="{{ isset($service) && $service->image_path ? asset('public/' . $service->image_path) : asset('images/default.png') }}" style="height: 100px; width: 100px; border-radius: 8px; border: 2px solid #ddd; padding: 5px;" id="eservice_thumbnail">
+                            <img src="{{ isset($service) && $service->image_path ? asset('/' . $service->image_path) : asset('images/default.png') }}" style="height: 100px; width: 100px; border-radius: 8px; border: 2px solid #ddd; padding: 5px;" id="eservice_thumbnail">
                             <div>
                                 <input class="visually-hidden" type="file" name="eservice_file" id="eservice_file" onchange="previewListing(this, 5)">
                                 <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('eservice_file').click()">
@@ -2764,7 +2753,7 @@
             }).then(data => {
                 $('#view-listing-form').attr('action', `/edit-listing/${data.listing.id}`);
 
-                $('#vlisting-thumbnail-img').attr('src', 'public/' + data.listing.image_path);
+                $('#vlisting-thumbnail-img').attr('src', '/' + data.listing.image_path);
                 $('#vlisting-name').val(data.listing.name);
                 $('#vlisting-email').val(data.listing.email);
                 $('#vlisting-contact').val(data.listing.contact);
