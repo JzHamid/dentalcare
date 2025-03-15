@@ -5,8 +5,13 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\OtpController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
+Auth::routes();
 
 Route::get('/users/{id}', function ($id) {
     return response()->json(User::findOrFail($id));
@@ -49,6 +54,12 @@ Route::post('/appointments/{id}/update-status', [AppointmentController::class, '
 Route::post('/otp-verify', [OtpController::class, 'verifyOtp'])->name('otp.verify.submit');
 Route::post('/send-otp', [OtpController::class, 'sendOtp'])->name('otp.send');
 Route::get('/otp-verify', [OtpController::class, 'showVerifyForm'])->name('otp.verify');
+
+// Forgot Password
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name('password.update');
 
 Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::get('/admin', [PageController::class, 'admin'])->name('admin');
