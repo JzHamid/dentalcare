@@ -56,6 +56,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         @endif
+
         <form class="d-flex flex-column position-absolute w-50 gap-2" style="top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 10; padding: 20px;" action="{{ route('create.account') }}" method="post">
             @csrf
 
@@ -272,6 +273,8 @@
                 }
             }, 5000); // Auto-hide after 5 seconds
         });
+
+
     </script>
 </body>
 

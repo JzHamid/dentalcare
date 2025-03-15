@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\Auth\OtpController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 
@@ -44,6 +45,10 @@ Route::get('/appointments/{id}/record', [AppointmentController::class, 'viewReco
 Route::post('/appointments/{id}/save-record', [AppointmentController::class, 'saveRecord'])->name('save.record');
 Route::post('/appointments/{id}/update-status', [AppointmentController::class, 'updateStatus'])->name('update.status');
 
+// OTP
+Route::post('/otp-verify', [OtpController::class, 'verifyOtp'])->name('otp.verify.submit');
+Route::post('/send-otp', [OtpController::class, 'sendOtp'])->name('otp.send');
+Route::get('/otp-verify', [OtpController::class, 'showVerifyForm'])->name('otp.verify');
 
 Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::get('/admin', [PageController::class, 'admin'])->name('admin');
@@ -83,7 +88,7 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::get('/admin/add-collab', [AdminController::class, 'showAddCollaboratorModal'])->name('admin.add-collab');
     Route::post('/admin/create-collab', [AdminController::class, 'create_collab'])->name('create.collab');
     Route::post('/save-collaboration', [AdminController::class, 'saveCollaboration'])->name('save.collaboration');
-    
+
     // Record
     Route::get('/record/{id}', [PageController::class, 'record'])->name('record.appointment');
     Route::post('/update-status/{id}', [AdminController::class, 'appointment_status'])->name('update.status');
@@ -91,10 +96,13 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
 });
 
 Route::get('/', [PageController::class, 'index'])->name('landing');
+
 Route::get('/login', function () {
     return view('login');
 })->name('login');
+
 Route::get('/logout', [AccountController::class, 'logout'])->name('logout');
+
 Route::get('/signup', function () {
     return view('signup');
 })->name('signup');

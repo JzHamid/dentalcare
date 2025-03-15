@@ -16,6 +16,21 @@ class User extends Authenticatable
         'password',
         'status',
         'clinic_id',
+
+        // OTP
+        'fname',
+        'mname',
+        'lname',
+        'birthdate',
+        'gender',
+        'phone',
+        'email',
+        'street_name',
+        'city',
+        'province',
+        'postal_code',
+        'password',
+        'verified'
     ];
 
     protected $hidden = [

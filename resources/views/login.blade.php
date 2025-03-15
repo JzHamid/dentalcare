@@ -47,17 +47,30 @@
         </div>
         @endif
 
+        @if (session('error'))
+        <div id="error-alert" class="alert alert-danger alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 text-center shadow-lg" role="alert" style="z-index: 1050;">
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        @endif
+
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 setTimeout(function() {
                     let successAlert = document.getElementById("success-alert");
+                    let errorAlert = document.getElementById("error-alert");
                     if (successAlert) {
                         successAlert.classList.remove("show");
                         successAlert.classList.add("fade");
                     }
+                    if (errorAlert) {
+                        errorAlert.classList.remove("show");
+                        errorAlert.classList.add("fade");
+                    }
                 }, 5000); // Auto-hide after 5 seconds
             });
         </script>
+
 
         @if (session('success'))
         <div id="success-alert" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 text-center shadow-lg" role="alert" style="z-index: 1050;">

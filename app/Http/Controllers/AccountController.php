@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\OtpMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Log;
 
 class AccountController extends Controller
 {
@@ -15,10 +19,20 @@ class AccountController extends Controller
             'password' => 'required',
         ]);
 
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()->withErrors(['invalid' => 'Invalid email or password.'])->with('error', 'Invalid email or password.');
+        }
+
+        // Check if user is verified
+        if ($user->verified != 1) {
+            return back()->withErrors(['not_verified' => 'Your account is not verified. Please verify your email before logging in.'])
+                ->with('error', 'Your account is not verified. Please verify your email before logging in.');
+        }
+
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-
-            $user = User::where('email', $request->email)->first();
             $user->is_online = true;
             $user->save();
 
@@ -26,15 +40,16 @@ class AccountController extends Controller
 
             if ($user->status > 0 && $user->status < 3) {
                 return redirect()->intended('/admin')->with('success', $successMessage);
-            } else if ($user->status == 3) {
+            } elseif ($user->status == 3) {
                 return redirect()->intended('/superadmin')->with('success', $successMessage);
             } else {
-                return redirect()->intended('/')->with('success', $successMessage); // Redirect regular users to /user
+                return redirect()->intended('/')->with('success', $successMessage);
             }
         }
 
-        return back()->withErrors(['invalid' => 'Invalid email or password.']);
+        return back()->withErrors(['invalid' => 'Invalid email or password.'])->with('error', 'Invalid email or password.');
     }
+
 
 
     public function logout()
@@ -57,14 +72,18 @@ class AccountController extends Controller
             'birth' => 'required|date|before:today',
             'sexuality' => 'required',
             'phone' => 'required|digits_between:10,15',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email',
             'street_name' => 'required|string|max:255',
             'city' => 'required|string|max:255',
             'province' => 'required|string|max:255',
             'postal_code' => 'required|string|max:10',
             'password' => 'required|string|min:8|confirmed',
         ]);
+
         try {
+            $otp = rand(100000, 999999); // Generate 6-digit OTP
+            $email = $request->email;
+
             $user = new User();
             $user->fname = $request->fname;
             $user->mname = $request->mname;
@@ -78,14 +97,22 @@ class AccountController extends Controller
             $user->province = $request->province;
             $user->postal_code = $request->postal_code;
             $user->password = bcrypt($request->password);
+            $user->otp_code = $otp; // Store OTP for verification
 
             $user->save();
 
-            return redirect()->route('login')->with('success', 'Account created successfully! Please log in.');
+            Session::put('email', $email);
+            Session::put('otp', $otp);
+
+            // Send OTP Email
+            Mail::to($user->email)->send(new OtpMail($otp));
+
+            return redirect()->route('otp.verify')->with('success', 'Account created! Check your email for OTP.');
         } catch (\Exception $e) {
-            return back()->withErrors(['email' => 'The email has already been taken.'])->withInput();
+            return back()->withErrors(['error' => 'Something went wrong: ' . $e->getMessage()])->withInput();
         }
     }
+
 
     public function update(Request $request)
     {
