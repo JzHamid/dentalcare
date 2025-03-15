@@ -452,30 +452,160 @@
             }
         }
 
+        :root {
+            --card-border-radius: 12px;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --card-hover-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            --transition-speed: 0.3s;
+        }
+
         .card {
             border: none;
-            border-radius: 8px;
+            border-radius: var(--card-border-radius);
             background-color: #ffffff;
-            transition: transform 0.2s;
+            box-shadow: var(--card-shadow);
+            transition: all var(--transition-speed) ease;
+            height: 100%;
+            overflow: hidden;
         }
 
         .card:hover {
-            transform: translateY(-3px);
+            transform: translateY(-5px);
+            box-shadow: var(--card-hover-shadow);
         }
 
         .card-header {
             border-bottom: none;
-            border-radius: 8px 8px 0 0;
-            padding: 1rem;
+            border-radius: var(--card-border-radius) var(--card-border-radius) 0 0;
+            padding: 1.25rem 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .card-header h5 {
+            font-weight: 600;
+            margin: 0;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
         }
 
         .card-body {
+            padding: 1.75rem;
+        }
+
+        .stats-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            line-height: 1.2;
+        }
+
+        .stats-label {
+            font-size: 0.9rem;
+            color: rgba(0, 0, 0, 0.6);
+        }
+
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 100%;
+            min-height: 300px;
+        }
+
+        .dashboard-title {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 4px;
+            background-color: var(--primary-color);
+            border-radius: 2px;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            border-radius: var(--card-border-radius);
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(var(--primary-color-rgb), 0.2);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+            }
+        }
+
+        .metric-card {
+            text-align: center;
             padding: 1.5rem;
         }
 
-        .lead {
-            font-size: 1.1rem;
-            font-weight: 400;
+        .metric-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(var(--primary-color-rgb), 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .metric-icon i {
+            font-size: 1.5rem;
+            color: var(--primary-color);
         }
 
         canvas {
@@ -608,7 +738,7 @@
             </button>
 
             <button class="nav-link" id="nav-statistics" data-bs-toggle="pill" data-bs-target="#tab-statistics" type="button" role="tab" aria-controls="tab-statistics" aria-selected="false">
-                <i class="bi bi-cash-stack"></i>
+                <i class="bi bi-graph-up"></i>
                 Statistics
             </button>
 
@@ -820,6 +950,7 @@
             <div class="tab-pane fade" id="tab-services" role="tabpanel" aria-labelledby="tab-services" tabindex="0">
                 <div id="printServices">
                     <h1 class="mb-4">Services</h1>
+
 
                     <div class="table-container">
                         <div class="table-header">
@@ -1168,69 +1299,117 @@
             </div>
 
 
-            <!-- Statistics Tab -->
             <div class="tab-pane fade" id="tab-statistics" role="tabpanel" aria-labelledby="nav-statistics">
-                <div class="container-fluid py-4">
-                    <h2 class="text-center mb-4" style="color: var(--primary-color);">Statistics Dashboard</h2>
+                <div class="container-fluid py-5">
+                    <h2 class="text-center dashboard-title" style="color: var(--primary-color);">Statistics Dashboard</h2>
 
                     <div class="row g-4">
+                        <!-- Summary Cards Row -->
+                        <div class="col-12">
+                            <div class="row g-4">
+                                <!-- Most Profitable Procedure -->
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="card shadow-sm h-100 position-relative">
+                                        <div class="loading-overlay" id="loading-profitable">
+                                            <div class="spinner"></div>
+                                        </div>
+                                        <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                            <h5 class="card-title mb-0">
+                                                <i class="fas fa-trophy me-2"></i>
+                                                Most Profitable Procedure
+                                            </h5>
+                                        </div>
+                                        <div class="card-body metric-card">
 
-                        <!-- Most Profitable Procedure -->
-                        <div class="col-md-6 col-lg-6">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
-                                    <h5 class="card-title mb-0">Most Profitable Procedure</h5>
+                                            <div class="stats-value" style="color: var(--primary-color);" id="mostProfitableProcedure">-</div>
+                                            <div class="stats-label">All Time Revenue Leader</div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body d-flex align-items-center justify-content-center">
-                                    <p class="lead mb-0" style="color: var(--primary-color);" id="mostProfitableProcedure"></p>
+
+                                <!-- Most Profitable Procedure This Month -->
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="card shadow-sm h-100 position-relative">
+                                        <div class="loading-overlay" id="loading-profitable-month">
+                                            <div class="spinner"></div>
+                                        </div>
+                                        <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                            <h5 class="card-title mb-0">
+                                                <i class="fas fa-calendar-check me-2"></i>
+                                                Most Profitable Procedure (This Month)
+                                            </h5>
+                                        </div>
+                                        <div class="card-body metric-card">
+
+                                            <div class="stats-value" style="color: var(--primary-color);" id="mostProfitableMonth">-</div>
+                                            <div class="stats-label">Current Month Leader</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Most Profitable Procedure This Month -->
-                        <div class="col-md-6 col-lg-6">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
-                                    <h5 class="card-title mb-0">Most Profitable Procedure (This Month)</h5>
+                        <!-- Charts Row -->
+                        <div class="col-12">
+                            <div class="row g-4">
+                                <!-- Revenue per Procedure (Bar Chart) -->
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="card shadow-sm h-100 position-relative">
+                                        <div class="loading-overlay" id="loading-revenue-chart">
+                                            <div class="spinner"></div>
+                                        </div>
+                                        <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                            <h5 class="card-title mb-0">
+                                                <i class="fas fa-chart-bar me-2"></i>
+                                                Revenue per Procedure
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container">
+                                                <canvas id="revenueChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body d-flex align-items-center justify-content-center">
-                                    <p class="lead mb-0" style="color: var(--primary-color);" id="mostProfitableMonth"></p>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Revenue per Procedure (Bar Chart) -->
-                        <div class="col-md-6 col-lg-6">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
-                                    <h5 class="card-title mb-0">Revenue per Procedure</h5>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="revenueChart" height="300"></canvas>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Most Booked Services (Pie Chart) -->
-                        <div class="col-md-6 col-lg-6">
-                            <div class="card shadow-sm h-100">
-                                <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
-                                    <h5 class="card-title mb-0">Most Booked Services</h5>
-                                </div>
-                                <div class="card-body">
-                                    <canvas id="servicesPieChart" height="300"></canvas>
+                                <!-- Most Booked Services (Pie Chart) -->
+                                <div class="col-md-6 col-lg-6">
+                                    <div class="card shadow-sm h-100 position-relative">
+                                        <div class="loading-overlay" id="loading-services-chart">
+                                            <div class="spinner"></div>
+                                        </div>
+                                        <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
+                                            <h5 class="card-title mb-0">
+                                                <i class="fas fa-chart-pie me-2"></i>
+                                                Most Booked Services
+                                            </h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container">
+                                                <canvas id="servicesPieChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Service Comparison (Bar Chart) -->
                         <div class="col-12">
-                            <div class="card shadow-sm">
+                            <div class="card shadow-sm position-relative">
+                                <div class="loading-overlay" id="loading-comparison-chart">
+                                    <div class="spinner"></div>
+                                </div>
                                 <div class="card-header" style="background-color: var(--primary-color); color: #fff;">
-                                    <h5 class="card-title mb-0">Service Comparison (Revenue vs Bookings)</h5>
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-balance-scale me-2"></i>
+                                        Service Comparison (Revenue vs Bookings)
+                                    </h5>
                                 </div>
                                 <div class="card-body">
-                                    <canvas id="serviceComparisonChart" height="400"></canvas>
+                                    <div class="chart-container">
+                                        <canvas id="serviceComparisonChart"></canvas>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -3374,61 +3553,170 @@
         });
 
         document.addEventListener("DOMContentLoaded", function() {
+            // Chart.js global defaults
+            Chart.defaults.font.family = "'Poppins', 'Helvetica', 'Arial', sans-serif";
+            Chart.defaults.font.size = 12;
+            Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            Chart.defaults.plugins.tooltip.padding = 10;
+            Chart.defaults.plugins.tooltip.cornerRadius = 6;
+            Chart.defaults.plugins.tooltip.titleFont.size = 14;
+            Chart.defaults.plugins.tooltip.titleFont.weight = 'bold';
+
+            // Get primary color from CSS variable
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim();
+            let primaryColorRgb = getComputedStyle(document.documentElement).getPropertyValue('--primary-color-rgb').trim();
+            if (!primaryColorRgb) {
+                primaryColorRgb = '0, 123, 255'; // Default to a blue shade (Bootstrap primary color)
+            }
+
+            // Create color palette based on primary color
+            const colorPalette = [
+                primaryColor,
+                `rgba(${primaryColorRgb}, 0.8)`,
+                `rgba(${primaryColorRgb}, 0.6)`,
+                `rgba(${primaryColorRgb}, 0.4)`,
+                `rgba(${primaryColorRgb}, 0.2)`
+            ];
+
+            // Format currency function
+            const formatCurrency = (value) => {
+                return new Intl.NumberFormat('en-PH', {
+                    style: 'currency',
+                    currency: 'PHP',
+                    minimumFractionDigits: 0
+                }).format(value);
+            };
+
+            // Show loading state
+            const showLoading = () => {
+                document.querySelectorAll('.loading-overlay').forEach(overlay => {
+                    overlay.style.display = 'flex';
+                });
+            };
+
+            // Hide loading state
+            const hideLoading = () => {
+                document.querySelectorAll('.loading-overlay').forEach(overlay => {
+                    setTimeout(() => {
+                        overlay.style.display = 'none';
+                    }, 500); // Add a small delay for better UX
+                });
+            };
+
+            // Initialize charts with animations
+            let revenueChart, servicesPieChart, serviceComparisonChart;
+
             document.getElementById('nav-statistics').addEventListener('click', function() {
                 console.log("Statistics button clicked!");
 
+                // Show loading state
+                showLoading();
+
+                // Destroy existing charts to prevent duplicates
+                if (revenueChart) revenueChart.destroy();
+                if (servicesPieChart) servicesPieChart.destroy();
+                if (serviceComparisonChart) serviceComparisonChart.destroy();
+
                 fetch("{{ route('statistics.data') }}")
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         console.log("Data fetched:", data);
+
+                        // Hide loading state
+                        hideLoading();
 
                         // Most Profitable Procedure
                         const mostProfitableProcedureEl = document.getElementById('mostProfitableProcedure');
                         if (mostProfitableProcedureEl && data.mostProfitableProcedure) {
-                            mostProfitableProcedureEl.innerText = `${data.mostProfitableProcedure.name}: ₱${data.mostProfitableProcedure.total_revenue}`;
+                            mostProfitableProcedureEl.innerHTML = `
+                        ${formatCurrency(data.mostProfitableProcedure.total_revenue)}
+                        <div class="stats-label">${data.mostProfitableProcedure.name}</div>
+                    `;
+                            mostProfitableProcedureEl.classList.add('fade-in');
                         }
 
                         // Most Profitable This Month
                         const mostProfitableMonthEl = document.getElementById('mostProfitableMonth');
                         if (mostProfitableMonthEl && data.mostProfitableThisMonth) {
-                            mostProfitableMonthEl.innerText = `${data.mostProfitableThisMonth.name}: ₱${data.mostProfitableThisMonth.total_revenue}`;
+                            mostProfitableMonthEl.innerHTML = `
+                        ${formatCurrency(data.mostProfitableThisMonth.total_revenue)}
+                        <div class="stats-label">${data.mostProfitableThisMonth.name}</div>
+                    `;
+                            mostProfitableMonthEl.classList.add('fade-in');
                         }
 
                         // Revenue per Procedure (Bar Chart)
                         const revenueChartEl = document.getElementById('revenueChart');
                         if (revenueChartEl && data.revenuePerProcedure.length > 0) {
-                            new Chart(revenueChartEl.getContext('2d'), {
+                            const ctx = revenueChartEl.getContext('2d');
+
+                            // Create gradient for bars
+                            const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                            gradient.addColorStop(0, `rgba(${primaryColorRgb}, 0.8)`);
+                            gradient.addColorStop(1, `rgba(${primaryColorRgb}, 0.2)`);
+
+                            revenueChart = new Chart(ctx, {
                                 type: 'bar',
                                 data: {
                                     labels: data.revenuePerProcedure.map(proc => proc.name),
                                     datasets: [{
-                                        label: 'Revenue (₱)',
+                                        label: 'Revenue',
                                         data: data.revenuePerProcedure.map(proc => parseFloat(proc.total_revenue)),
-                                        backgroundColor: 'rgba(var(--primary-color-rgb), 0.2)',
-                                        borderColor: 'var(--primary-color)',
-                                        borderWidth: 1
+                                        backgroundColor: gradient,
+                                        borderColor: primaryColor,
+                                        borderWidth: 1,
+                                        borderRadius: 6,
+                                        barPercentage: 0.7,
+                                        categoryPercentage: 0.8
                                     }]
                                 },
                                 options: {
                                     responsive: true,
+                                    maintainAspectRatio: false,
+                                    animation: {
+                                        duration: 1000,
+                                        easing: 'easeOutQuart'
+                                    },
                                     scales: {
                                         y: {
                                             beginAtZero: true,
+                                            grid: {
+                                                color: `rgba(${primaryColorRgb}, 0.1)`,
+                                                drawBorder: false
+                                            },
                                             ticks: {
-                                                color: 'var(--primary-color)'
-                                            } // Change tick color
+                                                color: `rgba(${primaryColorRgb}, 0.8)`,
+                                                callback: function(value) {
+                                                    return formatCurrency(value);
+                                                }
+                                            }
                                         },
                                         x: {
+                                            grid: {
+                                                display: false
+                                            },
                                             ticks: {
-                                                color: 'var(--primary-color)'
-                                            } // Change tick color
+                                                color: `rgba(${primaryColorRgb}, 0.8)`,
+                                                maxRotation: 45,
+                                                minRotation: 45
+                                            }
                                         }
                                     },
                                     plugins: {
                                         legend: {
-                                            labels: {
-                                                color: 'var(--primary-color)'
-                                            } // Change legend color
+                                            display: false
+                                        },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function(context) {
+                                                    return formatCurrency(context.raw);
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -3438,28 +3726,46 @@
                         // Most Booked Services (Pie Chart)
                         const servicesPieChartEl = document.getElementById('servicesPieChart');
                         if (servicesPieChartEl && data.mostBookedServices.length > 0) {
-                            new Chart(servicesPieChartEl.getContext('2d'), {
-                                type: 'pie',
+                            servicesPieChart = new Chart(servicesPieChartEl.getContext('2d'), {
+                                type: 'doughnut',
                                 data: {
                                     labels: data.mostBookedServices.map(service => service.name),
                                     datasets: [{
                                         data: data.mostBookedServices.map(service => service.total_bookings),
-                                        backgroundColor: [
-                                            'var(--primary-color)',
-                                            'rgba(var(--primary-color-rgb), 0.8)',
-                                            'rgba(var(--primary-color-rgb), 0.6)',
-                                            'rgba(var(--primary-color-rgb), 0.4)',
-                                            'rgba(var(--primary-color-rgb), 0.2)'
-                                        ]
+                                        backgroundColor: colorPalette,
+                                        borderColor: '#ffffff',
+                                        borderWidth: 2,
+                                        hoverOffset: 10
                                     }]
                                 },
                                 options: {
                                     responsive: true,
+                                    maintainAspectRatio: false,
+                                    cutout: '60%',
+                                    animation: {
+                                        animateRotate: true,
+                                        animateScale: true
+                                    },
                                     plugins: {
                                         legend: {
+                                            position: 'bottom',
                                             labels: {
-                                                color: 'var(--primary-color)'
-                                            } // Change legend color
+                                                padding: 20,
+                                                usePointStyle: true,
+                                                pointStyle: 'circle',
+                                                color: `rgba(${primaryColorRgb}, 0.8)`
+                                            }
+                                        },
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function(context) {
+                                                    const label = context.label || '';
+                                                    const value = context.raw;
+                                                    const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                                                    const percentage = Math.round((value / total) * 100);
+                                                    return `${label}: ${value} bookings (${percentage}%)`;
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -3484,67 +3790,145 @@
                                 return booked ? booked.total_bookings : 0;
                             });
 
-                            new Chart(serviceComparisonChartEl.getContext('2d'), {
+                            // Create gradients
+                            const ctx = serviceComparisonChartEl.getContext('2d');
+                            const revenueGradient = ctx.createLinearGradient(0, 0, 0, 400);
+                            revenueGradient.addColorStop(0, `rgba(${primaryColorRgb}, 0.8)`);
+                            revenueGradient.addColorStop(1, `rgba(${primaryColorRgb}, 0.2)`);
+
+                            const bookingsGradient = ctx.createLinearGradient(0, 0, 0, 400);
+                            bookingsGradient.addColorStop(0, `rgba(${primaryColorRgb}, 0.5)`);
+                            bookingsGradient.addColorStop(1, `rgba(${primaryColorRgb}, 0.1)`);
+
+                            serviceComparisonChart = new Chart(ctx, {
                                 type: 'bar',
                                 data: {
                                     labels: services,
                                     datasets: [{
-                                            label: 'Revenue (₱)',
+                                            label: 'Revenue',
                                             data: revenueData,
-                                            backgroundColor: 'rgba(var(--primary-color-rgb), 0.2)',
-                                            borderColor: 'var(--primary-color)',
-                                            borderWidth: 1
+                                            backgroundColor: revenueGradient,
+                                            borderColor: primaryColor,
+                                            borderWidth: 1,
+                                            borderRadius: 6,
+                                            yAxisID: 'y',
+                                            order: 1
                                         },
                                         {
                                             label: 'Bookings',
                                             data: bookingsData,
-                                            backgroundColor: 'rgba(var(--primary-color-rgb), 0.5)',
-                                            borderColor: 'var(--primary-color)',
-                                            borderWidth: 1
+                                            backgroundColor: bookingsGradient,
+                                            borderColor: primaryColor,
+                                            borderWidth: 1,
+                                            borderRadius: 6,
+                                            yAxisID: 'y1',
+                                            order: 2
                                         }
                                     ]
                                 },
                                 options: {
                                     responsive: true,
+                                    maintainAspectRatio: false,
+                                    animation: {
+                                        duration: 1000,
+                                        easing: 'easeOutQuart'
+                                    },
                                     scales: {
                                         y: {
+                                            type: 'linear',
+                                            position: 'left',
                                             beginAtZero: true,
                                             title: {
                                                 display: true,
-                                                text: 'Value',
-                                                color: 'var(--primary-color)'
+                                                text: 'Revenue (₱)',
+                                                color: `rgba(${primaryColorRgb}, 0.8)`,
+                                                font: {
+                                                    weight: 'bold'
+                                                }
+                                            },
+                                            grid: {
+                                                color: `rgba(${primaryColorRgb}, 0.1)`,
+                                                drawBorder: false
                                             },
                                             ticks: {
-                                                color: 'var(--primary-color)'
-                                            } // Change tick color
+                                                color: `rgba(${primaryColorRgb}, 0.8)`,
+                                                callback: function(value) {
+                                                    return formatCurrency(value);
+                                                }
+                                            }
                                         },
-                                        x: {
+                                        y1: {
+                                            type: 'linear',
+                                            position: 'right',
+                                            beginAtZero: true,
                                             title: {
                                                 display: true,
-                                                text: 'Services',
-                                                color: 'var(--primary-color)'
+                                                text: 'Bookings',
+                                                color: `rgba(${primaryColorRgb}, 0.8)`,
+                                                font: {
+                                                    weight: 'bold'
+                                                }
+                                            },
+                                            grid: {
+                                                display: false
                                             },
                                             ticks: {
-                                                color: 'var(--primary-color)'
-                                            } // Change tick color
+                                                color: `rgba(${primaryColorRgb}, 0.8)`
+                                            }
+                                        },
+                                        x: {
+                                            grid: {
+                                                display: false
+                                            },
+                                            ticks: {
+                                                color: `rgba(${primaryColorRgb}, 0.8)`,
+                                                maxRotation: 45,
+                                                minRotation: 45
+                                            }
                                         }
                                     },
                                     plugins: {
                                         legend: {
                                             position: 'top',
+                                            align: 'end',
                                             labels: {
-                                                color: 'var(--primary-color)'
-                                            } // Change legend color
+                                                usePointStyle: true,
+                                                pointStyle: 'rectRounded',
+                                                padding: 20,
+                                                color: `rgba(${primaryColorRgb}, 0.8)`
+                                            }
                                         },
-                                        title: {
-                                            display: false
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function(context) {
+                                                    const label = context.dataset.label || '';
+                                                    if (label === 'Revenue') {
+                                                        return `${label}: ${formatCurrency(context.raw)}`;
+                                                    } else {
+                                                        return `${label}: ${context.raw}`;
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             });
                         }
                     })
-                    .catch(error => console.error("Error loading statistics:", error));
+                    .catch(error => {
+                        console.error("Error loading statistics:", error);
+                        hideLoading();
+
+                        // Show error message
+                        document.querySelectorAll('.card-body').forEach(body => {
+                            body.innerHTML = `
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Failed to load data. Please try again later.
+                        </div>
+                    `;
+                        });
+                    });
             });
         });
     </script>
