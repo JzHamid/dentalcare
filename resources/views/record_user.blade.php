@@ -463,10 +463,6 @@
                                     <div class="col-md-4 fw-bold">Contact No.:</div>
                                     <div class="col-md-8">{{ $appointment->user->phone }}</div>
                                 </div>
-                                <div class="row mb-2">
-                                    <div class="col-md-4 fw-bold">Medical Records:</div>
-                                    <div class="col-md-8">{{ $appointment->user->notes }}</div>
-                                </div>
                                 @endif
                             </div>
                             <div class="col-md-3 text-center">

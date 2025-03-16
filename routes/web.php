@@ -7,6 +7,7 @@ use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\Auth\OtpController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\HealthRecordController;
 use App\Http\Controllers\StatisticsController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -64,6 +65,10 @@ Route::post('/reset-password', [ResetPasswordController::class, 'reset'])->name(
 
 // Statistics
 Route::get('/statistics/data', [StatisticsController::class, 'getStatistics'])->name('statistics.data');
+
+// Health Record
+Route::post('/health-records', [HealthRecordController::class, 'store'])->name('health-records.store');
+Route::get('/users/{user}/records', [HealthRecordController::class, 'index'])->name('users.records');
 
 Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::get('/admin', [PageController::class, 'admin'])->name('admin');

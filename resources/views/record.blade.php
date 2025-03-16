@@ -536,10 +536,10 @@
                                     <div class="col-md-4 fw-bold">Contact No.:</div>
                                     <div class="col-md-8">{{ $appointment->user->phone }}</div>
                                 </div>
-                                <div class="row mb-2">
-                                    <div class="col-md-4 fw-bold">Medical Records:</div>
-                                    <div class="col-md-8">{{ $appointment->user->notes }}</div>
-                                </div>
+                                <!-- Button to Open Modal -->
+                                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#medicalRecordsModal">
+                                    View Medical Records
+                                </button>
                                 @endif
                             </div>
                             <div class="col-md-3 text-center">
@@ -548,6 +548,55 @@
                         </div>
                     </div>
                 </div>
+
+
+                <!-- Medical Records Modal -->
+                <div class="modal fade" id="medicalRecordsModal" tabindex="-1" aria-labelledby="medicalRecordsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg"> <!-- Makes the modal wider -->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="medicalRecordsModalLabel">Medical Records</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+
+                                <!-- Health Records -->
+                                <div class="row mb-3">
+                                    <div class="col-md-12 fw-bold">Health Records</div>
+                                    <div class="col-md-12">
+                                        @if($appointment->user->healthRecords->isNotEmpty())
+                                        <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                                            <table class="table table-bordered table-hover">
+                                                <thead class="table-dark">
+                                                    <tr>
+                                                        <th>Record Type</th>
+                                                        <th>Record Name</th>
+                                                        <th>Details</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($appointment->user->healthRecords as $record)
+                                                    <tr>
+                                                        <td>{{ ucfirst($record->record_type) }}</td>
+                                                        <td>{{ $record->record_name }}</td>
+                                                        <td>{{ $record->record_details }}</td>
+                                                        <td>{{ $record->created_at->format('M d, Y') }}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        @else
+                                        <p class="text-muted">No health records available</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- Procedures Section -->
                 <div class="card mb-4">

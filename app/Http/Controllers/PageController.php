@@ -210,7 +210,8 @@ class PageController extends Controller
 
     public function record($id)
     {
-        $appointment = Appointments::with(['user', 'service', 'dentist', 'additional_fee'])->findOrFail($id);
+        $appointment = Appointments::with(['user.healthRecords', 'service', 'dentist', 'additional_fee'])
+            ->findOrFail($id);
         $schedule = Schedule::where('clinic_id', $appointment->listing_id)->get();
         $dentist = User::where('id', $appointment->dentist_id)->first();
 
@@ -228,6 +229,7 @@ class PageController extends Controller
             'appointmentHistory' => $appointmentHistory
         ]);
     }
+
 
 
     private function isWithinClinicHours($clinicId, Carbon $appointmentStart, Carbon $appointmentEnd)

@@ -60,4 +60,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Assign::class, 'secretary_id');
     }
+
+    public function healthRecords()
+    {
+        return $this->hasMany(HealthRecord::class, 'user_id');
+    }
 }

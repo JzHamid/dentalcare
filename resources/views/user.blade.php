@@ -414,6 +414,10 @@
     </div>
     @endif
 
+    @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
     <div class="container-fluid p-0">
         <div class="row g-0">
             <!-- Sidebar -->
@@ -477,10 +481,33 @@
                                     </button>
                                 </div>
                                 <div class="card-body">
-                                    <!-- Health records would go here -->
+                                    @if($user->healthRecords->isEmpty())
                                     <div class="alert alert-info mb-0">
                                         <i class="bi bi-info-circle me-2"></i>No health records found. Click "Add Record" to create your first health record.
                                     </div>
+                                    @else
+                                    <h3>Health Records</h3>
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Type</th>
+                                                <th>Name</th>
+                                                <th>Details</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($user->healthRecords as $record)
+                                            <tr>
+                                                <td>{{ ucfirst($record->record_type) }}</td>
+                                                <td>{{ $record->record_name }}</td>
+                                                <td>{{ $record->record_details ?? 'N/A' }}</td>
+                                                <td>{{ $record->record_date ?? 'N/A' }}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -1010,8 +1037,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <form class="modal-body" id="add-record-form" method="post" action="">
+                <form class="modal-body" id="add-record-form" method="post" action="{{ route('health-records.store') }}">
                     @csrf
+                    <input type="hidden" name="user_id" value="{{ $user->id }}">
                     <div class="mb-3">
                         <label for="record_type" class="form-label">Record Type</label>
                         <select class="form-select" id="record_type" name="record_type" required>
