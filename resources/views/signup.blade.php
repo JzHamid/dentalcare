@@ -22,20 +22,20 @@
             --light-gray: #f8f9fa;
             --border-color: #e0e0e0;
         }
-        
+
         body {
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
             color: var(--text-color);
         }
-        
+
         .text-default,
         .text-default:hover,
         .text-default:focus,
         .text-default:active {
             color: var(--primary-color);
         }
-        
+
         .btn-default,
         .btn-default:hover,
         .btn-default:focus,
@@ -48,31 +48,31 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .btn-default:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
         }
-        
+
         .btn-default:disabled {
             background-color: #a0b4d0;
             transform: none;
             box-shadow: none;
         }
-        
+
         /* Navbar styling */
         .navbar {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             padding: 15px 0;
         }
-        
+
         .navbar-brand {
             font-size: 24px;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
-        
+
         /* Main content area */
         .main-content {
             min-height: 100vh;
@@ -80,7 +80,7 @@
             padding: 40px 0;
             background-color: var(--light-gray);
         }
-        
+
         /* Background image */
         .bg-image-container {
             position: absolute;
@@ -91,13 +91,13 @@
             z-index: 0;
             overflow: hidden;
         }
-        
+
         .bg-image {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        
+
         .bg-overlay {
             position: absolute;
             top: 0;
@@ -107,7 +107,7 @@
             background: linear-gradient(rgba(52, 93, 149, 0.7), rgba(52, 93, 149, 0.4));
             z-index: 1;
         }
-        
+
         /* Form container styling */
         .form-container {
             background-color: rgba(255, 255, 255, 0.95);
@@ -123,30 +123,30 @@
             overflow-y: auto;
             max-height: 80vh;
         }
-        
+
         /* Form styling */
         .form-title {
             font-weight: 700;
             margin-bottom: 5px;
             letter-spacing: 1px;
         }
-        
+
         .form-subtitle {
             color: var(--secondary-color);
             margin-bottom: 20px;
             font-size: 16px;
         }
-        
+
         .form-section {
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid var(--border-color);
         }
-        
+
         .form-section:last-of-type {
             border-bottom: none;
         }
-        
+
         .section-title {
             font-size: 18px;
             font-weight: 600;
@@ -155,27 +155,29 @@
             display: flex;
             align-items: center;
         }
-        
+
         .form-label {
             font-weight: 500;
             font-size: 14px;
             margin-bottom: 6px;
             color: var(--text-color);
         }
-        
-        .form-control, .form-select {
+
+        .form-control,
+        .form-select {
             padding: 10px 15px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             transition: all 0.3s;
             font-size: 14px;
         }
-        
-        .form-control:focus, .form-select:focus {
+
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(52, 93, 149, 0.2);
         }
-        
+
         .form-select {
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236c757d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
@@ -183,7 +185,7 @@
             background-size: 16px;
             padding-right: 40px;
         }
-        
+
         /* Checkbox styling */
         .custom-checkbox {
             display: flex;
@@ -191,29 +193,29 @@
             gap: 10px;
             margin-bottom: 20px;
         }
-        
+
         .custom-checkbox input[type="checkbox"] {
             width: 18px;
             height: 18px;
             margin-top: 3px;
             accent-color: var(--primary-color);
         }
-        
+
         .custom-checkbox label {
             font-size: 14px;
             color: var(--text-color);
         }
-        
+
         .custom-checkbox a {
             color: var(--primary-color);
             text-decoration: none;
             font-weight: 500;
         }
-        
+
         .custom-checkbox a:hover {
             text-decoration: underline;
         }
-        
+
         /* Alert styling */
         .custom-alert {
             border-radius: 10px;
@@ -224,7 +226,7 @@
             max-width: 500px;
             width: 90%;
         }
-        
+
         /* Footer styling */
         footer {
             background-color: #f8f9fa;
@@ -232,29 +234,29 @@
             position: relative;
             z-index: 5;
         }
-        
+
         footer h5 {
             font-weight: 600;
             margin-bottom: 20px;
             color: var(--primary-color);
         }
-        
+
         footer a {
             color: var(--text-color);
             text-decoration: none;
             margin-bottom: 10px;
             transition: color 0.3s;
         }
-        
+
         footer a:hover {
             color: var(--primary-color);
         }
-        
+
         /* Password strength meter */
         .password-field-container {
             position: relative;
         }
-        
+
         .toggle-password {
             position: absolute;
             right: 15px;
@@ -265,7 +267,7 @@
             cursor: pointer;
             color: #777;
         }
-        
+
         .password-strength {
             height: 5px;
             background-color: #eee;
@@ -273,38 +275,38 @@
             border-radius: 3px;
             overflow: hidden;
         }
-        
+
         .password-strength-meter {
             height: 100%;
             width: 0;
             transition: width 0.3s, background-color 0.3s;
         }
-        
+
         .password-feedback {
             font-size: 12px;
             margin-top: 5px;
             color: var(--secondary-color);
         }
-        
+
         /* Scrollbar styling */
         .form-container::-webkit-scrollbar {
             width: 8px;
         }
-        
+
         .form-container::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 10px;
         }
-        
+
         .form-container::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 10px;
         }
-        
+
         .form-container::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
-        
+
         /* Responsive adjustments */
         @media (max-width: 992px) {
             .form-container {
@@ -312,39 +314,129 @@
                 padding: 25px;
             }
         }
-        
+
         @media (max-width: 768px) {
             .form-container {
                 width: 90%;
                 max-height: 75vh;
             }
-            
+
             .main-content {
                 padding: 20px 0;
             }
-            
+
             .row {
                 margin-right: 0;
                 margin-left: 0;
             }
         }
-        
+
         @media (max-width: 576px) {
             .form-container {
                 padding: 20px 15px;
                 width: 95%;
             }
-            
+
             .section-title {
                 font-size: 16px;
             }
-            
+
             .form-title {
                 font-size: 24px;
             }
-            
+
             .form-subtitle {
                 font-size: 14px;
+            }
+        }
+
+        /* Modal Styling */
+        .modal {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            /* Semi-transparent overlay */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            pointer-events: none;
+            /* Prevents interaction when hidden */
+        }
+
+        .modal.show {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+            /* Enables interaction when shown */
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            /* Rounded corners for a modern look */
+            max-width: 600px;
+            /* Limits width for readability */
+            margin: auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Subtle shadow for depth */
+            max-height: 80vh;
+            /* Limits height to 80% of viewport */
+            overflow-y: auto;
+            /* Adds scrollbar if content overflows */
+            transform: scale(0.9);
+            /* Initial scale for animation */
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .modal.show .modal-content {
+            transform: scale(1);
+            /* Scales to full size when shown */
+            opacity: 1;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .close-button:hover {
+            color: red;
+            /* Changes color on hover for feedback */
+        }
+
+        .modal-content h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            font-family: Arial, sans-serif;
+            /* Clear, legible font */
+        }
+
+        .modal-content p {
+            font-size: 16px;
+            line-height: 1.5;
+            /* Improves readability */
+            margin-bottom: 15px;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .modal-content {
+                max-width: 90%;
+                /* Adjusts width on smaller screens */
+                padding: 15px;
             }
         }
     </style>
@@ -564,9 +656,10 @@
                         </div>
                     </div>
 
+                    <!-- Checkbox for agreement -->
                     <div class="custom-checkbox">
                         <input type="checkbox" name="terms" id="terms" required>
-                        <label for="terms">I agree to the <a href="#">Terms and Conditions</a> and <a href="#">Privacy Policy</a></label>
+                        <label for="terms">I agree to the <a id="terms-link" href="#">Terms and Conditions</a> and <a id="privacy-link" href="#">Privacy Policy</a></label>
                     </div>
 
                     <div class="text-center">
@@ -575,6 +668,77 @@
                     </div>
                 </form>
             </div>
+        </div>
+    </div>
+
+    <!-- Terms and Conditions Modal -->
+    <div class="modal" id="terms-modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h2>Terms and Conditions</h2>
+            <p>Dental Care Website Terms and Conditions<br>
+                Last Updated: October 26, 2023<br>
+                1. Acceptance of Terms<br>
+                By accessing or using this website dentalcarewmsu.site, you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to these Terms, do not use this Site.<br>
+                2. Changes to Terms<br>
+                We may update these Terms at any time without prior notice. Your continued use of the Site following the posting of any changes constitutes acceptance of those changes.<br>
+                3. Privacy Policy<br>
+                Our Privacy Policy explains how we collect, use, and protect your personal information. By using this Site, you agree to the terms of our Privacy Policy, which is incorporated into these Terms by reference. [Insert link to your Privacy Policy here]<br>
+                4. Use of Site<br>
+                This Site is for informational purposes only. The information provided on this Site should not be considered medical advice. Always consult with a qualified dental professional for any questions or concerns regarding your oral health.<br>
+                5. Online Scheduling<br>
+                If you use the online scheduling feature, you agree to provide accurate information and to notify us as soon as possible of any changes to your appointment. We reserve the right to cancel appointments with insufficient notice. Cancellation policies are detailed separately [Insert link to cancellation policy here].<br>
+                6. Intellectual Property<br>
+                All content on this Site, including but not limited to text, graphics, logos, images, and software, is the property of Dental Care and is protected by copyright and other intellectual property laws. You may not reproduce, distribute, modify, or create derivative works from this content without our express written consent.<br>
+                7. Disclaimer of Warranties<br>
+                The information on this Site is provided "as is" without warranty of any kind, either express or implied. We do not guarantee the accuracy, completeness, or reliability of the information.<br>
+                8. Limitation of Liability<br>
+                In no event shall Dental Care be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with your use of this Site.<br>
+                9. Governing Law<br>
+                These Terms shall be governed by and construed in accordance with the laws of Philippines, without regard to its conflict of law provisions.<br>
+                10. Dispute Resolution<br>
+                Any dispute arising out of or relating to these Terms shall be resolved through binding arbitration in accordance with Philippine Dispute Resolution Center Inc. (PDRCi)<br>
+                11. Contact Us<br>
+                If you have any questions about these Terms, please contact us at +63 123 456 7890.</p>
+        </div>
+    </div>
+
+    <!-- Privacy Policy Modal -->
+    <div class="modal" id="privacy-modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h2>Privacy Policy</h2>
+            <p>Dental Care Privacy Policy<br>
+                Last Updated: October 26, 2023<br>
+                1. Introduction<br>
+                Dental Care ("we," "us," or "our") respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our website, dentalcarewmsu.site ("Site"). By using our Site, you agree to the terms of this Privacy Policy.<br>
+                2. Information We Collect<br>
+                We collect information you voluntarily provide, such as:<br>
+                Personal Information: Your name, email address, phone number, address, and any other information you provide when contacting us, scheduling appointments, or using online forms.<br>
+                Appointment Information: Details related to your appointments, including dates, times, and services requested.<br>
+                Payment Information: If you make payments online, we may collect your payment information securely through a third-party payment processor. We do not directly store your full payment details.<br>
+                Usage Data: Information about your interactions with the Site, including pages visited, links clicked, and browsing patterns. This data is collected through cookies and similar technologies (see Section 5).<br>
+                3. How We Use Your Information<br>
+                We use your information to:<br>
+                Provide Services: Manage your appointments, communicate with you about your appointments, and provide requested services.<br>
+                Improve the Site: Analyze website usage to improve the Site's functionality and user experience.<br>
+                Respond to Inquiries: Answer your questions and address your concerns.<br>
+                Send Updates: Send you updates about our services, promotions, or other relevant information (you can opt out of these communications – see Section 6).<br>
+                4. Disclosure of Your Information<br>
+                We may share your information with:<br>
+                Third-Party Service Providers: We may use third-party service providers (e.g., payment processors, email marketing services, website hosting providers) to assist us in providing services. These providers are contractually obligated to protect your information.<br>
+                Legal Requirements: We may disclose your information if required by law or legal process.<br>
+                5. Cookies and Tracking Technologies<br>
+                We use cookies and similar technologies to collect usage data. You can manage your cookie preferences through your browser settings. However, disabling cookies may limit your ability to use certain features of the Site.<br>
+                6. Your Choices<br>
+                Opt-Out of Communications: You can opt out of receiving marketing emails by clicking the unsubscribe link in those emails.<br>
+                Access and Update Information: You can request access to or update your personal information by contacting us (see Section 7).<br>
+                7. Contact Us<br>
+                If you have questions about this Privacy Policy, please contact us at +63 123 456 7890.<br>
+                8. Governing Law<br>
+                This Privacy Policy is governed by the laws of the Philippines.<br>
+                9. Changes to this Privacy Policy<br>
+                We may update this Privacy Policy from time to time. We will post any changes on the Site.</p>
         </div>
     </div>
 
@@ -798,6 +962,34 @@
                     }
                 });
             }
+        });
+
+        // Show Terms and Conditions modal
+        document.getElementById('terms-link').addEventListener('click', function(e) {
+            e.preventDefault(); // Prevents default link behavior
+            document.getElementById('terms-modal').classList.add('show');
+        });
+
+        // Show Privacy Policy modal
+        document.getElementById('privacy-link').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('privacy-modal').classList.add('show');
+        });
+
+        // Close modals when close button is clicked
+        document.querySelectorAll('.close-button').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                this.closest('.modal').classList.remove('show');
+            });
+        });
+
+        // Close modals when clicking outside the content
+        document.querySelectorAll('.modal').forEach(function(modal) {
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) { // Only close if clicking the overlay
+                    modal.classList.remove('show');
+                }
+            });
         });
     </script>
 </body>

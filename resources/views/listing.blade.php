@@ -21,7 +21,7 @@
             --light-gray: #f8f9fa;
             --border-color: #e0e0e0;
         }
-        
+
         body {
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
@@ -30,14 +30,14 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .text-default,
         .text-default:hover,
         .text-default:focus,
         .text-default:active {
             color: var(--primary-color);
         }
-        
+
         .btn-default,
         .btn-default:hover,
         .btn-default:focus,
@@ -50,17 +50,17 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .btn-default:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
         }
-        
+
         .bg-default {
             background-color: var(--primary-color);
         }
-        
+
         /* Navbar styling */
         .navbar {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -68,7 +68,7 @@
             background-color: white !important;
             z-index: 1030;
         }
-        
+
         .navbar-brand {
             font-size: 24px;
             font-weight: 700;
@@ -77,29 +77,29 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .dropdown-toggle::after {
             content: none;
         }
-        
+
         .dropdown-menu {
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
             padding: 10px;
         }
-        
+
         .dropdown-item {
             border-radius: 6px;
             padding: 8px 15px;
             transition: all 0.2s;
         }
-        
+
         .dropdown-item:hover {
             background-color: var(--primary-light);
             color: var(--primary-color);
         }
-        
+
         /* Search form styling */
         .search-container {
             background-color: var(--primary-light);
@@ -107,41 +107,41 @@
             border-radius: 0 0 20px 20px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
-        
+
         .search-form {
             max-width: 800px;
             margin: 0 auto;
         }
-        
+
         .search-input-group {
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
-        
+
         .search-input-group .input-group-text {
             background-color: white;
             border: none;
             color: var(--primary-color);
             font-size: 1.2rem;
         }
-        
+
         .search-input-group .form-control {
             border: none;
             padding: 12px 15px;
             font-size: 16px;
         }
-        
+
         .search-input-group .form-control:focus {
             box-shadow: none;
         }
-        
+
         .search-input-group .btn {
             border-radius: 0;
             padding: 12px 25px;
             font-weight: 600;
         }
-        
+
         /* Filter selects */
         .filter-select {
             border-radius: 30px;
@@ -152,12 +152,12 @@
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
             transition: all 0.3s;
         }
-        
+
         .filter-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(52, 93, 149, 0.2);
         }
-        
+
         /* Listing card styling */
         .listing-card {
             border-radius: 16px;
@@ -176,14 +176,14 @@
             width: 100%;
             max-width: 900px;
         }
-        
+
         .listing-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
             border-color: var(--primary-color);
             color: var(--text-color);
         }
-        
+
         .listing-image {
             width: 180px;
             height: 180px;
@@ -191,22 +191,22 @@
             border-radius: 12px;
             border: 3px solid var(--primary-light);
         }
-        
+
         .listing-details {
             flex: 1;
         }
-        
+
         .listing-title {
             color: var(--primary-color);
             font-weight: 700;
             margin-bottom: 10px;
             font-size: 1.5rem;
         }
-        
+
         .listing-section {
             margin-bottom: 15px;
         }
-        
+
         .listing-section-title {
             color: var(--primary-color);
             font-weight: 600;
@@ -214,7 +214,7 @@
             font-size: 0.9rem;
             text-transform: uppercase;
         }
-        
+
         .service-badge {
             background-color: var(--primary-light);
             color: var(--primary-color);
@@ -224,7 +224,7 @@
             margin-bottom: 5px;
             display: inline-block;
         }
-        
+
         .schedule-list {
             list-style: none;
             padding: 0;
@@ -233,18 +233,18 @@
             flex-wrap: wrap;
             gap: 10px;
         }
-        
+
         .schedule-item {
             background-color: var(--light-gray);
             padding: 5px 10px;
             border-radius: 6px;
             font-size: 0.85rem;
         }
-        
+
         .schedule-day {
             font-weight: 600;
         }
-        
+
         /* Footer styling */
         footer {
             background-color: var(--primary-light);
@@ -252,50 +252,50 @@
             padding: 40px 0;
             margin-top: auto;
         }
-        
+
         .footer-title {
             color: var(--primary-color);
             font-weight: 700;
             margin-bottom: 20px;
         }
-        
+
         .footer-links {
             list-style: none;
             padding: 0;
         }
-        
+
         .footer-links li {
             margin-bottom: 10px;
         }
-        
+
         .footer-links a {
             color: var(--text-color);
             text-decoration: none;
             transition: all 0.2s;
         }
-        
+
         .footer-links a:hover {
             color: var(--primary-color);
             padding-left: 5px;
         }
-        
+
         .footer-contact {
             margin-bottom: 5px;
         }
-        
+
         .footer-contact i {
             color: var(--primary-color);
             margin-right: 10px;
             width: 20px;
             text-align: center;
         }
-        
+
         .social-icons {
             display: flex;
             gap: 15px;
             margin-top: 15px;
         }
-        
+
         .social-icon {
             width: 40px;
             height: 40px;
@@ -308,7 +308,7 @@
             font-size: 1.2rem;
             transition: all 0.3s;
         }
-        
+
         .social-icon:hover {
             transform: translateY(-3px);
             background-color: var(--primary-dark);
@@ -373,62 +373,28 @@
                 @csrf
                 <div class="input-group search-input-group mb-3">
                     <span class="input-group-text">
-                        <i class="bi bi-person-fill"></i>
+                        <i class="bi bi-search"></i>
                     </span>
-                    <input class="form-control" type="search" name="doctor" placeholder="Search by practitioner name">
-
-                    <span class="input-group-text">
-                        <i class="bi bi-geo-alt-fill"></i>
-                    </span>
-                    <input class="form-control" type="search" name="place" placeholder="Search by location">
-                    
-                    <button class="btn btn-default" type="submit">
-                        <i class="bi bi-search me-2"></i>Search
-                    </button>
-                </div>
-
-                <div class="d-flex flex-wrap gap-3 justify-content-center">
-                    <select class="form-select filter-select" name="service_type">
-                        <option selected disabled>Type of Service</option>
-                        <option value="cleaning">Dental Cleaning</option>
-                        <option value="whitening">Teeth Whitening</option>
-                        <option value="extraction">Tooth Extraction</option>
-                        <option value="filling">Dental Filling</option>
-                        <option value="braces">Braces</option>
-                    </select>
-
-                    <select class="form-select filter-select" name="gender">
-                        <option selected disabled>Gender of Practitioner</option>
-                        <option value="male">Male</option>
-                        <option value="female">Female</option>
-                    </select>
-
-                    <select class="form-select filter-select" name="specialty">
-                        <option selected disabled>Specialty</option>
-                        <option value="general">General Dentistry</option>
-                        <option value="orthodontics">Orthodontics</option>
-                        <option value="pediatric">Pediatric Dentistry</option>
-                        <option value="cosmetic">Cosmetic Dentistry</option>
-                        <option value="oral_surgery">Oral Surgery</option>
-                    </select>
+                    <input id="searchAnything" class="form-control" type="search" placeholder="Search anything...">
                 </div>
             </form>
         </div>
     </div>
+
 
     <!-- Listings Section -->
     <div class="container mb-5">
         <div class="row">
             <div class="col-12">
                 <h2 class="mb-4 text-center">Available Dental Clinics</h2>
-                
+
                 <div class="d-flex flex-column align-items-center">
                     @if($listings->isEmpty())
                     <div class="alert alert-info w-100 text-center" role="alert">
                         <i class="bi bi-info-circle me-2"></i>No dental clinics found matching your criteria. Try adjusting your search filters.
                     </div>
                     @endif
-                    
+
                     @foreach ($listings as $listing)
                     <a class="listing-card" href="{{ route('shop', $listing->id) }}">
                         <!-- Clinic Image -->
@@ -515,7 +481,7 @@
                     <p class="footer-contact"><i class="bi bi-clock-fill"></i> Monday - Friday: 8:00 AM - 6:00 PM</p>
                 </div>
             </div>
-            
+
             <div class="row mt-4">
                 <div class="col-12 text-center">
                     <hr>
@@ -524,7 +490,36 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const searchAnything = document.getElementById("searchAnything");
+            const clinicCards = document.querySelectorAll(".listing-card");
+
+            function filterClinics() {
+                const query = searchAnything.value.trim().toLowerCase();
+
+                clinicCards.forEach(card => {
+                    const clinicName = card.querySelector(".listing-title")?.textContent.toLowerCase() || "";
+                    const clinicLocation = card.querySelector(".bi-geo-alt-fill + span")?.textContent.toLowerCase() || "";
+                    const services = Array.from(card.querySelectorAll(".service-badge")).map(el => el.textContent.toLowerCase()).join(" ");
+                    const specialty = card.dataset.specialty?.toLowerCase() || "";
+                    const gender = card.dataset.gender?.toLowerCase() || "";
+
+                    const matchesQuery =
+                        clinicName.includes(query) ||
+                        clinicLocation.includes(query) ||
+                        services.includes(query) ||
+                        specialty.includes(query) ||
+                        gender.includes(query);
+
+                    card.style.display = matchesQuery ? "" : "none";
+                });
+            }
+
+            searchAnything.addEventListener("input", filterClinics);
+        });
+    </script>
 </body>
 
 </html>
-

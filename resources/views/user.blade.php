@@ -414,10 +414,6 @@
     </div>
     @endif
 
-    @if(session('success'))
-    <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
     <div class="container-fluid p-0">
         <div class="row g-0">
             <!-- Sidebar -->

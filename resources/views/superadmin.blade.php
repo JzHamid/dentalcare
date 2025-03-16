@@ -853,14 +853,14 @@
 
                             <div class="d-flex gap-2">
                                 <!-- Status Filter Dropdown -->
-<select class="form-select no-print" id="statusFilter" style="width: 200px;">
-    <option value="All">All Statuses</option>
-    <option value="Done">Done</option>
-    <option value="Pending">Pending</option>
-    <option value="Rescheduled">Rescheduled</option>
-    <option value="Cancelled">Cancelled</option>
-    <option value="Upcoming">Upcoming</option>
-</select>
+                                <select class="form-select no-print" id="statusFilter" style="width: 200px;">
+                                    <option value="All">All Statuses</option>
+                                    <option value="Done">Done</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Rescheduled">Rescheduled</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                    <option value="Upcoming">Upcoming</option>
+                                </select>
 
                                 <!-- Search Bar -->
                                 <div class="input-group no-print" style="width: 250px;">
