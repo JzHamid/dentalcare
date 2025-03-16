@@ -4,59 +4,346 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <title>DentalCare | Appointment</title>
-
     <style>
+        :root {
+            --primary-color: #345D95;
+            --primary-light: #e8f0fe;
+            --primary-dark: #264573;
+            --secondary-color: #6c757d;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+            --text-color: #333;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f5f7fa;
+        }
+
         .text-default,
         .text-default:hover,
         .text-default:focus,
         .text-default:active {
-            color: #345D95;
+            color: var(--primary-color);
         }
 
         .btn-default,
         .btn-default:hover,
         .btn-default:focus,
         .btn-default:active {
-            background-color: #345D95;
+            background-color: var(--primary-color);
             color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-default:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
+        }
+
+        .bg-default {
+            background-color: var(--primary-color);
+        }
+
+        /* Navbar styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            background-color: white !important;
+            z-index: 1030;
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .dropdown-toggle::after {
             content: none;
         }
+
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+        }
+
+        .dropdown-item {
+            border-radius: 6px;
+            padding: 8px 15px;
+            transition: all 0.2s;
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        /* Card styling */
+        .card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            background-color: var(--primary-light);
+            border-top-left-radius: 12px !important;
+            border-top-right-radius: 12px !important;
+        }
+
+        .card-header.bg-primary {
+            background-color: var(--primary-color) !important;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        /* Form controls */
+        .form-label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+
+        .form-control,
+        .form-select {
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 93, 149, 0.2);
+        }
+
+        /* Status badges */
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.2);
+            color: #ff9800;
+        }
+
+        .status-done {
+            background-color: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+        }
+
+        .status-cancelled {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+        }
+
+        .status-upcoming {
+            background-color: rgba(33, 150, 243, 0.2);
+            color: #2196f3;
+        }
+
+        .status-rescheduled {
+            background-color: rgba(156, 39, 176, 0.2);
+            color: #9c27b0;
+        }
+
+        .status-denied {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        /* Button styling */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
+        }
+
+        .btn-danger {
+            background-color: var(--error-color);
+            border-color: var(--error-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #d32f2f;
+            border-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.2);
+        }
+
+        /* Patient info card */
+        .patient-info-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            transition: all 0.3s;
+        }
+
+        .patient-info-card:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .patient-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+
+        /* Modal styling */
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            background-color: var(--primary-light);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .modal-title {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 15px 20px;
+        }
+
+        /* Appointment history styling */
+        .appointment-history .card {
+            transition: all 0.2s ease;
+            border-color: var(--border-color);
+        }
+
+        .appointment-history .card:hover {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
     </style>
 </head>
 
-<body class="overflow-x-hidden">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<body>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    <nav class="navbar bg-body-secondary">
+    <!-- Navbar -->
+    <nav class="navbar">
         <div class="container-fluid px-4">
-            <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
+            <a class="navbar-brand text-default" href="{{ route('landing') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                    <path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"></path>
+                    <path d="M16 2v4"></path>
+                    <path d="M8 2v4"></path>
+                    <path d="M3 10h18"></path>
+                    <path d="M8 14h.01"></path>
+                    <path d="M12 14h.01"></path>
+                    <path d="M16 14h.01"></path>
+                    <path d="M8 18h.01"></path>
+                    <path d="M12 18h.01"></path>
+                    <path d="M16 18h.01"></path>
+                </svg>
+                DentalCare
+            </a>
 
             @auth
-            <div class="d-flex gap-4" style="margin-right: 100px;">
+            <div class="d-flex align-items-center gap-3">
                 <div class="dropdown">
-                    <!--remove notif button -->
-
-                    <ul class="dropdown-menu dropdown-end">
-
-                    </ul>
-                </div>
-
-                <div class="dropdown d-flex">
-                    <button class="btn dropdown-toggle fs-4 p-0 px-2 border-0 shadow-none" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi-person-circle"></i>
+                    <button class="btn dropdown-toggle fs-5 p-0 px-2 shadow-none border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i>
                     </button>
 
-                    <ul class="dropdown-menu dropdown-end shadow-sm border">
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                         @if (Auth::user()->status == 0)
                         <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
                         @else
@@ -70,252 +357,476 @@
             @endauth
 
             @guest
-            <a class="text-default text-decoration-none" style="margin-right: 100px;" href="{{ route('login') }}">Login / Signup</a>
+            <a class="text-default text-decoration-none" href="{{ route('login') }}">Login / Signup</a>
             @endguest
         </div>
     </nav>
 
-    <div class="container-fluid p-4">
-        <a class="btn btn-secondary" href="{{ '/user-profile' }}">Return</a>
+    <div class="container py-4">
+        <div class="mb-4">
+            <a class="btn btn-secondary" href="{{ '/user-profile' }}">
+                <i class="bi bi-arrow-left me-2"></i>Return to Dashboard
+            </a>
+        </div>
 
-        <div class="d-flex flex-column mx-auto w-75 gap-3">
-            <form class="d-flex justify-content-between" action="{{ route('update.status', $appointment->id) }}" method="post">
-                @csrf
-                <h3 class="fw-bold">Patient Info</h3>
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <!-- Patient Info Section -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Patient Information</h5>
+                        <div>
+                            @if ($appointment->status != 'Cancelled' && $appointment->status != 'Done' && $appointment->status != 'Upcoming' && $appointment->status != 'Deny')
+                            <form action="{{ route('update.status', $appointment->id) }}" method="post" class="d-inline">
+                                @csrf
+                                <input type="hidden" name="status" value="Cancelled">
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="bi bi-x-circle me-2"></i>Cancel Appointment
+                                </button>
+                            </form>
+                            @endif
 
-                @if ($appointment->status != 'Cancelled' && $appointment->status != 'Done' && $appointment->status != 'Upcoming' && $appointment->status != 'Deny')
-                <button class="btn btn-danger">Cancel Appointment</button>
-                @endif
-
-                @if ($appointment->status == 'Deny')
-                <span class="text-danger font-weight-bold" style="font-size: 1.2em; background-color: #ffe6e6; padding: 5px 10px; border-radius: 5px; border: 1px solid #ff4d4d;">
-                    Denied
-                </span>
-                @endif
-
-
-                <input type="hidden" name="status" value="Cancelled">
-            </form>
-
-            <div class="d-flex rounded shadow p-4 gap-4 shadow-sm">
-                <div class="d-flex flex-column gap-1">
-                    @if ($appointment->guest)
-                    {{-- Display guest details --}}
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Patient Name: </span>
-                        {{ $appointment->guest->name . ' ' . $appointment->guest->middlename . ' ' . $appointment->guest->lastname }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Email Address: </span>
-                        {{ $appointment->guest->email }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Contact No.: </span>
-                        {{ $appointment->guest->contact }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Sex: </span>
-                        {{ $appointment->guest->sex == 0 ? 'Male' : 'Female' }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Set By: </span>
-                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
-                    </p>
-                    @elseif ($appointment->temporary)
-                    {{-- Display temporary details (old logic) --}}
-                    @php
-                    $temp = json_decode($appointment->temporary, true);
-                    @endphp
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Patient Name: </span>
-                        {{ ($temp['fname'] ?? '') . ' ' . ($temp['mname'] ?? '') . ' ' . ($temp['lname'] ?? '') }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Birthday: </span>
-                        {{ Carbon\Carbon::parse($temp['birth'])->format('F j, Y') }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Email Address: </span>
-                        {{ $temp['email'] }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Contact No.: </span>
-                        {{ $temp['phone'] }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Set By: </span>
-                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
-                    </p>
-                    @else
-                    {{-- Display user details --}}
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Patient Name: </span>
-                        {{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Birthday: </span>
-                        {{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Address: </span>
-                        {{ $appointment->user->street_name }}, {{ $appointment->user->city }}, {{ $appointment->user->province }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Email Address: </span>
-                        {{ $appointment->user->email }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Contact No.: </span>
-                        {{ $appointment->user->phone }}
-                    </p>
-                    <p class="fw-light m-0">
-                        <span class="fw-bold">Medical Records: </span>
-                        {{ $appointment->user->notes }}
-                    </p>
-                    @endif
+                            @if ($appointment->status == 'Deny')
+                            <span class="status-badge status-cancelled">Denied</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-9">
+                                @if ($appointment->guest)
+                                {{-- Display guest details --}}
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Patient Name:</div>
+                                    <div class="col-md-8">{{ $appointment->guest->name . ' ' . $appointment->guest->middlename . ' ' . $appointment->guest->lastname }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Email Address:</div>
+                                    <div class="col-md-8">{{ $appointment->guest->email }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Contact No.:</div>
+                                    <div class="col-md-8">{{ $appointment->guest->contact }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Sex:</div>
+                                    <div class="col-md-8">{{ $appointment->guest->sex == 0 ? 'Male' : 'Female' }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Set By:</div>
+                                    <div class="col-md-8">{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</div>
+                                </div>
+                                @elseif ($appointment->temporary)
+                                {{-- Display temporary details (old logic) --}}
+                                @php
+                                $temp = json_decode($appointment->temporary, true);
+                                @endphp
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Patient Name:</div>
+                                    <div class="col-md-8">{{ ($temp['fname'] ?? '') . ' ' . ($temp['mname'] ?? '') . ' ' . ($temp['lname'] ?? '') }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Birthday:</div>
+                                    <div class="col-md-8">{{ Carbon\Carbon::parse($temp['birth'])->format('F j, Y') }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Email Address:</div>
+                                    <div class="col-md-8">{{ $temp['email'] }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Contact No.:</div>
+                                    <div class="col-md-8">{{ $temp['phone'] }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Set By:</div>
+                                    <div class="col-md-8">{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</div>
+                                </div>
+                                @else
+                                {{-- Display user details --}}
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Patient Name:</div>
+                                    <div class="col-md-8">{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Birthday:</div>
+                                    <div class="col-md-8">{{ Carbon\Carbon::parse($appointment->user->birthdate)->format('F j, Y') }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Address:</div>
+                                    <div class="col-md-8">{{ $appointment->user->street_name }}, {{ $appointment->user->city }}, {{ $appointment->user->province }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Email Address:</div>
+                                    <div class="col-md-8">{{ $appointment->user->email }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Contact No.:</div>
+                                    <div class="col-md-8">{{ $appointment->user->phone }}</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-4 fw-bold">Medical Records:</div>
+                                    <div class="col-md-8">{{ $appointment->user->notes }}</div>
+                                </div>
+                                @endif
+                            </div>
+                            <div class="col-md-3 text-center">
+                                <img class="patient-image" src="{{ asset($appointment->user->image_path ?: 'profile_images/blank_profile_default.png') }}" alt="Patient Profile">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="d-flex align-items-center mx-auto">
-                    <img class="d-flex align-self-center" src="{{ asset($appointment->user->image_path ?: 'profile_images/blank_profile_default.png') }}" style="height: 100px; width: 100px;">
-                </div>
-            </div>
-
-            <div class="mt-3">
-                <h3 class="fw-bold">Procedures</h3>
-            </div>
-
-            <div class="d-flex rounded shadow p-4 gap-4 shadow-sm">
-                <div class="container-fluid">
-                    <h5>Appointment Details</h5>
-
-                    <div class="row g-3">
-                        <!-- Left Side: Schedule, Dentist, and Service -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label class="form-label" for="schedule">Schedule</label>
-                                <form class="input-group" id="rescheduleForm" action="{{ route('reschedule.appointment', $appointment->id) }}" method="post">
+                <!-- Procedures Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Appointment and Procedure Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Left Column: Appointment Details with Reschedule Functionality -->
+                            <div class="col-md-6">
+                                <form id="rescheduleForm" action="{{ route('reschedule.appointment', $appointment->id) }}" method="post">
                                     @csrf
-                                    <input
-                                        class="form-control"
-                                        type="text"
-                                        name="schedule"
-                                        id="schedule"
-                                        value="{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('l, F j - H:i') }}">
+                                    <div class="mb-3">
+                                        <label class="form-label" for="schedule">Schedule</label>
+                                        <div class="input-group">
+                                            <input
+                                                class="form-control"
+                                                type="text"
+                                                name="schedule"
+                                                id="schedule"
+                                                value="{{ \Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('l, F j - H:i') }}">
 
-                                    <button
-                                        type="button"
-                                        class="btn btn-primary"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#rescheduleModal"
-                                        @if(in_array($appointment->status, ['Done', 'Deny', 'Upcoming'])) disabled @endif>
-                                        Reschedule
-                                    </button>
-                                </form>
-                            </div>
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#rescheduleModal"
+                                                @if(in_array($appointment->status, ['Done', 'Deny', 'Upcoming'])) disabled @endif>
+                                                <i class="bi bi-calendar-plus me-1"></i> Reschedule
+                                            </button>
+                                        </div>
+                                    </div>
 
-                            <div class="form-group">
-                                <label class="form-label" for="dentist">Dentist</label>
-                                <input class="form-control" type="text" name="dentist" value="Dr. {{ $dentist->fname ?? 'Any' }}" disabled>
-                            </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="dentist">Dentist</label>
+                                        <input class="form-control" type="text" name="dentist" value="Dr. {{ $dentist->fname ?? 'Any' }}" disabled>
+                                    </div>
 
-                            <div class="form-group">
-                                <label class="form-label" for="service">Service</label>
-                                <input class="form-control" type="text" name="service" value="{{ $appointment->service->name }}" disabled>
-                            </div>
-                        </div>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="service">Service</label>
+                                        <input class="form-control" type="text" name="service" value="{{ $appointment->service->name }}" disabled>
+                                    </div>
 
-                        <!-- Right Side: Procedure Notes -->
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <label for="procedure_notes" class="form-label">Procedure Notes</label>
-                                <textarea class="form-control" name="procedure_notes" id="procedure_notes" rows="5" disabled>{{ old('procedure_notes', $appointment->procedure_notes) }}</textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Save Record Button (Only if User Status > 0) -->
-                    @if (Auth::user()->status > 0)
-                    <div class="text-end mt-3">
-                        <button class="btn btn-primary" type="submit">Save Record</button>
-                    </div>
-                    @endif
-                </div>
-
-                @php
-                $availableDays = $schedules->pluck('day')->map(function ($day) {
-                return strtolower($day);
-                })->toArray();
-                @endphp
-
-                <script>
-                    document.addEventListener("DOMContentLoaded", function() {
-                        flatpickr('#schedule', {
-                            dateFormat: 'Y-m-d H:i',
-                            enableTime: true,
-                            enable: [
-                                function(date) {
-                                    const availableDays = @json($availableDays);
-                                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                                    const dayName = dayNames[date.getDay()];
-
-                                    return availableDays.includes(dayName);
-                                }
-                            ],
-                            minDate: 'today',
-                            maxDate: new Date(new Date().getFullYear(), 11, 31),
-                        });
-                    });
-                </script>
-
-
-                <!-- Reschedule Modal -->
-                <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="rescheduleModalLabel">Reason for Reschedule</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="rescheduleReasonForm">
-                                    <div class="form-group">
-                                        <label for="reschedule_reason" class="form-label">Reason</label>
-                                        <textarea class="form-control" id="reschedule_reason" name="reschedule_reason" rows="3"></textarea>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="price">Price</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">₱</span>
+                                            <input class="form-control" type="text" name="price" value="{{ $appointment->service->price_start }}" disabled>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-primary" id="confirmReschedule">Reschedule</button>
+
+                            <!-- Right Column: Procedure Notes -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="procedure_notes" class="form-label">Procedure Notes</label>
+                                    <textarea class="form-control" name="procedure_notes" id="procedure_notes" rows="5" disabled>{{ old('procedure_notes', $appointment->procedure_notes) }}</textarea>
+                                </div>
+
+                                @if ($appointment->status == 'Done')
+                                <div class="mt-4">
+                                    <h6 class="mb-3">Payment Summary</h6>
+                                    <div class="p-3 bg-light rounded">
+                                        @php
+                                        // Get the service discount record (if any)
+                                        $serviceFee = $appointment->fees->whereNotNull('service_name')->first();
+                                        // Get additional fees (rows without service data)
+                                        $additionalFees = $appointment->fees->whereNull('service_name');
+
+                                        // Service price and discount calculation
+                                        $servicePrice = $serviceFee->service_amount ?? $appointment->service->price_start;
+                                        $serviceDiscount = $serviceFee->service_discount ?? 0;
+                                        $serviceDiscountAmount = ($serviceDiscount / 100) * $servicePrice;
+                                        $discountedServicePrice = $servicePrice - $serviceDiscountAmount;
+
+                                        // Additional fees calculation
+                                        $totalAdditionalFees = 0;
+                                        $totalFeeDiscounts = 0;
+
+                                        if ($additionalFees->isNotEmpty()) {
+                                        foreach ($additionalFees as $fee) {
+                                        $feeAmount = $fee->fee_amount ?? 0;
+                                        $feeDiscount = $fee->discount_percentage ?? 0;
+                                        $feeDiscountAmount = ($feeDiscount / 100) * $feeAmount;
+
+                                        $totalAdditionalFees += $feeAmount;
+                                        $totalFeeDiscounts += $feeDiscountAmount;
+                                        }
+                                        }
+
+                                        // Grand total before discount
+                                        $grandTotal = $servicePrice + $totalAdditionalFees;
+                                        // Total discount given
+                                        $totalDiscountGiven = $serviceDiscountAmount + $totalFeeDiscounts;
+                                        // Total after applying all discounts
+                                        $totalAfterDiscount = $grandTotal - $totalDiscountGiven;
+                                        @endphp
+
+                                        <div class="row mb-2">
+                                            <div class="col-md-6">
+                                                <p class="mb-1"><strong>Service Price:</strong> ₱{{ number_format($servicePrice, 2) }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="mb-1"><strong>Service Discount:</strong> {{ $serviceDiscount }}%</p>
+                                            </div>
+                                        </div>
+
+                                        @if($additionalFees->isNotEmpty())
+                                        <div class="mt-3 mb-2">
+                                            <p class="mb-1"><strong>Additional Fees:</strong></p>
+                                            <ul class="list-group list-group-flush">
+                                                @foreach($additionalFees as $fee)
+                                                <li class="list-group-item px-0 py-1 border-0">
+                                                    <div class="d-flex justify-content-between">
+                                                        <span>{{ $fee->fee_type }}</span>
+                                                        <span>₱{{ number_format($fee->fee_amount, 2) }}</span>
+                                                    </div>
+                                                    <small class="text-muted">Discount: {{ $fee->discount_percentage }}%</small>
+                                                </li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                        @endif
+
+                                        <hr>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p class="mb-1"><strong>Grand Total:</strong> ₱{{ number_format($grandTotal, 2) }}</p>
+                                                <p class="mb-1 text-danger"><strong>Total Discount:</strong> ₱{{ number_format($totalDiscountGiven, 2) }}</p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p class="mb-1 text-success"><strong>Final Amount:</strong> ₱{{ number_format($totalAfterDiscount, 2) }}</p>
+                                                <p class="mb-1"><strong>Amount Paid:</strong> ₱{{ number_format($appointment->total_paid ?? 0, 2) }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <script>
-                    document.getElementById('confirmReschedule').addEventListener('click', function() {
-                        const reason = document.getElementById('reschedule_reason').value;
-                        const form = document.getElementById('rescheduleForm');
-                        const input = document.createElement('input');
-                        input.type = 'hidden';
-                        input.name = 'reschedule_reason';
-                        input.value = reason;
-                        form.appendChild(input);
-                        form.submit();
-                    });
-                </script>
+                <!-- Appointment History Section -->
+                @if(isset($appointmentHistory) && $appointmentHistory->isNotEmpty())
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Appointment History</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="appointment-history">
+                            @foreach($appointmentHistory as $history)
+                            @php
+                            // Get the service discount record (if any)
+                            $serviceFee = $history->fees->whereNotNull('service_name')->first();
+                            // Get additional fees (rows without service data)
+                            $additionalFees = $history->fees->whereNull('service_name');
+                            @endphp
+
+                            <div class="card mb-3 border">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="mb-0">{{ \Carbon\Carbon::parse($history->appointment_time)->format('F j, Y, g:i a') }}</h5>
+                                        <span class="status-badge status-done">DONE</span>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <p class="mb-0"><strong>Dentist:</strong> Dr. {{ $history->dentist->fname ?? 'N/A' }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-0"><strong>Service:</strong> {{ $history->service->name ?? 'N/A' }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-4">
+                                        <div class="col-md-6">
+                                            <p class="mb-0"><strong>Service Amount:</strong> ₱{{ number_format(($serviceFee && $serviceFee->service_amount !== null) ? $serviceFee->service_amount : $appointment->service->price_start, 2) }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-0"><strong>Service Discount:</strong> {{ $serviceFee->service_discount ?? '0.00' }}%</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <p class="mb-2"><strong>Procedure Notes:</strong></p>
+                                        <div class="p-3 bg-light rounded">
+                                            {{ $history->procedure_notes ?? 'No notes available.' }}
+                                        </div>
+                                    </div>
+
+                                    <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#appointmentModal-{{ $history->id }}">
+                                        <i class="bi bi-eye me-2"></i>View Details
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Modal for Appointment Details -->
+                            <div class="modal fade" id="appointmentModal-{{ $history->id }}" tabindex="-1" aria-labelledby="appointmentModalLabel-{{ $history->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header bg-primary text-white">
+                                            <h5 class="modal-title" id="appointmentModalLabel-{{ $history->id }}">
+                                                <i class="bi bi-calendar-check me-2"></i>Appointment Details
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">Appointment Date</h6>
+                                                    <p class="lead">{{ \Carbon\Carbon::parse($history->appointment_time)->format('F j, Y, g:i a') }}</p>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">Dentist</h6>
+                                                    <p class="lead">Dr. {{ $history->dentist->fname ?? 'N/A' }}</p>
+                                                </div>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <h6 class="text-muted">Service Name</h6>
+                                                <p class="lead">{{ $history->service->name ?? 'N/A' }}</p>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">Service Price</h6>
+                                                    <p class="lead">
+                                                        ₱{{ number_format(($serviceFee && $serviceFee->service_amount !== null) ? $serviceFee->service_amount : $appointment->service->price_start, 2) }}
+                                                    </p>
+                                                </div>
+                                                @if($serviceFee)
+                                                <div class="col-md-6 mb-3">
+                                                    <h6 class="text-muted">Service Discount</h6>
+                                                    <p class="lead">{{ $serviceFee->service_discount ?? '0' }}%</p>
+                                                </div>
+                                                @endif
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <h6 class="text-muted">Procedure Notes</h6>
+                                                <p class="lead">{{ $history->procedure_notes ?? 'N/A' }}</p>
+                                            </div>
+
+                                            @if($additionalFees->isNotEmpty())
+                                            <div class="mb-3">
+                                                <h6 class="text-muted">Additional Fees</h6>
+                                                <ul class="list-group">
+                                                    @foreach($additionalFees as $fee)
+                                                    <li class="list-group-item">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <span>{{ $fee->fee_type ?? 'N/A' }}</span>
+                                                            <span class="badge bg-primary rounded-pill">₱{{ number_format($fee->fee_amount, 2) ?? 'N/A' }}</span>
+                                                        </div>
+                                                        <small class="text-muted">Discount: {{ $fee->discount_percentage ?? '0' }}%</small>
+                                                    </li>
+                                                    @endforeach
+                                                </ul>
+                                            </div>
+                                            @else
+                                            <div class="mb-3">
+                                                <h6 class="text-muted">Additional Fees</h6>
+                                                <p class="lead">N/A</p>
+                                            </div>
+                                            @endif
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-circle me-2"></i>Close
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>
 
+    <!-- Reschedule Modal -->
+    <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="rescheduleModalLabel">Reason for Reschedule</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="rescheduleReasonForm">
+                        <div class="mb-3">
+                            <label for="reschedule_reason" class="form-label">Reason</label>
+                            <textarea class="form-control" id="reschedule_reason" name="reschedule_reason" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="confirmReschedule">Reschedule</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @php
+    $availableDays = $schedules->pluck('day')->map(function ($day) {
+    return strtolower($day);
+    })->toArray();
+    @endphp
+
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            flatpickr('#schedule', {
+                dateFormat: 'Y-m-d H:i',
+                enableTime: true,
+                enable: [
+                    function(date) {
+                        const availableDays = @json($availableDays);
+                        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                        const dayName = dayNames[date.getDay()];
+
+                        return availableDays.includes(dayName);
+                    }
+                ],
+                minDate: 'today',
+                maxDate: new Date(new Date().getFullYear(), 11, 31),
+            });
+        });
+
         function change_status(value) {
             const status = document.getElementById('status');
             const form = document.getElementById('status-form');
-
             status.value = value;
             form.submit();
         }
+
+        // Reschedule Modal Script
+        document.getElementById('confirmReschedule').addEventListener('click', function() {
+            const reason = document.getElementById('reschedule_reason').value;
+            const form = document.getElementById('rescheduleForm');
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'reschedule_reason';
+            input.value = reason;
+            form.appendChild(input);
+            form.submit();
+        });
     </script>
 </body>
 

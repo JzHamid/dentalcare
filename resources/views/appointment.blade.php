@@ -5,66 +5,321 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
-
-    <title>DentalCare | Listing</title>
-
+    <title>DentalCare | Book Appointment</title>
     <style>
+        :root {
+            --primary-color: #345D95;
+            --primary-light: #e8f0fe;
+            --primary-dark: #264573;
+            --secondary-color: #6c757d;
+            --success-color: #4caf50;
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+            --text-color: #333;
+            --light-gray: #f8f9fa;
+            --border-color: #e0e0e0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow-x: hidden;
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: #f5f7fa;
+        }
+        
         .text-default,
         .text-default:hover,
         .text-default:focus,
         .text-default:active {
-            color: #345D95;
+            color: var(--primary-color);
         }
-
+        
         .btn-default,
         .btn-default:hover,
         .btn-default:focus,
         .btn-default:active {
-            background-color: #345D95;
+            background-color: var(--primary-color);
             color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
-
+        
+        .btn-default:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
+        }
+        
+        .bg-default {
+            background-color: var(--primary-color);
+        }
+        
+        /* Navbar styling */
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 0;
+            background-color: white !important;
+            z-index: 1030;
+        }
+        
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
         .dropdown-toggle::after {
             content: none;
+        }
+        
+        .dropdown-menu {
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid var(--border-color);
+            padding: 10px;
+        }
+        
+        .dropdown-item {
+            border-radius: 6px;
+            padding: 8px 15px;
+            transition: all 0.2s;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+        
+        /* Form styling */
+        .form-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin: 30px auto;
+            max-width: 800px;
+        }
+        
+        .form-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            color: var(--text-color);
+            margin-bottom: 8px;
+        }
+        
+        .form-control, .form-select {
+            padding: 10px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 93, 149, 0.2);
+        }
+        
+        /* Patient box styling */
+        .patient-box {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+        
+        .patient-box:hover {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Button styling */
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            border-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            border-color: var(--success-color);
+        }
+        
+        .btn-success:hover {
+            background-color: #3d8b40;
+            border-color: #3d8b40;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(108, 117, 125, 0.2);
+        }
+        
+        /* Service selection styling */
+        .service-date-display {
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        .service-checkbox:checked + label {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        /* Footer styling */
+        footer {
+            background-color: var(--primary-light);
+            color: var(--text-color);
+            padding: 40px 0;
+            margin-top: auto;
+        }
+        
+        .footer-title {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .footer-links a {
+            color: var(--text-color);
+            font-weight: 600;
+            text-decoration: none;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .footer-contact li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-contact i {
+            color: var(--primary-color);
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        /* SweetAlert customization */
+        .blue-swal {
+            background-color: #f0f8ff !important;
+            border: 2px solid var(--primary-color) !important;
+        }
+        
+        .blue-swal .swal2-title {
+            color: var(--primary-color) !important;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .blue-swal .swal2-content {
+            color: var(--text-color) !important;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .blue-swal .btn-primary {
+            background-color: var(--primary-color) !important;
+            border-color: var(--primary-color) !important;
+            color: white !important;
+            font-family: 'Poppins', sans-serif;
+            border-radius: 8px;
+        }
+        
+        .blue-swal .btn-primary:hover {
+            background-color: var(--primary-dark) !important;
+            border-color: var(--primary-dark) !important;
         }
     </style>
 </head>
 
-<body class="overflow-x-hidden">
+<body>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-    <nav class="navbar bg-body-secondary">
+    <!-- Navbar -->
+    <nav class="navbar">
         <div class="container-fluid px-4">
-            <a class="navbar-brand text-default fw-bold" href="{{ route('landing') }}">DentalCare</a>
+            <a class="navbar-brand text-default" href="{{ route('landing') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                    <path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Z"></path>
+                    <path d="M16 2v4"></path>
+                    <path d="M8 2v4"></path>
+                    <path d="M3 10h18"></path>
+                    <path d="M8 14h.01"></path>
+                    <path d="M12 14h.01"></path>
+                    <path d="M16 14h.01"></path>
+                    <path d="M8 18h.01"></path>
+                    <path d="M12 18h.01"></path>
+                    <path d="M16 18h.01"></path>
+                </svg>
+                DentalCare
+            </a>
 
             @auth
-            <div class="d-flex gap-4" style="margin-right: 100px;">
+            <div class="d-flex align-items-center gap-3">
                 <div class="dropdown">
-                    <!--remove notif button -->
-
-                    <ul class="dropdown-menu dropdown-end">
-
-                    </ul>
-                </div>
-
-                <div class="dropdown d-flex">
-                    <button class="btn dropdown-toggle fs-4 p-0 px-2 shadow-none border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi-person-circle"></i>
+                    <button class="btn dropdown-toggle fs-5 p-0 px-2 shadow-none border-0" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i>
                     </button>
 
-                    <ul class="dropdown-menu dropdown-end shadow-sm border-0">
+                    <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                         @if (Auth::user()->status == 0)
-                        <li><a class="dropdown-item" href="{{ route('user' ) }}">My Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('user') }}">My Profile</a></li>
                         @else
-                        <li><a class="dropdown-item" href="{{ route('admin' ) }}">My Profile</a></li>
+                        <li><a class="dropdown-item" href="{{ route('admin') }}">My Profile</a></li>
                         @endif
-
                         <li><a class="dropdown-item" href="{{ route('logout') }}">Logout</a></li>
                     </ul>
                 </div>
@@ -72,18 +327,24 @@
             @endauth
 
             @guest
-            <a class="text-default text-decoration-none" style="margin-right: 100px;" href="{{ route('login') }}">Login / Signup</a>
+            <a class="btn btn-outline-primary" href="{{ route('login') }}">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login / Signup
+            </a>
             @endguest
         </div>
     </nav>
 
-    <div class="container-fluid p-4">
-        <a class="btn btn-secondary" href="{{ URL::previous() }}">Return</a>
+    <div class="container mt-4">
+        <a class="btn btn-secondary" href="{{ URL::previous() }}">
+            <i class="bi bi-arrow-left me-2"></i>Return
+        </a>
+    </div>
 
-        <form class="d-flex flex-column mx-auto w-50" action="{{ route('create.appointment', $shop->id) }}" method="post" id="app-form">
+    <div class="container form-container">
+        <form class="d-flex flex-column" action="{{ route('create.appointment', $shop->id) }}" method="post" id="app-form">
             @csrf
 
-            <h1 class="display-5 text-center mb-4"><span class="fw-bold">{{ $shop->name }}</span> Appointment Form</h1>
+            <h1 class="form-title"><span class="fw-bold">{{ $shop->name }}</span> Appointment Form</h1>
 
             <div class="form-group mb-4">
                 <label class="form-label" for="whofor">Who is this appointment for?</label>
@@ -95,7 +356,7 @@
             </div>
 
             <div class="d-flex flex-column gap-2" id="patient-list">
-                <div class="d-flex flex-column rounded shadow-sm p-4 mb-4 gap-3 box" id="patient-box">
+                <div class="d-flex flex-column patient-box gap-3 box" id="patient-box">
                     <button class="btn btn-close align-self-end visually-hidden" onclick="delete_patient(this)" id="btn-close"></button>
 
                     <div class="d-flex gap-2 mb-2">
@@ -145,7 +406,7 @@
                         <label class="form-label" for="appointments[0][service]">Type of Service</label>
                         <div class="input-group">
                             <div class="dropdown w-100">
-                                <button class="btn btn-outline-secondary dropdown-toggle w-100"
+                                <button class="btn btn-outline-primary dropdown-toggle w-100"
                                     type="button" id="serviceDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                     -- Select Services --
                                 </button>
@@ -163,7 +424,7 @@
                             </div>
                         </div>
 
-                        <div id="services-date-container" class="d-flex flex-column"></div>
+                        <div id="services-date-container" class="d-flex flex-column mt-3"></div>
 
                         @php
                         $availableDays = $schedules->pluck('day')->map(fn($day) => strtolower($day))->toArray();
@@ -206,12 +467,12 @@
                                         const serviceDateDiv = document.createElement('div');
                                         serviceDateDiv.classList.add('mb-3');
                                         serviceDateDiv.innerHTML = `
-                        <label class="form-label" for="appointments[0][time][${serviceId}]">
-                            Select date for ${serviceName}
-                        </label>
-                        <input class="form-control service-date-display" type="text" placeholder="Select a date for ${serviceName}">
-                        <input class="service-date-hidden" type="hidden" name="appointments[0][time][${serviceId}]">
-                    `;
+                                            <label class="form-label" for="appointments[0][time][${serviceId}]">
+                                                Select date for ${serviceName}
+                                            </label>
+                                            <input class="form-control service-date-display" type="text" placeholder="Select a date for ${serviceName}">
+                                            <input class="service-date-hidden" type="hidden" name="appointments[0][time][${serviceId}]">
+                                        `;
                                         servicesDateContainer.appendChild(serviceDateDiv);
 
                                         initializeDatePickers();
@@ -285,31 +546,6 @@
                                         });
                                     });
                             });
-
-                            // Add custom CSS for blue theme
-                            const style = document.createElement('style');
-                            style.innerHTML = `
-    .blue-swal {
-        background-color: #f0f8ff !important;
-        border: 2px solid #007bff !important;
-    }
-    .blue-swal .swal2-title {
-        color: #0056b3 !important;
-    }
-    .blue-swal .swal2-content {
-        color: #003087 !important;
-    }
-    .blue-swal .btn-primary {
-        background-color: #007bff !important;
-        border-color: #007bff !important;
-        color: white !important;
-    }
-    .blue-swal .btn-primary:hover {
-        background-color: #0056b3 !important;
-        border-color: #0056b3 !important;
-    }
-`;
-                            document.head.appendChild(style);
                         </script>
 
 
@@ -342,46 +578,72 @@
                 </button>
             </div>
 
-            <div class="form-check mb-2">
+            <div class="form-check mb-4">
                 <input class="form-check-input" type="checkbox" name="terms" required>
                 <label class="form-check-label" for="terms">By checking this box you agree to share your medical history with all clinic branches</label>
             </div>
 
-            <button class="btn btn-default mb-5" type="submit">Book</button>
+            <button class="btn btn-default w-100" type="submit">
+                <i class="bi bi-calendar-check me-2"></i>Book Appointment
+            </button>
         </form>
     </div>
 
-    <footer class="row bg-body-secondary bottom-0 p-4">
-        <div class="col">
-            <h5 class="text-default fw-bold">DentalCare</h5>
-            <p style="text-align: justify;">Your health is our mission partner with us for exceptional healthcare, Schedule your appointment today and experience the difference of exceptional healthcare.</p>
-        </div>
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <h4 class="footer-title">DentalCare</h4>
+                    <p>Your health is our mission. Partner with us for exceptional dental healthcare. Schedule your appointment today and experience the difference of exceptional care.</p>
+                    <div class="d-flex gap-3 mt-3">
+                        <a href="#" class="text-primary fs-4"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="text-primary fs-4"><i class="bi bi-twitter-x"></i></a>
+                        <a href="#" class="text-primary fs-4"><i class="bi bi-instagram"></i></a>
+                        <a href="#" class="text-primary fs-4"><i class="bi bi-linkedin"></i></a>
+                    </div>
+                </div>
 
-        <div class="col">
-            <h5 class="text-center fw-bold">Quick Links</h5>
-            <div class="d-flex flex-column align-items-center">
-                <a href="#home" class="text-decoration-none fw-bold">Home</a>
-                <a href="#services" class="text-decoration-none fw-bold">Services</a>
-                <a href="#faqp" class="text-decoration-none fw-bold">FAQ</a>
+                <div class="col-md-3 offset-md-1">
+                    <h4 class="footer-title text-center">Quick Links</h4>
+                    <div class="footer-links">
+                        <a href="#home">Home</a>
+                        <a href="#services">Services</a>
+                        <a href="#faqp">FAQ</a>
+                        <a href="#about">About Us</a>
+                        <a href="#contact">Contact</a>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <h4 class="footer-title">Contact Us</h4>
+                    <ul class="list-unstyled footer-contact">
+                        <li>
+                            <i class="bi bi-geo-alt-fill"></i>
+                            <span class="fw-bold">Address:</span> 123 Dental Street, Manila, Philippines
+                        </li>
+                        <li>
+                            <i class="bi bi-telephone-fill"></i>
+                            <span class="fw-bold">Phone:</span> +63 123 456 7890
+                        </li>
+                        <li>
+                            <i class="bi bi-envelope-fill"></i>
+                            <span class="fw-bold">Email:</span> dentalcare@gmail.com
+                        </li>
+                        <li>
+                            <i class="bi bi-clock-fill"></i>
+                            <span class="fw-bold">Hours:</span> Monday - Friday: 8:00 AM - 6:00 PM
+                        </li>
+                    </ul>
+                </div>
             </div>
-        </div>
-
-        <div class="col">
-            <h5 class="fw-bold mb-3">Contact Us</h5>
-            <ul class="list-unstyled">
-                <li class="mb-1">
-                    <i class="bi bi-telephone me-2"></i>
-                    <span class="fw-bold">Phone:</span> +63 123 456 7890
-                </li>
-                <li>
-                    <i class="bi bi-envelope me-2"></i>
-                    <span class="fw-bold">Email:</span> dentalcare@gmail.com
-                </li>
-            </ul>
-        </div>
-
-        <div class="col">
-            <h5 class="text-center fw-bold">Follow Us</h5>
+            
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <hr>
+                    <p class="mb-0">&copy; {{ date('Y') }} DentalCare. All rights reserved.</p>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -471,3 +733,4 @@
 </body>
 
 </html>
+
