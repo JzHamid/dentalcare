@@ -9,6 +9,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <title>DentalCare | Book Appointment</title>
     <style>
         :root {
@@ -23,7 +25,7 @@
             --light-gray: #f8f9fa;
             --border-color: #e0e0e0;
         }
-        
+
         body {
             font-family: 'Poppins', sans-serif;
             overflow-x: hidden;
@@ -33,14 +35,14 @@
             flex-direction: column;
             background-color: #f5f7fa;
         }
-        
+
         .text-default,
         .text-default:hover,
         .text-default:focus,
         .text-default:active {
             color: var(--primary-color);
         }
-        
+
         .btn-default,
         .btn-default:hover,
         .btn-default:focus,
@@ -53,17 +55,17 @@
             font-weight: 600;
             transition: all 0.3s ease;
         }
-        
+
         .btn-default:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
         }
-        
+
         .bg-default {
             background-color: var(--primary-color);
         }
-        
+
         /* Navbar styling */
         .navbar {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -71,7 +73,7 @@
             background-color: white !important;
             z-index: 1030;
         }
-        
+
         .navbar-brand {
             font-size: 24px;
             font-weight: 700;
@@ -80,29 +82,29 @@
             align-items: center;
             gap: 10px;
         }
-        
+
         .dropdown-toggle::after {
             content: none;
         }
-        
+
         .dropdown-menu {
             border-radius: 8px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border: 1px solid var(--border-color);
             padding: 10px;
         }
-        
+
         .dropdown-item {
             border-radius: 6px;
             padding: 8px 15px;
             transition: all 0.2s;
         }
-        
+
         .dropdown-item:hover {
             background-color: var(--primary-light);
             color: var(--primary-color);
         }
-        
+
         /* Form styling */
         .form-container {
             background-color: white;
@@ -112,33 +114,35 @@
             margin: 30px auto;
             max-width: 800px;
         }
-        
+
         .form-title {
             color: var(--primary-color);
             font-weight: 700;
             margin-bottom: 30px;
             text-align: center;
         }
-        
+
         .form-label {
             font-weight: 500;
             color: var(--text-color);
             margin-bottom: 8px;
         }
-        
-        .form-control, .form-select {
+
+        .form-control,
+        .form-select {
             padding: 10px 15px;
             border: 2px solid var(--border-color);
             border-radius: 8px;
             transition: all 0.3s;
             font-size: 14px;
         }
-        
-        .form-control:focus, .form-select:focus {
+
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(52, 93, 149, 0.2);
         }
-        
+
         /* Patient box styling */
         .patient-box {
             background-color: white;
@@ -149,66 +153,66 @@
             border: 1px solid var(--border-color);
             transition: all 0.3s;
         }
-        
+
         .patient-box:hover {
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Button styling */
         .btn {
             border-radius: 8px;
             font-weight: 500;
             transition: all 0.3s;
         }
-        
+
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
         }
-        
+
         .btn-primary:hover {
             background-color: var(--primary-dark);
             border-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(52, 93, 149, 0.2);
         }
-        
+
         .btn-success {
             background-color: var(--success-color);
             border-color: var(--success-color);
         }
-        
+
         .btn-success:hover {
             background-color: #3d8b40;
             border-color: #3d8b40;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
         }
-        
+
         .btn-secondary {
             background-color: var(--secondary-color);
             border-color: var(--secondary-color);
         }
-        
+
         .btn-secondary:hover {
             background-color: #5a6268;
             border-color: #5a6268;
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(108, 117, 125, 0.2);
         }
-        
+
         /* Service selection styling */
         .service-date-display {
             background-color: white;
             cursor: pointer;
         }
-        
-        .service-checkbox:checked + label {
+
+        .service-checkbox:checked+label {
             background-color: var(--primary-light);
             color: var(--primary-color);
             font-weight: 500;
         }
-        
+
         /* Footer styling */
         footer {
             background-color: var(--primary-light);
@@ -216,19 +220,19 @@
             padding: 40px 0;
             margin-top: auto;
         }
-        
+
         .footer-title {
             color: var(--primary-color);
             font-weight: 700;
             margin-bottom: 20px;
         }
-        
+
         .footer-links {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
-        
+
         .footer-links a {
             color: var(--text-color);
             font-weight: 600;
@@ -236,38 +240,38 @@
             margin-bottom: 10px;
             transition: all 0.2s;
         }
-        
+
         .footer-links a:hover {
             color: var(--primary-color);
         }
-        
+
         .footer-contact li {
             margin-bottom: 10px;
         }
-        
+
         .footer-contact i {
             color: var(--primary-color);
             margin-right: 10px;
             width: 20px;
             text-align: center;
         }
-        
+
         /* SweetAlert customization */
         .blue-swal {
             background-color: #f0f8ff !important;
             border: 2px solid var(--primary-color) !important;
         }
-        
+
         .blue-swal .swal2-title {
             color: var(--primary-color) !important;
             font-family: 'Poppins', sans-serif;
         }
-        
+
         .blue-swal .swal2-content {
             color: var(--text-color) !important;
             font-family: 'Poppins', sans-serif;
         }
-        
+
         .blue-swal .btn-primary {
             background-color: var(--primary-color) !important;
             border-color: var(--primary-color) !important;
@@ -275,10 +279,37 @@
             font-family: 'Poppins', sans-serif;
             border-radius: 8px;
         }
-        
+
         .blue-swal .btn-primary:hover {
             background-color: var(--primary-dark) !important;
             border-color: var(--primary-dark) !important;
+        }
+
+        .slot {
+            padding: 10px;
+            margin: 5px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            text-align: center;
+            border-radius: 5px;
+            width: 150px;
+            height: 50px;
+            line-height: 1.2;
+            font-size: 14px;
+        }
+
+        .slot.available {
+            background-color: #d4edda;
+            cursor: pointer;
+        }
+
+        .slot.booked {
+            background-color: #f8d7da;
+            cursor: not-allowed;
+        }
+
+        .slot.selected {
+            border-color: #28a745;
         }
     </style>
 </head>
@@ -414,8 +445,11 @@
                                     @foreach ($availables as $available)
                                     <li>
                                         <label class="dropdown-item">
-                                            <input type="checkbox" class="form-check-input me-2 service-checkbox" name="appointments[0][services][]"
-                                                value="{{ $available->service->id }}" data-service="{{ $available->service->name }}">
+                                            <input type="checkbox" class="form-check-input me-2 service-checkbox"
+                                                name="appointments[0][services][]"
+                                                value="{{ $available->service->id }}"
+                                                data-service="{{ $available->service->name }}"
+                                                data-duration="{{ $available->service->duration }}">
                                             {{ $available->service->name }}
                                         </label>
                                     </li>
@@ -432,12 +466,96 @@
 
                         <script>
                             const availableDays = @json($availableDays);
+                            const clinicSchedules = @json($schedules);
+                            // Global variable containing all booked appointments (retrieved from your appointments table)
+                            const bookedAppointments = @json($bookedAppointments);
 
+                            // Returns the schedule for a given day name (in lowercase, e.g., "monday")
+                            function getScheduleForDay(day) {
+                                return clinicSchedules.find(schedule => schedule.day.toLowerCase() === day);
+                            }
+
+                            // Generate time slots between startTime and endTime using the given duration (in minutes).
+                            // Each slot includes a raw time (24‑hour format) and display times (12‑hour format).
+                            function generateTimeSlots(startTime, endTime, duration) {
+                                let slots = [];
+                                let current = moment(startTime, 'HH:mm:ss');
+                                const end = moment(endTime, 'HH:mm:ss');
+                                while (true) {
+                                    let rawStart = current.format('HH:mm');
+                                    let rawEnd = current.clone().add(duration, 'minutes').format('HH:mm');
+                                    let displayStart = current.format('hh:mm A');
+                                    let displayEnd = current.clone().add(duration, 'minutes').format('hh:mm A');
+                                    if (current.clone().add(duration, 'minutes').isAfter(end)) break;
+                                    slots.push({
+                                        start: rawStart,
+                                        end: rawEnd,
+                                        displayStart: displayStart,
+                                        displayEnd: displayEnd
+                                    });
+                                    current.add(duration, 'minutes');
+                                }
+                                return slots;
+                            }
+
+                            // This function updates the time slots container for the given service on the selected date.
+                            // It now checks the bookedAppointments variable (populated from the database) for any existing appointments.
+                            async function updateTimeSlots(serviceId, date, duration) {
+                                let dayName = moment(date).format('dddd').toLowerCase();
+                                let schedule = getScheduleForDay(dayName);
+                                const container = document.getElementById(`time-slots-${serviceId}`);
+                                if (!schedule) {
+                                    container.innerHTML = '<p>No schedule available for this day.</p>';
+                                    return;
+                                }
+                                let slots = generateTimeSlots(schedule.start, schedule.end, duration);
+                                let bookedTimes = await fetchBookedTimes(serviceId, date);
+                                container.innerHTML = '';
+                                slots.forEach(slot => {
+                                    let isBooked = bookedTimes.includes(slot.start);
+                                    let slotDiv = document.createElement('div');
+                                    slotDiv.classList.add('slot');
+                                    slotDiv.style.padding = '5px';
+                                    slotDiv.style.margin = '2px';
+                                    slotDiv.style.display = 'inline-block';
+                                    slotDiv.style.border = '1px solid #ccc';
+                                    slotDiv.style.cursor = isBooked ? 'not-allowed' : 'pointer';
+                                    slotDiv.style.backgroundColor = isBooked ? '#f8d7da' : '#d4edda';
+                                    // Display the nicely formatted time slot using 12-hour time.
+                                    slotDiv.textContent = `${slot.displayStart} - ${slot.displayEnd}` + (isBooked ? ' (Booked)' : ' (Available)');
+                                    if (!isBooked) {
+                                        slotDiv.addEventListener('click', function() {
+                                            // When an available slot is clicked, set the corresponding hidden input value using raw time.
+                                            let hiddenInput = document.querySelector(`input[name="appointments[0][time][${serviceId}]"]`);
+                                            hiddenInput.value = date + 'T' + slot.start;
+                                            // Optionally, visually highlight the selected slot.
+                                            container.querySelectorAll('.slot').forEach(el => el.style.borderColor = '#ccc');
+                                            slotDiv.style.borderColor = '#28a745';
+                                        });
+                                    }
+                                    container.appendChild(slotDiv);
+                                });
+                            }
+
+                            // Updated: Use rescheduled_time if available and explicitly parse using the correct format.
+                            function fetchBookedTimes(serviceId, date) {
+                                const appointmentsForService = bookedAppointments.filter(appt => {
+                                    let effectiveTime = appt.rescheduled_time ? appt.rescheduled_time : appt.appointment_time;
+                                    return appt.service_id == serviceId && moment(effectiveTime, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DD') === date;
+                                });
+                                const bookedTimes = appointmentsForService.map(appt => {
+                                    let effectiveTime = appt.rescheduled_time ? appt.rescheduled_time : appt.appointment_time;
+                                    return moment(effectiveTime, "YYYY-MM-DD HH:mm:ss").format('HH:mm');
+                                });
+                                return Promise.resolve(bookedTimes);
+                            }
+
+                            // Initialize flatpickr date pickers for all inputs with class "service-date-display"
                             function initializeDatePickers() {
                                 document.querySelectorAll('.service-date-display').forEach((displayInput) => {
                                     flatpickr(displayInput, {
-                                        dateFormat: 'l, F j - H:i', // Display format: "Day, Month Date - Hour:Minute"
-                                        enableTime: true,
+                                        dateFormat: 'l, F j',
+                                        enableTime: false,
                                         enable: [
                                             function(date) {
                                                 const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -449,32 +567,47 @@
                                         onChange: function(selectedDates, dateStr, instance) {
                                             let hiddenInput = instance.input.nextElementSibling; // Get the hidden input
                                             if (hiddenInput) {
-                                                hiddenInput.value = instance.formatDate(selectedDates[0], "Y-m-d\\TH:i"); // Set correct submission format
+                                                let formattedDate = moment(selectedDates[0]).format('YYYY-MM-DD');
+                                                hiddenInput.value = formattedDate;
+                                                // Get the service id and duration from data attributes on the input.
+                                                let serviceId = instance.input.getAttribute('data-service-id');
+                                                let duration = parseInt(instance.input.getAttribute('data-duration'));
+                                                // Ensure a time slots container exists.
+                                                let containerId = `time-slots-${serviceId}`;
+                                                let container = document.getElementById(containerId);
+                                                if (!container) {
+                                                    container = document.createElement('div');
+                                                    container.id = containerId;
+                                                    instance.input.parentElement.appendChild(container);
+                                                }
+                                                updateTimeSlots(serviceId, formattedDate, duration);
                                             }
                                         }
                                     });
                                 });
                             }
 
+                            // When a service checkbox is checked or unchecked, add or remove its date picker block.
                             document.querySelectorAll('.service-checkbox').forEach((checkbox) => {
                                 checkbox.addEventListener('change', (e) => {
                                     const serviceName = e.target.getAttribute('data-service');
+                                    const serviceDuration = e.target.getAttribute('data-duration');
                                     const servicesDateContainer = document.getElementById('services-date-container');
                                     const serviceId = e.target.value;
 
                                     if (e.target.checked) {
-                                        // Add date picker for the selected service
+                                        // Append a block for date selection and time slots for the chosen service.
                                         const serviceDateDiv = document.createElement('div');
                                         serviceDateDiv.classList.add('mb-3');
                                         serviceDateDiv.innerHTML = `
-                                            <label class="form-label" for="appointments[0][time][${serviceId}]">
-                                                Select date for ${serviceName}
-                                            </label>
-                                            <input class="form-control service-date-display" type="text" placeholder="Select a date for ${serviceName}">
-                                            <input class="service-date-hidden" type="hidden" name="appointments[0][time][${serviceId}]">
-                                        `;
+                        <label class="form-label" for="appointments[0][time][${serviceId}]">
+                            Select date for ${serviceName}
+                        </label>
+                        <input class="form-control service-date-display" type="text" placeholder="Select a date for ${serviceName}" data-service-id="${serviceId}" data-duration="${serviceDuration}">
+                        <input class="service-date-hidden" type="hidden" name="appointments[0][time][${serviceId}]">
+                        <div class="time-slots" id="time-slots-${serviceId}" style="margin-top:10px;"></div>
+                    `;
                                         servicesDateContainer.appendChild(serviceDateDiv);
-
                                         initializeDatePickers();
                                     } else {
                                         const serviceDateDiv = servicesDateContainer.querySelector(`input[name="appointments[0][time][${serviceId}]"]`).parentElement;
@@ -637,7 +770,7 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="row mt-4">
                 <div class="col-12 text-center">
                     <hr>
@@ -733,4 +866,3 @@
 </body>
 
 </html>
-

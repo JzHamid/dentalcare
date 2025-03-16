@@ -727,12 +727,12 @@ class AdminController extends Controller
                         $newEnd = $newStart->copy()->addMinutes($duration);
 
                         // Check business hours
-                        if (!$this->isWithinClinicHours($id, $newStart, $newEnd)) {
-                            return response()->json([
-                                'status' => 'error',
-                                'message' => 'The appointment time is outside the clinic\'s business hours.'
-                            ], 400);
-                        }
+                        // if (!$this->isWithinClinicHours($id, $newStart, $newEnd)) {
+                        //     return response()->json([
+                        //         'status' => 'error',
+                        //         'message' => 'The appointment time is outside the clinic\'s business hours.'
+                        //     ], 400);
+                        // }
 
                         // Check for overlapping appointments
                         $overlapping = Appointments::join('services', 'appointments.service_id', '=', 'services.id')

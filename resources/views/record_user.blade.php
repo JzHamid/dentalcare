@@ -310,6 +310,33 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             border-color: var(--primary-color);
         }
+
+        .slot {
+            padding: 10px;
+            margin: 5px;
+            display: inline-block;
+            border: 1px solid #ccc;
+            text-align: center;
+            border-radius: 5px;
+            width: 150px;
+            height: 50px;
+            line-height: 1.2;
+            font-size: 14px;
+        }
+
+        .slot.available {
+            background-color: #d4edda;
+            cursor: pointer;
+        }
+
+        .slot.booked {
+            background-color: #f8d7da;
+            cursor: not-allowed;
+        }
+
+        .slot.selected {
+            border-color: #28a745;
+        }
     </style>
 </head>
 
@@ -481,7 +508,13 @@
                         <div class="row">
                             <!-- Left Column: Appointment Details with Reschedule Functionality -->
                             <div class="col-md-6">
-                                <form id="rescheduleForm" action="{{ route('reschedule.appointment', $appointment->id) }}" method="post">
+                                @php
+                                // Fetch booked appointments for the clinic using the appointment's listing_id.
+                                $bookedAppointments = \App\Models\Appointments::where('listing_id', $appointment->listing_id)->get();
+                                // Compute available days from the schedules
+                                $availableDays = $schedules->pluck('day')->map(fn($day) => strtolower($day))->toArray();
+                                @endphp
+                                <form id="rescheduleForm" action="{{ route('reschedule.appointment.dentist', $appointment->id) }}" method="post">
                                     @csrf
                                     <div class="mb-3">
                                         <label class="form-label" for="schedule">Schedule</label>
@@ -492,7 +525,6 @@
                                                 name="schedule"
                                                 id="schedule"
                                                 value="{{ \Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('l, F j - H:i') }}">
-
                                             <button
                                                 type="button"
                                                 class="btn btn-primary"
@@ -758,23 +790,28 @@
 
     <!-- Reschedule Modal -->
     <div class="modal fade" id="rescheduleModal" tabindex="-1" aria-labelledby="rescheduleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="rescheduleModalLabel">Reason for Reschedule</h5>
+                    <h5 class="modal-title" id="rescheduleModalLabel">Select New Schedule</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="rescheduleReasonForm">
-                        <div class="mb-3">
-                            <label for="reschedule_reason" class="form-label">Reason</label>
-                            <textarea class="form-control" id="reschedule_reason" name="reschedule_reason" rows="3"></textarea>
-                        </div>
-                    </form>
+                    <div class="mb-3">
+                        <label for="reschedule_date" class="form-label">Select Date</label>
+                        <input type="text" id="reschedule_date" class="form-control">
+                    </div>
+                    <div id="reschedule_time_slots" class="d-flex flex-wrap">
+                        <!-- Time slots will be generated here -->
+                    </div>
+                    <div class="mb-3">
+                        <label for="reschedule_reason" class="form-label">Reason for Reschedule</label>
+                        <textarea id="reschedule_reason" class="form-control" placeholder="Enter reason"></textarea>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="confirmReschedule">Reschedule</button>
+                    <button type="button" class="btn btn-primary" id="confirmReschedule">Confirm Reschedule</button>
                 </div>
             </div>
         </div>
@@ -785,9 +822,11 @@
     return strtolower($day);
     })->toArray();
     @endphp
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+   // Initialize flatpickr for the schedule input in the form.
+   document.addEventListener("DOMContentLoaded", function() {
             flatpickr('#schedule', {
                 dateFormat: 'Y-m-d H:i',
                 enableTime: true,
@@ -795,24 +834,112 @@
                     function(date) {
                         const availableDays = @json($availableDays);
                         const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-                        const dayName = dayNames[date.getDay()];
-
-                        return availableDays.includes(dayName);
+                        return availableDays.includes(dayNames[date.getDay()]);
                     }
                 ],
                 minDate: 'today',
                 maxDate: new Date(new Date().getFullYear(), 11, 31),
             });
+
+            // Initialize flatpickr for the reschedule modal's date picker.
+            flatpickr('#reschedule_date', {
+                dateFormat: 'l, F j',
+                enableTime: false,
+                enable: [
+                    function(date) {
+                        const availableDays = @json($availableDays);
+                        const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                        return availableDays.includes(dayNames[date.getDay()]);
+                    }
+                ],
+                minDate: 'today',
+                maxDate: new Date(new Date().getFullYear(), 11, 31),
+                onChange: function(selectedDates, dateStr, instance) {
+                    let formattedDate = moment(selectedDates[0]).format('YYYY-MM-DD');
+                    updateRescheduleTimeSlots(formattedDate);
+                }
+            });
         });
 
-        function change_status(value) {
-            const status = document.getElementById('status');
-            const form = document.getElementById('status-form');
-            status.value = value;
-            form.submit();
+        // Global variables for rescheduling.
+        const clinicSchedules = @json($schedules);
+        const bookedAppointments = @json($bookedAppointments);
+        const serviceId = {{ $appointment->service->id }};
+        const serviceDuration = {{ $appointment->service->duration }};
+
+        // Generate time slots between startTime and endTime using the service duration.
+        // Each slot includes raw (24-hour) values and display values (12-hour with AM/PM).
+        function generateTimeSlots(startTime, endTime, duration) {
+            let slots = [];
+            let current = moment(startTime, 'HH:mm:ss');
+            const end = moment(endTime, 'HH:mm:ss');
+            while (true) {
+                let rawStart = current.format('HH:mm');
+                let rawEnd = current.clone().add(duration, 'minutes').format('HH:mm');
+                let displayStart = current.format('hh:mm A');
+                let displayEnd = current.clone().add(duration, 'minutes').format('hh:mm A');
+                if (current.clone().add(duration, 'minutes').isAfter(end)) break;
+                slots.push({
+                    start: rawStart,
+                    end: rawEnd,
+                    displayStart: displayStart,
+                    displayEnd: displayEnd
+                });
+                current.add(duration, 'minutes');
+            }
+            return slots;
         }
 
-        // Reschedule Modal Script
+        // Fetch booked times for the given service and date.
+        // Checks rescheduled_time if available; otherwise uses appointment_time.
+        function fetchBookedTimes(serviceId, date) {
+            const appointmentsForService = bookedAppointments.filter(appt => {
+                let effectiveTime = appt.rescheduled_time ? appt.rescheduled_time : appt.appointment_time;
+                return appt.service_id == serviceId && moment(effectiveTime, "YYYY-MM-DD HH:mm:ss").format('YYYY-MM-DD') === date;
+            });
+            const bookedTimes = appointmentsForService.map(appt => {
+                let effectiveTime = appt.rescheduled_time ? appt.rescheduled_time : appt.appointment_time;
+                return moment(effectiveTime, "YYYY-MM-DD HH:mm:ss").format('HH:mm');
+            });
+            return bookedTimes;
+        }
+
+        // Update the reschedule modal's time slots based on the selected date.
+        function updateRescheduleTimeSlots(date) {
+            let dayName = moment(date).format('dddd').toLowerCase();
+            let schedule = clinicSchedules.find(sch => sch.day.toLowerCase() === dayName);
+            const container = document.getElementById('reschedule_time_slots');
+            if (!schedule) {
+                container.innerHTML = '<p>No schedule available for this day.</p>';
+                return;
+            }
+            let slots = generateTimeSlots(schedule.start, schedule.end, serviceDuration);
+            let bookedTimes = fetchBookedTimes(serviceId, date);
+            container.innerHTML = '';
+            slots.forEach(slot => {
+                let isBooked = bookedTimes.includes(slot.start);
+                let slotDiv = document.createElement('div');
+                slotDiv.classList.add('slot');
+                if (isBooked) {
+                    slotDiv.classList.add('booked');
+                } else {
+                    slotDiv.classList.add('available');
+                }
+                slotDiv.textContent = `${slot.displayStart} - ${slot.displayEnd}` + (isBooked ? ' (Booked)' : ' (Available)');
+                if (!isBooked) {
+                    slotDiv.addEventListener('click', function() {
+                        // Update the schedule input (using the raw 24-hour format) with the selected time.
+                        document.getElementById('schedule').value = date + 'T' + slot.start;
+                        // Mark the selected slot visually.
+                        container.querySelectorAll('.slot').forEach(el => el.classList.remove('selected'));
+                        slotDiv.classList.add('selected');
+                    });
+                }
+                container.appendChild(slotDiv);
+            });
+        }
+
+        // Confirm reschedule: append the reschedule reason to the form and submit.
         document.getElementById('confirmReschedule').addEventListener('click', function() {
             const reason = document.getElementById('reschedule_reason').value;
             const form = document.getElementById('rescheduleForm');

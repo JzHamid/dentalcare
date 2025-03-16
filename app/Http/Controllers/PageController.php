@@ -204,9 +204,19 @@ class PageController extends Controller
         $schedules = Schedule::where('clinic_id', $shop->id)->get();
         $assign = Assign::where('clinic_id', $id)->get();
 
+        // Added: Fetch booked appointments for the clinic.
+        $bookedAppointments = Appointments::where('listing_id', $shop->id)->get();
 
-        return view('appointment')->with(['shop' => $shop, 'user' => $user, 'availables' => $available, 'schedules' => $schedules, 'assign' => $assign]);
+        return view('appointment')->with([
+            'shop' => $shop,
+            'user' => $user,
+            'availables' => $available,
+            'schedules' => $schedules,
+            'assign' => $assign,
+            'bookedAppointments' => $bookedAppointments,
+        ]);
     }
+
 
     public function record($id)
     {
