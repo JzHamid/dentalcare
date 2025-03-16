@@ -695,7 +695,7 @@
 
                 <hr class="mb-4">
 
-                <div class="row g-4"> 
+                <div class="row g-4">
 
                     <div class="col-md-4">
                         <div class="dashboard-card" onclick="document.getElementById('nav-patient').click()">
@@ -765,18 +765,17 @@
                             <h5 class="table-title">Appointment History</h5>
 
                             <div class="d-flex gap-2 no-print">
-                                <select class="form-select" id="statusFilter" style="width: 200px;">
-                                    <option value="0">All</option>
-                                    <option value="2">Pending</option>
-                                    <option value="3">Rescheduled</option>
-                                    <option value="4">Cancelled</option>
+                                <select class="form-select no-print" id="statusFilter" style="width: 200px;">
+                                    <option value="All">All Statuses</option>
+                                    <option value="Done">Done</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="Rescheduled">Rescheduled</option>
+                                    <option value="Cancelled">Cancelled</option>
+                                    <option value="Upcoming">Upcoming</option>
                                 </select>
 
                                 <div class="input-group" style="width: 250px;">
                                     <input class="form-control" type="search" id="tableSearch" placeholder="Search...">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        <i class="bi bi-search"></i>
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -1518,6 +1517,47 @@
                     break;
                 default:
                     break;
+            }
+
+            // Get references to the search input, status filter, and table rows
+            const searchInput = document.getElementById("tableSearch");
+            const statusFilter = document.getElementById("statusFilter");
+            const tableRows = document.querySelectorAll("#appointmentTable tbody tr");
+
+            // Check if all elements exist before proceeding
+            if (searchInput && statusFilter && tableRows) {
+                function filterTable() {
+                    // Get the current search text and selected status value
+                    const searchText = searchInput.value.toLowerCase();
+                    const selectedStatusValue = statusFilter.value;
+
+                    // Loop through each table row
+                    tableRows.forEach(row => {
+                        // Extract text from the columns to search
+                        const dentist = row.querySelector("td.dentist")?.textContent.toLowerCase() || '';
+                        const patient = row.querySelector("td.patient")?.textContent.toLowerCase() || '';
+                        const clinic = row.querySelector("td.clinic")?.textContent.toLowerCase() || '';
+                        const service = row.querySelector("td.service")?.textContent.toLowerCase() || '';
+                        const status = row.querySelector("td:nth-child(6)")?.textContent.toLowerCase() || '';
+
+                        // Combine the text from all searchable columns
+                        const searchableText = [dentist, patient, clinic, service, status].join(" ");
+
+                        // Get the row's status from the data-status attribute
+                        const rowStatus = row.getAttribute("data-status");
+
+                        // Determine if the row matches the search and status criteria
+                        const matchesSearch = searchText === "" || searchableText.includes(searchText);
+                        const matchesStatus = selectedStatusValue === "All" || rowStatus === selectedStatusValue;
+
+                        // Show or hide the row based on both conditions
+                        row.style.display = (matchesSearch && matchesStatus) ? "" : "none";
+                    });
+                }
+
+                // Add event listeners to trigger filtering on input or status change
+                searchInput.addEventListener("input", filterTable);
+                statusFilter.addEventListener("change", filterTable);
             }
 
             const url = new URL(window.location.href);

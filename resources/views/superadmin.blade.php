@@ -853,21 +853,18 @@
 
                             <div class="d-flex gap-2">
                                 <!-- Status Filter Dropdown -->
-                                <select class="form-select no-print" id="statusFilter" style="width: 200px;">
-                                    <option value="All">All Statuses</option>
-                                    <option value="Done">Done</option>
-                                    <option value="Pending">Pending</option>
-                                    <option value="Rescheduled">Rescheduled</option>
-                                    <option value="Cancelled">Cancelled</option>
-                                    <option value="Upcoming">Upcoming</option>
-                                </select>
+<select class="form-select no-print" id="statusFilter" style="width: 200px;">
+    <option value="All">All Statuses</option>
+    <option value="Done">Done</option>
+    <option value="Pending">Pending</option>
+    <option value="Rescheduled">Rescheduled</option>
+    <option value="Cancelled">Cancelled</option>
+    <option value="Upcoming">Upcoming</option>
+</select>
 
                                 <!-- Search Bar -->
                                 <div class="input-group no-print" style="width: 250px;">
                                     <input class="form-control" type="search" id="tableSearch" placeholder="Search...">
-                                    <button class="btn btn-outline-secondary" type="button">
-                                        <i class="bi bi-search"></i>
-                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -2783,12 +2780,22 @@
                     const selectedStatus = statusFilter.value;
 
                     tableRows.forEach(row => {
-                        const rowText = row.textContent.toLowerCase();
+                        // Extract text from specific columns
+                        const dentist = row.querySelector("td.dentist")?.textContent.toLowerCase() || '';
+                        const patient = row.querySelector("td.patient")?.textContent.toLowerCase() || '';
+                        const clinic = row.querySelector("td.clinic")?.textContent.toLowerCase() || '';
+                        const service = row.querySelector("td.service")?.textContent.toLowerCase() || '';
+                        const status = row.querySelector("td:nth-child(6)")?.textContent.toLowerCase() || '';
+
+                        // Combine text from the desired fields
+                        const searchableText = [dentist, patient, clinic, service, status].join(" ");
                         const rowStatus = row.getAttribute("data-status");
 
-                        const matchesSearch = searchText === "" || rowText.includes(searchText);
+                        // Check if the search text matches and status filter applies
+                        const matchesSearch = searchText === "" || searchableText.includes(searchText);
                         const matchesStatus = selectedStatus === "All" || rowStatus === selectedStatus;
 
+                        // Show or hide the row
                         row.style.display = (matchesSearch && matchesStatus) ? "" : "none";
                     });
                 }
