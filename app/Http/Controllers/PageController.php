@@ -36,7 +36,6 @@ class PageController extends Controller
         $user = Auth::user();
         $appointments = Appointments::where([
             ['user_id', '=', $user->id],
-            ['status', '!=', 'Cancelled']
         ])->get();
 
         if ($user->status == 0) {
@@ -68,6 +67,12 @@ class PageController extends Controller
 
     public function admin()
     {
+
+        // Check if the user is not logged in or has a restricted status (0, 1, 2)
+        if (!Auth::check() || in_array(Auth::user()->status, [0, 3])) {
+            return redirect('/login');
+        }
+
         $log = Auth::user();
         $user = Auth::user();
 
@@ -165,9 +170,13 @@ class PageController extends Controller
         ]);
     }
 
-
     public function superadmin()
     {
+        // Check if the user is not logged in or has a restricted status (0, 1, 2)
+        if (!Auth::check() || in_array(Auth::user()->status, [0, 1, 2])) {
+            return redirect('/login');
+        }
+
         $appointments = Appointments::all();
         $dentist = User::where('status', 2)->get();
         $secretary = User::where('status', 1)->get();
@@ -175,7 +184,14 @@ class PageController extends Controller
         $services = Service::all();
         $listings = Listing::all();
 
-        return view('superadmin')->with(['dentist' => $dentist, 'secretary' => $secretary, 'users' => $users, 'appointments' => $appointments, 'services' => $services, 'listings' => $listings]);
+        return view('superadmin')->with([
+            'dentist' => $dentist,
+            'secretary' => $secretary,
+            'users' => $users,
+            'appointments' => $appointments,
+            'services' => $services,
+            'listings' => $listings
+        ]);
     }
 
     public function listing()
@@ -203,10 +219,12 @@ class PageController extends Controller
         $available = Available::where('listing_id', $shop->id)->get();
         $schedules = Schedule::where('clinic_id', $shop->id)->get();
         $assign = Assign::where('clinic_id', $id)->get();
-
-        // Added: Fetch booked appointments for the clinic.
-        $bookedAppointments = Appointments::where('listing_id', $shop->id)->get();
-
+    
+        // Fetch booked appointments, excluding those with 'Cancelled' or 'Deny' status
+        $bookedAppointments = Appointments::where('listing_id', $shop->id)
+            ->whereNotIn('status', ['Cancelled', 'Deny'])
+            ->get();
+    
         return view('appointment')->with([
             'shop' => $shop,
             'user' => $user,
@@ -216,10 +234,17 @@ class PageController extends Controller
             'bookedAppointments' => $bookedAppointments,
         ]);
     }
+    
 
 
     public function record($id)
     {
+
+        // Check if the user is not logged in or has a restricted status (0)
+        if (!Auth::check() || in_array(Auth::user()->status, [0])) {
+            return redirect('/login');
+        }
+
         $appointment = Appointments::with(['user.healthRecords', 'service', 'dentist', 'additional_fee'])
             ->findOrFail($id);
         $schedule = Schedule::where('clinic_id', $appointment->listing_id)->get();
@@ -239,8 +264,6 @@ class PageController extends Controller
             'appointmentHistory' => $appointmentHistory
         ]);
     }
-
-
 
     private function isWithinClinicHours($clinicId, Carbon $appointmentStart, Carbon $appointmentEnd)
     {

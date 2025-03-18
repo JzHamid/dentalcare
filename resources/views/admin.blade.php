@@ -606,7 +606,11 @@
                 </div>
 
                 <h6 class="text-center text-white m-0 fw-bold">{{ $log->fname . ' ' . $log->mname . ' ' . $log->lname }}</h6>
-                <p class="fw-light text-white mb-2 small">Dental Specialist</p>
+                @if ($log->specialty == 'Other')
+                <p class="fw-light text-white mb-2 small">{{ $log->custom_specialty }}</p>
+                @else
+                <p class="fw-light text-white mb-2 small">{{ $log->specialty }}</p>
+                @endif
 
                 <form class="w-100 d-flex justify-content-center" action="{{ route('availability') }}" method="post" id="availability">
                     @csrf
@@ -634,13 +638,13 @@
             </button>
             @endif
 
-            <button class="nav-link" id="nav-patients" data-bs-toggle="pill" data-bs-target="#tab-patients" type="button" role="tab" aria-controls="tab-patients" aria-selected="false">
+            <button class="nav-link" id="nav-patient" data-bs-toggle="pill" data-bs-target="#tab-patients" type="button" role="tab" aria-controls="tab-patients" aria-selected="false">
                 <i class="bi bi-people-fill"></i>
                 Patients
             </button>
 
             @if ($log->status > 1)
-            <button class="nav-link" id="nav-listings" data-bs-toggle="pill" data-bs-target="#tab-listings" type="button" role="tab" aria-controls="tab-listings" aria-selected="false">
+            <button class="nav-link" id="nav-listing" data-bs-toggle="pill" data-bs-target="#tab-listings" type="button" role="tab" aria-controls="tab-listings" aria-selected="false">
                 <i class="bi bi-building-fill"></i>
                 Clinics
             </button>
@@ -653,7 +657,7 @@
 
             <button class="nav-link" id="nav-collab" data-bs-toggle="pill" data-bs-target="#tab-collab" type="button" role="tab" aria-controls="tab-collab" aria-selected="false">
                 <i class="bi bi-person-fill-add"></i>
-                Staff
+                Clinic Team
             </button>
 
             <button class="nav-link" id="nav-profile" data-bs-toggle="pill" data-bs-target="#tab-profile" type="button" role="tab" aria-controls="tab-profile" aria-selected="false">
@@ -725,6 +729,7 @@
                         </div>
                     </div>
 
+                    @if($log->status != 1)
                     <div class="col-md-4">
                         <div class="dashboard-card" onclick="document.getElementById('nav-services').click()">
                             <div class="d-flex justify-content-between align-items-center">
@@ -752,6 +757,8 @@
                             </div>
                         </div>
                     </div>
+                    @endif
+
                 </div>
             </div>
 
@@ -953,7 +960,8 @@
                                         <th>Clinic Name</th>
                                         <th>Email Address</th>
                                         <th>Contact No.</th>
-                                        <th>Location</th>
+                                        <th>Barangay</th>
+                                        <th>Street Address</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -962,7 +970,8 @@
                                         <td>{{ $listing->clinic->name }}</td>
                                         <td>{{ $listing->clinic->email }}</td>
                                         <td>{{ $listing->clinic->contact }}</td>
-                                        <td>{{ $listing->clinic->location }}</td>
+                                        <td>{{ $listing->clinic->barangay }}</td>
+                                        <td>{{ $listing->clinic->street_address }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -1055,11 +1064,11 @@
 
             <!-- Staff Tab -->
             <div class="tab-pane fade" id="tab-collab" role="tabpanel" aria-labelledby="tab-collab" tabindex="0">
-                <h1 class="mb-4">Staff</h1>
+                <h1 class="mb-4">Clinic Team</h1>
 
                 <div class="table-container">
                     <div class="table-header">
-                        <h5 class="table-title">List of Staff</h5>
+                        <h5 class="table-title">List of Team</h5>
                         @switch(auth()->user()->status)
                         @case(1) {{-- Status 1 = Secretary --}}
                         {{-- Do nothing (button is hidden) --}}
@@ -1067,7 +1076,7 @@
 
                         @default {{-- Status is NOT Secretary, show the button --}}
                         <button class="btn btn-default" data-bs-toggle="modal" data-bs-target="#add-collab">
-                            <i class="bi bi-plus-lg me-2"></i>Add Staff
+                            <i class="bi bi-plus-lg me-2"></i>Add Secretary
                         </button>
                         @endswitch
                     </div>
@@ -1081,6 +1090,7 @@
                                     <th>Date Added</th>
                                     <th>Position</th>
                                     <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -1103,10 +1113,47 @@
                                         <span class="status-badge status-cancelled">Offline</span>
                                         @endif
                                     </td>
+                                    <td class="text-center no-print">
+                                        <div class="action-buttons">
+                                            @if ($collab->status != 2) {{-- Hide button if user is a Dentist --}}
+                                            <button class="btn btn-action btn-delete" data-bs-toggle="modal" data-bs-target="#delete-secretary" data-user-id="{{ $collab->id }}">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                            @endif
+                                        </div>
+                                    </td>
+
                                 </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Delete Secretary Modal -->
+            <div class="modal fade" data-bs-backdrop="static" id="delete-secretary" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Delete Secretary</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <p class="mb-0">Are you sure you want to remove this secretary?</p>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                            <form id="remove-secretary-form" action="" method="POST" style="display: inline;">
+                                @csrf
+                                @method('PUT')
+                                <button class="btn btn-danger" type="submit">
+                                    <i class="bi bi-trash me-2"></i>Unassign Secretary
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1181,9 +1228,52 @@
                                         <label class="form-label" for="email">Email Address</label>
                                         <input class="form-control" type="email" name="email" value="{{ $log->email }}">
                                     </div>
+
+                                    @if(auth()->user()->status != 1)
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label" for="specialty">Specialty</label>
+                                            <select class="form-select" name="specialty" id="specialty" onchange="toggleSpecialtyInput()">
+                                                <option value="">Select Specialty</option>
+                                                <option value="Orthodontics" @selected($log->specialty == 'Orthodontics')>Orthodontics</option>
+                                                <option value="Periodontics" @selected($log->specialty == 'Periodontics')>Periodontics</option>
+                                                <option value="Endodontics" @selected($log->specialty == 'Endodontics')>Endodontics</option>
+                                                <option value="Prosthodontics" @selected($log->specialty == 'Prosthodontics')>Prosthodontics</option>
+                                                <option value="Oral Surgery" @selected($log->specialty == 'Oral Surgery')>Oral Surgery</option>
+                                                <option value="Other" @selected($log->specialty == 'Other')>Other</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-6" id="custom-specialty-container" style="display: none;">
+                                            <label class="form-label" for="custom_specialty">Other Specialty</label>
+                                            <input class="form-control" type="text" name="custom_specialty" id="custom_specialty" value="{{ $log->custom_specialty }}">
+                                        </div>
+                                    </div>
+                                    @endif
+
                                 </div>
                             </div>
                         </div>
+
+                        <script>
+                            function toggleSpecialtyInput() {
+                                var specialtySelect = document.getElementById("specialty");
+                                var customSpecialtyContainer = document.getElementById("custom-specialty-container");
+                                var customSpecialtyInput = document.getElementById("custom_specialty");
+
+                                if (specialtySelect.value === "Other") {
+                                    customSpecialtyContainer.style.display = "block";
+                                    customSpecialtyInput.required = true;
+                                } else {
+                                    customSpecialtyContainer.style.display = "none";
+                                    customSpecialtyInput.required = false;
+                                    customSpecialtyInput.value = "";
+                                }
+                            }
+
+                            // Run function on page load in case "Other" was already selected
+                            window.onload = toggleSpecialtyInput;
+                        </script>
 
                         <h5 class="mb-3">Address Information</h5>
                         <div class="row g-3 mb-4">
@@ -1567,6 +1657,37 @@
                 document.getElementById('nav-appointments').click();
             }
 
+            if (page === '2') {
+                document.getElementById('nav-patients').click();
+            }
+
+            // Check if there's a page parameter in the session
+            switch (parseInt("{{ session('page') }}", 10)) {
+                case 4:
+                    document.getElementById('nav-dentist').click();
+                    break;
+                case 5:
+                    document.getElementById('nav-listing').click();
+                    break;
+                case 6:
+                    document.getElementById('nav-secretary').click();
+                    break;
+                case 7:
+                    document.getElementById('nav-patient').click();
+                    break;
+                case 8:
+                    document.getElementById('nav-services').click();
+                    break;
+                case 9:
+                    document.getElementById('nav-transactions').click();
+                    break;
+                case 10:
+                    document.getElementById('nav-collab').click();
+                    break;
+                default:
+                    break;
+            }
+
             // Province and City API integration
             const provinceSelect = document.getElementById("province");
             const citySelect = document.getElementById("city");
@@ -1725,6 +1846,14 @@
                 reader.readAsDataURL(file);
             }
         }
+
+        $('#delete-secretary').on('show.bs.modal', function(event) {
+            var button = $(event.relatedTarget);
+            var userId = button.data('user-id');
+
+            var form = $(this).find('#remove-secretary-form');
+            form.attr('action', '/unassign-secretary/' + userId);
+        });
     </script>
 </body>
 

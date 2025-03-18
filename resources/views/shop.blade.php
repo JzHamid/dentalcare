@@ -354,7 +354,14 @@
             @endauth
 
             @guest
-            <a class="text-default text-decoration-none" href="{{ route('login') }}">Login / Signup</a>
+            <div class="d-flex align-items-center gap-2">
+                <a class="btn btn-outline-primary" href="{{ route('login') }}">
+                    <i class="bi bi-box-arrow-in-right me-2"></i> Signin
+                </a>
+                <a class="btn btn-outline-primary" href="{{ route('signup') }}">
+                    <i class="bi bi-person-plus me-2"></i> Signup
+                </a>
+            </div>
             @endguest
         </div>
     </nav>

@@ -401,6 +401,20 @@
 
     <!-- Alerts -->
     @if (session('success'))
+    <div id="success-alert" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-4 custom-alert" role="alert">
+        <div class="d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>{{ session('success') }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    <!-- Alerts -->
+    @if (session('success'))
     <div id="success-alert" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3 w-50 text-center shadow-lg" role="alert" style="z-index: 1050;">
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -519,8 +533,14 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row g-3">
-                                        @if($appointments->where('status', '!=', '')->where('status', '!=', 'Done' && 'status', '!=', 'Deny' && 'status', '!=', 'Cancelled')->count() > 0)
-                                        @foreach ($appointments->where('status', '!=', '')->where('status', '!=', 'Done' && 'status', '!=', 'Deny' && 'status', '!=', 'Cancelled') as $appointment)
+                                        @php
+                                        $upcomingAppointments = $appointments->where('status', '!=', '')
+                                        ->whereNotIn('status', ['Done', 'Deny', 'Cancelled', 'Rescheduled', 'Pending']);
+                                        @endphp
+
+                                        @if($upcomingAppointments->count() > 0)
+                                        @foreach ($upcomingAppointments as $appointment)
+
                                         <div class="col-md-6">
                                             <div class="card appointment-card h-100">
                                                 <div class="card-body">
@@ -529,21 +549,24 @@
                                                         <div class="d-flex flex-column w-100">
                                                             <div class="d-flex justify-content-between align-items-start mb-2">
                                                                 <h6 class="fw-bold mb-0">{{ $appointment->service->name }}</h6>
-                                                                @switch($appointment->status)
-                                                                @case('Pending')
+                                                                @switch ($appointment->status)
+                                                                @case ('Pending')
                                                                 <span class="status-badge status-pending">Pending</span>
                                                                 @break
-                                                                @case('Upcoming')
+                                                                @case ('Deny')
+                                                                <span class="status-badge status-cancelled">Denied</span>
+                                                                @break
+                                                                @case ('Done')
+                                                                <span class="status-badge status-done">Done</span>
+                                                                @break
+                                                                @case ('Upcoming')
                                                                 <span class="status-badge status-upcoming">Upcoming</span>
                                                                 @break
-                                                                @case('Rescheduled')
+                                                                @case ('Rescheduled')
                                                                 <span class="status-badge status-rescheduled">Rescheduled</span>
                                                                 @break
-                                                                @case('Cancelled')
+                                                                @case ('Cancelled')
                                                                 <span class="status-badge status-cancelled">Cancelled</span>
-                                                                @break
-                                                                @case('Deny')
-                                                                <span class="status-badge status-cancelled">Denied</span>
                                                                 @break
                                                                 @endswitch
                                                             </div>
@@ -617,7 +640,7 @@
                                             <td>{{ $appointment->user->fname . ' ' . $appointment->user->mname . ' ' . $appointment->user->lname }}</td>
                                             @endif
 
-                                            <td>{{ $appointment->clinic->location }}</td>
+                                            <td>{{ $appointment->clinic->barangay }}, {{ $appointment->clinic->street_address }}</td>
                                             <td>{{ $appointment->service->name }}</td>
                                             <td>{{ Carbon\Carbon::parse($appointment->rescheduled_time ?? $appointment->appointment_time)->format('F j, Y - h:i A') }}</td>
                                             <td>

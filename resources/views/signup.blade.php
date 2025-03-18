@@ -439,6 +439,45 @@
                 padding: 15px;
             }
         }
+
+        /* Add these styles to your existing CSS */
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            background-color: var(--primary-light);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+
+        .modal-title {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .modal-footer {
+            border-top: 1px solid var(--border-color);
+            padding: 15px 20px;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .bg-primary-light {
+            background-color: var(--primary-light);
+        }
+
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
     </style>
 </head>
 
@@ -672,73 +711,161 @@
     </div>
 
     <!-- Terms and Conditions Modal -->
-    <div class="modal" id="terms-modal">
-        <div class="modal-content">
-            <span class="close-button">×</span>
-            <h2>Terms and Conditions</h2>
-            <p>Dental Care Website Terms and Conditions<br>
-                Last Updated: October 26, 2023<br>
-                1. Acceptance of Terms<br>
-                By accessing or using this website dentalcarewmsu.site, you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to these Terms, do not use this Site.<br>
-                2. Changes to Terms<br>
-                We may update these Terms at any time without prior notice. Your continued use of the Site following the posting of any changes constitutes acceptance of those changes.<br>
-                3. Privacy Policy<br>
-                Our Privacy Policy explains how we collect, use, and protect your personal information. By using this Site, you agree to the terms of our Privacy Policy, which is incorporated into these Terms by reference. [Insert link to your Privacy Policy here]<br>
-                4. Use of Site<br>
-                This Site is for informational purposes only. The information provided on this Site should not be considered medical advice. Always consult with a qualified dental professional for any questions or concerns regarding your oral health.<br>
-                5. Online Scheduling<br>
-                If you use the online scheduling feature, you agree to provide accurate information and to notify us as soon as possible of any changes to your appointment. We reserve the right to cancel appointments with insufficient notice. Cancellation policies are detailed separately [Insert link to cancellation policy here].<br>
-                6. Intellectual Property<br>
-                All content on this Site, including but not limited to text, graphics, logos, images, and software, is the property of Dental Care and is protected by copyright and other intellectual property laws. You may not reproduce, distribute, modify, or create derivative works from this content without our express written consent.<br>
-                7. Disclaimer of Warranties<br>
-                The information on this Site is provided "as is" without warranty of any kind, either express or implied. We do not guarantee the accuracy, completeness, or reliability of the information.<br>
-                8. Limitation of Liability<br>
-                In no event shall Dental Care be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with your use of this Site.<br>
-                9. Governing Law<br>
-                These Terms shall be governed by and construed in accordance with the laws of Philippines, without regard to its conflict of law provisions.<br>
-                10. Dispute Resolution<br>
-                Any dispute arising out of or relating to these Terms shall be resolved through binding arbitration in accordance with Philippine Dispute Resolution Center Inc. (PDRCi)<br>
-                11. Contact Us<br>
-                If you have any questions about these Terms, please contact us at +63 123 456 7890.</p>
+    <div class="modal fade" id="terms-modal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-light">
+                    <h5 class="modal-title text-primary fw-bold" id="termsModalLabel">Terms and Conditions</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="p-2">
+                        <h6 class="fw-bold mb-3">Dental Care Website Terms and Conditions</h6>
+                        <p class="text-muted mb-3">Last Updated: October 26, 2023</p>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">1. Acceptance of Terms</h6>
+                            <p>By accessing or using this website dentalcarewmsu.site, you agree to be bound by these Terms and Conditions ("Terms"). If you do not agree to these Terms, do not use this Site.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">2. Changes to Terms</h6>
+                            <p>We may update these Terms at any time without prior notice. Your continued use of the Site following the posting of any changes constitutes acceptance of those changes.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">3. Privacy Policy</h6>
+                            <p>Our Privacy Policy explains how we collect, use, and protect your personal information. By using this Site, you agree to the terms of our Privacy Policy, which is incorporated into these Terms by reference.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">4. Use of Site</h6>
+                            <p>This Site is for informational purposes only. The information provided on this Site should not be considered medical advice. Always consult with a qualified dental professional for any questions or concerns regarding your oral health.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">5. Online Scheduling</h6>
+                            <p>If you use the online scheduling feature, you agree to provide accurate information and to notify us as soon as possible of any changes to your appointment. We reserve the right to cancel appointments with insufficient notice.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">6. Intellectual Property</h6>
+                            <p>All content on this Site, including but not limited to text, graphics, logos, images, and software, is the property of Dental Care and is protected by copyright and other intellectual property laws. You may not reproduce, distribute, modify, or create derivative works from this content without our express written consent.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">7. Disclaimer of Warranties</h6>
+                            <p>The information on this Site is provided "as is" without warranty of any kind, either express or implied. We do not guarantee the accuracy, completeness, or reliability of the information.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">8. Limitation of Liability</h6>
+                            <p>In no event shall Dental Care be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in connection with your use of this Site.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">9. Governing Law</h6>
+                            <p>These Terms shall be governed by and construed in accordance with the laws of Philippines, without regard to its conflict of law provisions.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">10. Dispute Resolution</h6>
+                            <p>Any dispute arising out of or relating to these Terms shall be resolved through binding arbitration in accordance with Philippine Dispute Resolution Center Inc. (PDRCi)</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">11. Contact Us</h6>
+                            <p>If you have any questions about these Terms, please contact us at +63 123 456 7890.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Privacy Policy Modal -->
-    <div class="modal" id="privacy-modal">
-        <div class="modal-content">
-            <span class="close-button">×</span>
-            <h2>Privacy Policy</h2>
-            <p>Dental Care Privacy Policy<br>
-                Last Updated: October 26, 2023<br>
-                1. Introduction<br>
-                Dental Care ("we," "us," or "our") respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our website, dentalcarewmsu.site ("Site"). By using our Site, you agree to the terms of this Privacy Policy.<br>
-                2. Information We Collect<br>
-                We collect information you voluntarily provide, such as:<br>
-                Personal Information: Your name, email address, phone number, address, and any other information you provide when contacting us, scheduling appointments, or using online forms.<br>
-                Appointment Information: Details related to your appointments, including dates, times, and services requested.<br>
-                Payment Information: If you make payments online, we may collect your payment information securely through a third-party payment processor. We do not directly store your full payment details.<br>
-                Usage Data: Information about your interactions with the Site, including pages visited, links clicked, and browsing patterns. This data is collected through cookies and similar technologies (see Section 5).<br>
-                3. How We Use Your Information<br>
-                We use your information to:<br>
-                Provide Services: Manage your appointments, communicate with you about your appointments, and provide requested services.<br>
-                Improve the Site: Analyze website usage to improve the Site's functionality and user experience.<br>
-                Respond to Inquiries: Answer your questions and address your concerns.<br>
-                Send Updates: Send you updates about our services, promotions, or other relevant information (you can opt out of these communications – see Section 6).<br>
-                4. Disclosure of Your Information<br>
-                We may share your information with:<br>
-                Third-Party Service Providers: We may use third-party service providers (e.g., payment processors, email marketing services, website hosting providers) to assist us in providing services. These providers are contractually obligated to protect your information.<br>
-                Legal Requirements: We may disclose your information if required by law or legal process.<br>
-                5. Cookies and Tracking Technologies<br>
-                We use cookies and similar technologies to collect usage data. You can manage your cookie preferences through your browser settings. However, disabling cookies may limit your ability to use certain features of the Site.<br>
-                6. Your Choices<br>
-                Opt-Out of Communications: You can opt out of receiving marketing emails by clicking the unsubscribe link in those emails.<br>
-                Access and Update Information: You can request access to or update your personal information by contacting us (see Section 7).<br>
-                7. Contact Us<br>
-                If you have questions about this Privacy Policy, please contact us at +63 123 456 7890.<br>
-                8. Governing Law<br>
-                This Privacy Policy is governed by the laws of the Philippines.<br>
-                9. Changes to this Privacy Policy<br>
-                We may update this Privacy Policy from time to time. We will post any changes on the Site.</p>
+    <div class="modal fade" id="privacy-modal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-primary-light">
+                    <h5 class="modal-title text-primary fw-bold" id="privacyModalLabel">Privacy Policy</h5>
+                </div>
+                <div class="modal-body">
+                    <div class="p-2">
+                        <h6 class="fw-bold mb-3">Dental Care Privacy Policy</h6>
+                        <p class="text-muted mb-3">Last Updated: October 26, 2023</p>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">1. Introduction</h6>
+                            <p>Dental Care ("we," "us," or "our") respects your privacy and is committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your information when you use our website, dentalcarewmsu.site ("Site"). By using our Site, you agree to the terms of this Privacy Policy.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">2. Information We Collect</h6>
+                            <p>We collect information you voluntarily provide, such as:</p>
+                            <ul class="ps-4">
+                                <li><strong>Personal Information:</strong> Your name, email address, phone number, address, and any other information you provide when contacting us, scheduling appointments, or using online forms.</li>
+                                <li><strong>Appointment Information:</strong> Details related to your appointments, including dates, times, and services requested.</li>
+                                <li><strong>Payment Information:</strong> If you make payments online, we may collect your payment information securely through a third-party payment processor. We do not directly store your full payment details.</li>
+                                <li><strong>Usage Data:</strong> Information about your interactions with the Site, including pages visited, links clicked, and browsing patterns. This data is collected through cookies and similar technologies (see Section 5).</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">3. How We Use Your Information</h6>
+                            <p>We use your information to:</p>
+                            <ul class="ps-4">
+                                <li><strong>Provide Services:</strong> Manage your appointments, communicate with you about your appointments, and provide requested services.</li>
+                                <li><strong>Improve the Site:</strong> Analyze website usage to improve the Site's functionality and user experience.</li>
+                                <li><strong>Respond to Inquiries:</strong> Answer your questions and address your concerns.</li>
+                                <li><strong>Send Updates:</strong> Send you updates about our services, promotions, or other relevant information (you can opt out of these communications – see Section 6).</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">4. Disclosure of Your Information</h6>
+                            <p>We may share your information with:</p>
+                            <ul class="ps-4">
+                                <li><strong>Third-Party Service Providers:</strong> We may use third-party service providers (e.g., payment processors, email marketing services, website hosting providers) to assist us in providing services. These providers are contractually obligated to protect your information.</li>
+                                <li><strong>Legal Requirements:</strong> We may disclose your information if required by law or legal process.</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">5. Cookies and Tracking Technologies</h6>
+                            <p>We use cookies and similar technologies to collect usage data. You can manage your cookie preferences through your browser settings. However, disabling cookies may limit your ability to use certain features of the Site.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">6. Your Choices</h6>
+                            <ul class="ps-4">
+                                <li><strong>Opt-Out of Communications:</strong> You can opt out of receiving marketing emails by clicking the unsubscribe link in those emails.</li>
+                                <li><strong>Access and Update Information:</strong> You can request access to or update your personal information by contacting us (see Section 7).</li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">7. Contact Us</h6>
+                            <p>If you have questions about this Privacy Policy, please contact us at +63 123 456 7890.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">8. Governing Law</h6>
+                            <p>This Privacy Policy is governed by the laws of the Philippines.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-primary">9. Changes to this Privacy Policy</h6>
+                            <p>We may update this Privacy Policy from time to time. We will post any changes on the Site.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -793,7 +920,7 @@
                 </div>
             </div>
             <div class="text-center mt-4 pt-3 border-top">
-                <p class="mb-0 text-muted">© 2023 DentalCare. All rights reserved.</p>
+                <p class="mb-0 text-muted">© 2025 DentalCare. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -964,33 +1091,22 @@
             }
         });
 
-        // Show Terms and Conditions modal
-        document.getElementById('terms-link').addEventListener('click', function(e) {
-            e.preventDefault(); // Prevents default link behavior
-            document.getElementById('terms-modal').classList.add('show');
-        });
+        // Add this script at the end of your body tag
+        document.addEventListener("DOMContentLoaded", () => {
+            // Terms and Conditions modal
+            document.getElementById("terms-link").addEventListener("click", (e) => {
+                e.preventDefault()
+                var termsModal = new bootstrap.Modal(document.getElementById("terms-modal"))
+                termsModal.show()
+            })
 
-        // Show Privacy Policy modal
-        document.getElementById('privacy-link').addEventListener('click', function(e) {
-            e.preventDefault();
-            document.getElementById('privacy-modal').classList.add('show');
-        });
-
-        // Close modals when close button is clicked
-        document.querySelectorAll('.close-button').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                this.closest('.modal').classList.remove('show');
-            });
-        });
-
-        // Close modals when clicking outside the content
-        document.querySelectorAll('.modal').forEach(function(modal) {
-            modal.addEventListener('click', function(e) {
-                if (e.target === modal) { // Only close if clicking the overlay
-                    modal.classList.remove('show');
-                }
-            });
-        });
+            // Privacy Policy modal
+            document.getElementById("privacy-link").addEventListener("click", (e) => {
+                e.preventDefault()
+                var privacyModal = new bootstrap.Modal(document.getElementById("privacy-modal"))
+                privacyModal.show()
+            })
+        })
     </script>
 </body>
 

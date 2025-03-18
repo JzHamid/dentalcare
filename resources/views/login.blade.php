@@ -471,7 +471,7 @@
             </div>
 
             <div class="copyright">
-                <p class="mb-0">© 2023 DentalCare. All rights reserved.</p>
+                <p class="mb-0">© 202 DentalCare. All rights reserved.</p>
             </div>
         </div>
     </footer>

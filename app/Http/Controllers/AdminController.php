@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Psy\Command\WhereamiCommand;
 use Ramsey\Uuid\Type\Integer;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -185,7 +186,18 @@ class AdminController extends Controller
 
         $successMessage = "User $userName has been successfully deleted!";
 
-        return redirect()->back()->with(['page' => 4, 'success' => $successMessage]);
+        return redirect()->back()->with(['page' => 7, 'success' => $successMessage]);
+    }
+
+    public function destroy_secretary($id)
+    {
+        $user = User::findOrFail($id);
+        $userName = $user->fname . ' ' . $user->lname; // Get the user's full name before deletion
+        $user->delete();
+
+        $successMessage = "User $userName has been successfully deleted!";
+
+        return redirect()->back()->with(['page' => 6, 'success' => $successMessage]);
     }
 
 
@@ -272,6 +284,16 @@ class AdminController extends Controller
 
         return redirect('superadmin')->with(['page' => 6, 'success' => $successMessage]);
     }
+
+    public function unassignSecretary($userId)
+    {
+        DB::table('available_dentist')
+            ->where('secretary_id', $userId)
+            ->update(['secretary_id' => null]); // Set secretary_id to NULL
+    
+        return redirect()->back()->with('success', 'Secretary unassigned successfully.');
+    }
+
 
     public function update_dentist(Request $request)
     {
@@ -418,7 +440,8 @@ class AdminController extends Controller
         $listing->name = $request->input('listing-name');
         $listing->email = $request->input('listing-email');
         $listing->contact = $request->input('listing-contact');
-        $listing->location = $request->input('listing-location');
+        $listing->barangay = $request->input('barangay'); 
+        $listing->street_address = $request->input('street_address'); 
         $listing->description = $request->input('listing-about');
 
         if ($request->hasFile('listing-thumbnail')) {
@@ -433,8 +456,6 @@ class AdminController extends Controller
             $file->move($destinationPath, $path);
             $listing->image_path = 'services_image/' . $path;
         }
-
-
 
         $listing->save();
 
@@ -493,7 +514,8 @@ class AdminController extends Controller
         $listing->name = $request->input('vlisting-name');
         $listing->email = $request->input('vlisting-email');
         $listing->contact = $request->input('vlisting-contact');
-        $listing->location = $request->input('vlisting-location');
+        $listing->barangay = $request->input('vlisting-barangay'); 
+        $listing->street_address = $request->input('vlisting-street'); 
         $listing->description = $request->input('vlisting-about');
 
         if ($request->hasFile('vlisting-thumbnail')) {
@@ -526,7 +548,7 @@ class AdminController extends Controller
             ]);
         }
 
-        // **Fix: Handle multiple dentists properly**
+        // Handle multiple dentists properly
         $dentistIds = $request->input('vdent', []); // This should be an array
 
         // Retrieve currently assigned dentists
@@ -547,8 +569,39 @@ class AdminController extends Controller
             ]);
         }
 
-        return redirect('/superadmin')->with(['page' => 5]);
+        // ---- New: Handle schedules ----
+        // Define the days corresponding to your input names (in lowercase)
+        $days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+        foreach ($days as $day) {
+            // Checkbox input name: e.g. "vlisting-monday"
+            $checkboxName = 'vlisting-' . $day;
+            // Time input names: e.g. "vmonday-time-start", "vmonday-time-end"
+            $startName = 'v' . $day . '-time-start';
+            $endName = 'v' . $day . '-time-end';
+
+            if ($request->has($checkboxName)) {
+                $start = $request->input($startName);
+                $end = $request->input($endName);
+                // Proceed only if both start and end times are provided
+                if ($start && $end) {
+                    // Update or create schedule record for this day.
+                    // Note: Adjust the case of the day as stored in your DB if needed.
+                    Schedule::updateOrCreate(
+                        ['clinic_id' => $id, 'day' => ucfirst($day)],
+                        ['start' => $start, 'end' => $end, 'availability' => 1]
+                    );
+                }
+            } else {
+                // If the checkbox is unchecked, remove the schedule for that day if it exists.
+                Schedule::where('clinic_id', $id)->where('day', ucfirst($day))->delete();
+            }
+        }
+        // ---- End schedule handling ----
+
+        return redirect('/superadmin')->with(['page' => 5, 'success' => 'Successfully Edited Listing']);
     }
+
 
 
     public function get_listing($id)
@@ -643,7 +696,7 @@ class AdminController extends Controller
         }
 
         // Redirect back with a success message
-        return redirect('/admin')->with(['page' => 9, 'success' => 'Successfully added a Secretary']);
+        return redirect('/admin')->with(['page' => 10, 'success' => 'Successfully added a Secretary']);
     }
 
 
@@ -745,13 +798,6 @@ class AdminController extends Controller
                                 });
                             })
                             ->exists();
-
-                        if ($overlapping) {
-                            return response()->json([
-                                'status' => 'error',
-                                'message' => 'There is already a scheduled appointment for the chosen Date and Time, please choose another.'
-                            ], 400);
-                        }
 
                         // Create appointment
                         $appointment = new Appointments();
@@ -945,6 +991,9 @@ class AdminController extends Controller
 
         return view('record_user')->with(['appointment' => $appointment, 'dentist' => $dentist, 'schedules' => $schedule]);
     }
+
+
+    
 
     public function reschedule_appointment(Request $request, $id)
     {

@@ -416,6 +416,12 @@
                             @if ($appointment->status == 'Deny')
                             <span class="status-badge status-cancelled">Denied</span>
                             @endif
+                            @if ($appointment->status == 'Cancelled')
+                            <span class="status-badge status-cancelled">Cancelled</span>
+                            @endif
+                            @if ($appointment->status == 'Done')
+                            <span class="status-badge status-done">Done</span>
+                            @endif
                         </div>
                     </div>
                     <div class="card-body">
@@ -514,7 +520,7 @@
                                 // Compute available days from the schedules
                                 $availableDays = $schedules->pluck('day')->map(fn($day) => strtolower($day))->toArray();
                                 @endphp
-                                <form id="rescheduleForm" action="{{ route('reschedule.appointment.dentist', $appointment->id) }}" method="post">
+                                <form id="rescheduleForm" action="{{ route('reschedule.appointment', $appointment->id) }}" method="post">
                                     @csrf
                                     <div class="mb-3">
                                         <label class="form-label" for="schedule">Schedule</label>
@@ -530,7 +536,7 @@
                                                 class="btn btn-primary"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#rescheduleModal"
-                                                @if(in_array($appointment->status, ['Done', 'Deny', 'Upcoming'])) disabled @endif>
+                                                @if(in_array($appointment->status, ['Done', 'Upcoming'])) disabled @endif>
                                                 <i class="bi bi-calendar-plus me-1"></i> Reschedule
                                             </button>
                                         </div>

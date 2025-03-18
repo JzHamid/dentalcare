@@ -611,6 +611,17 @@
         canvas {
             max-height: 400px;
         }
+
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+
+        .invalid-feedback {
+            display: block;
+            color: #dc3545;
+            font-size: 0.875em;
+            margin-top: 0.25rem;
+        }
     </style>
 </head>
 
@@ -1081,7 +1092,10 @@
                                     @foreach ($dentist as $dent)
                                     <tr>
                                         <td>Dr. {{ $dent->fname . ' ' . $dent->mname . ' ' . $dent->lname }}</td>
-                                        <td></td>
+                                        <td>
+                                            {{ $dent->specialty === 'Other' ? $dent->custom_specialty : ($dent->specialty ?: 'Not Specified') }}
+                                        </td>
+
                                         <td>{{ $dent->email }}</td>
                                         <td>{{ $dent->phone }}</td>
                                         <td>{{ trim("{$dent->street_name}, {$dent->city}, {$dent->province}", ', ') }}</td>
@@ -1098,6 +1112,7 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
+
                             </table>
                         </div>
                     </div>
@@ -1183,7 +1198,8 @@
                                         <th>Clinic Name</th>
                                         <th>Email Address</th>
                                         <th>Contact No.</th>
-                                        <th>Location</th>
+                                        <th>Barangay</th>
+                                        <th>Street Address</th>
                                         <th class="text-center no-print">Actions</th>
                                     </tr>
                                 </thead>
@@ -1194,7 +1210,8 @@
                                         <td>{{ $listing->name }}</td>
                                         <td>{{ $listing->email }}</td>
                                         <td>{{ $listing->contact }}</td>
-                                        <td>{{ $listing->location }}</td>
+                                        <td>{{ $listing->barangay }}</td>
+                                        <td>{{ $listing->street_address }}</td>
                                         <td class="text-center no-print">
                                             <div class="action-buttons">
                                                 <button class="btn btn-action btn-edit" data-bs-toggle="modal" data-bs-target="#view-listing" onclick="get_listing('{{ $listing->id }}')">
@@ -1244,11 +1261,23 @@
                             <div class="col-md-6 mb-4">
                                 <div class="card shadow-sm h-100">
                                     <div class="card-body">
+                                        @php
+                                        // Get the latest payment for that appointment
+                                        $latestPayment = \App\Models\Payment::where('appointment_id', $appointment->id)
+                                        ->orderBy('created_at', 'desc')
+                                        ->first();
+                                        $remainingBalance = $latestPayment ? $latestPayment->remaining_balance : null;
+                                        @endphp
+
                                         <div class="d-flex justify-content-between align-items-center mb-3">
                                             <h5 class="card-title mb-0">
                                                 {{ \Carbon\Carbon::parse($appointment->appointment_time)->format('F j, Y, g:i a') }}
                                             </h5>
-                                            <span class="status-badge status-done">Completed</span>
+                                            @if($remainingBalance !== null && round($remainingBalance, 2) <= 0)
+                                                <span class="status-badge status-done">Completed</span>
+                                                @else
+                                                <span class="status-badge status-pending">With Balance</span>
+                                                @endif
                                         </div>
 
                                         <div class="row mb-3">
@@ -1477,7 +1506,7 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-default" type="button" onclick="document.getElementById('create-service').submit()">
+                    <button class="btn btn-default" type="submit" form="create-service">
                         <i class="bi bi-plus-circle me-2"></i>Create Service
                     </button>
                 </div>
@@ -1616,7 +1645,6 @@
                         <div class="col-md-6">
                             <label class="form-label" for="sexd">Gender</label>
                             <select class="form-select" name="sexd" required>
-                                <option value="" selected disabled>-- Select Gender required>
                                 <option value="" selected disabled>-- Select Gender --</option>
                                 <option value="0">Male</option>
                                 <option value="1">Female</option>
@@ -1670,7 +1698,7 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-default" type="button" onclick="document.getElementById('add-dentist-form').submit()">
+                    <button class="btn btn-default" type="submit" form="add-dentist-form">
                         <i class="bi bi-plus-circle me-2"></i>Add Dentist
                     </button>
                 </div>
@@ -1776,7 +1804,7 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary" type="button" onclick="document.getElementById('edit-dentist-form').submit()">
+                    <button class="btn btn-primary" type="submit" form="edit-dentist-form">
                         <i class="bi bi-save me-2"></i>Update Dentist
                     </button>
                 </div>
@@ -1902,8 +1930,8 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-default" type="button" onclick="document.getElementById('add-secretary-form').submit()">
-                        <i class="bi bi-plus-circle me-2"></i>Add Secretary
+                    <button class="btn btn-default" type="submit" form="add-secretary-form">
+                        <i class="bi bi-plus-circle me-2"></i>Add Dentist
                     </button>
                 </div>
             </div>
@@ -2008,7 +2036,7 @@
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary" type="button" onclick="document.getElementById('edit-secretary-form').submit()">
+                    <button class="btn btn-primary" type="submit" form="edit-secretary-form">
                         <i class="bi bi-save me-2"></i>Update Secretary
                     </button>
                 </div>
@@ -2223,9 +2251,16 @@
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label fw-bold" for="listing-location">Location</label>
-                        <input class="form-control" type="text" name="listing-location" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" for="barangay">Barangay</label>
+                        <select class="form-control" name="barangay" id="barangay" required>
+                            <option value="">Select Barangay</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" for="street-address">Street Address</label>
+                        <input class="form-control" type="text" name="street_address" id="street-address" required>
                     </div>
 
                     <div class="accordion mb-4" id="accordion-services">
@@ -2314,13 +2349,13 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold" for="listing-about">About Us</label>
-                        <textarea class="form-control" name="listing-about" rows="5" style="resize: none;"></textarea>
+                        <textarea class="form-control" name="listing-about" rows="5" style="resize: none;" required></textarea>
                     </div>
                 </form>
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-default" type="button" onclick="document.getElementById('create-listing').submit()">
+                    <button class="btn btn-default" type="submit" form="create-listing">
                         <i class="bi bi-plus-circle me-2"></i>Create Clinic
                     </button>
                 </div>
@@ -2375,9 +2410,16 @@
                         </div>
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label fw-bold" for="vlisting-location">Location</label>
-                        <input class="form-control" type="text" name="vlisting-location" id="vlisting-location" required>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" for="vlisting-barangay">Barangay</label>
+                        <select class="form-control" id="vlisting-barangay" name="vlisting-barangay" required>
+                            <option value="" disabled selected>Loading barangays...</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold" for="vlisting-street">Street Address</label>
+                        <input class="form-control" type="text" name="vlisting-street" id="vlisting-street" required>
                     </div>
 
                     <div class="accordion mb-4" id="vaccordion-services">
@@ -2463,46 +2505,47 @@
 
                     <div class="mb-4">
                         <label class="form-label fw-bold" for="vlisting-about">About Us</label>
-                        <textarea class="form-control" name="vlisting-about" id="vlisting-about" rows="5" style="resize: none;"></textarea>
+                        <textarea class="form-control" name="vlisting-about" id="vlisting-about" rows="5" style="resize: none;" required></textarea>
                     </div>
                 </form>
 
                 <div class="modal-footer">
                     <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-primary" type="button" onclick="document.getElementById('view-listing-form').submit()">
+                    <button class="btn btn-primary" type="submit" form="view-listing-form">
                         <i class="bi bi-save me-2"></i>Save Changes
                     </button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Delete Listing Modal -->
-    <div class="modal fade" data-bs-backdrop="static" id="delete-listing" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Delete Clinic</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+        <!-- Delete Listing Modal -->
+        <div class="modal fade" data-bs-backdrop="static" id="delete-listing" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete Clinic</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
-                <div class="modal-body">
-                    <p class="mb-0">Are you sure you want to delete this clinic? This action cannot be undone.</p>
-                </div>
+                    <div class="modal-body">
+                        <p class="mb-0">Are you sure you want to delete this clinic? This action cannot be undone.</p>
+                    </div>
 
-                <div class="modal-footer">
-                    <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                    <button class="btn btn-danger" type="button" onclick="document.getElementById('delete-listing-form').submit()">
-                        <i class="bi bi-trash me-2"></i>Delete Clinic
-                    </button>
-                    <form id="delete-listing-form" action="{{ route('destroy.listing', $listing->id ?? 0) }}" method="post">
-                        @csrf
-                        @method('DELETE')
-                    </form>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <button class="btn btn-danger" type="button" onclick="document.getElementById('delete-listing-form').submit()">
+                            <i class="bi bi-trash me-2"></i>Delete Clinic
+                        </button>
+                        <form id="delete-listing-form" action="{{ route('destroy.listing', $listing->id ?? 0) }}" method="post">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Transaction Details Modals -->
     @foreach ($appointments as $appointment)
@@ -2555,7 +2598,7 @@
 
     <div class="modal fade" id="appointmentModal-{{ $appointment->id }}" tabindex="-1" aria-labelledby="appointmentModalLabel-{{ $appointment->id }}" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
+            <div class="modal-content" id="appointment-printable-{{ $appointment->id }}">
                 <!-- Modal Header -->
                 <div class="modal-header">
                     <h5 class="modal-title" id="appointmentModalLabel-{{ $appointment->id }}">
@@ -2673,29 +2716,30 @@
                             </div>
                         </div>
 
-                        <!-- Payment Form -->
-                        <div class="card border-0 shadow-sm">
-                            <div class="card-body">
-                                <h6 class="text-muted mb-3"><i class="bi bi-credit-card me-2"></i>Add Payment</h6>
-                                <form action="{{ route('store.payment', $appointment->id) }}" method="POST">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="amount_paid" class="form-label">Payment Amount</label>
-                                        <input type="number" step="0.01" class="form-control" name="amount_paid" required
-                                            max="{{ $totalAfterDiscount - $appointment->total_paid }}">
-                                        <small class="text-muted">Remaining Balance: ₱{{ number_format($totalAfterDiscount - $appointment->total_paid, 2) }}</small>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="payment_type" class="form-label">Payment Type</label>
-                                        <select class="form-select" name="payment_type">
-                                            <option value="full">Full</option>
-                                            <option value="installment">Installment</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary w-100">
-                                        <i class="bi bi-plus-circle me-2"></i>Add Payment
-                                    </button>
-                                </form>
+                        <div id="payment-form" class="no-print">                            <!-- Payment Form -->
+                            <div class="card border-0 shadow-sm no-print">
+                                <div class="card-body">
+                                    <h6 class="text-muted mb-3"><i class="bi bi-credit-card me-2 no-print"></i>Add Payment</h6>
+                                    <form action="{{ route('store.payment', $appointment->id) }}" method="POST">
+                                        @csrf
+                                        <div class="mb-3">
+                                            <label for="amount_paid" class="form-label">Payment Amount</label>
+                                            <input type="number" step="0.01" class="form-control" name="amount_paid" required
+                                                max="{{ $totalAfterDiscount - $appointment->total_paid }}">
+                                            <small class="text-muted">Remaining Balance: ₱{{ number_format($totalAfterDiscount - $appointment->total_paid, 2) }}</small>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="payment_type" class="form-label">Payment Type</label>
+                                            <select class="form-select" name="payment_type">
+                                                <option value="full">Full</option>
+                                                <option value="installment">Installment</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100">
+                                            <i class="bi bi-plus-circle me-2"></i>Add Payment
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2704,6 +2748,9 @@
 
                 <!-- Modal Footer -->
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="printAppointment({{ $appointment->id }})">
+                        <i class="bi bi-printer me-2"></i> Print / Save as PDF
+                    </button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle me-2"></i>Close
                     </button>
@@ -3048,8 +3095,8 @@
                 $('#vlisting-name').val(data.listing.name);
                 $('#vlisting-email').val(data.listing.email);
                 $('#vlisting-contact').val(data.listing.contact);
-                $('#vlisting-location').val(data.listing.location);
-
+                $('#vlisting-barangay').val(data.listing.barangay);
+                $('#vlisting-street').val(data.listing.street_address);
                 data.services.forEach(service => {
                     $(`#vservice${service.id}`).prop('checked', true);
                 });
@@ -3974,6 +4021,96 @@
                 doc.save('statistics_dashboard.pdf');
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("https://psgc.gitlab.io/api/cities/097332000/barangays.json") // API for Zamboanga City barangays
+                .then(response => response.json())
+                .then(data => {
+                    let barangaySelect = document.getElementById("barangay");
+                    data.forEach(barangay => {
+                        let option = document.createElement("option");
+                        option.value = barangay.name;
+                        option.textContent = barangay.name;
+                        barangaySelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error fetching barangays:", error));
+        });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            fetch("https://psgc.gitlab.io/api/cities/097332000/barangays.json") // API for Zamboanga City barangays
+                .then(response => response.json())
+                .then(data => {
+                    let barangaySelect = document.getElementById("vlisting-barangay");
+                    barangaySelect.innerHTML = '<option value="" disabled selected>Select a barangay</option>'; // Reset default
+
+                    data.forEach(barangay => {
+                        let option = document.createElement("option");
+                        option.value = barangay.name;
+                        option.textContent = barangay.name;
+                        barangaySelect.appendChild(option);
+                    });
+                })
+                .catch(error => console.error("Error fetching barangays:", error));
+        });
+
+        // Existing combined validation function
+        function validateForm(formId) {
+            const form = document.getElementById(formId);
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const requiredFields = this.querySelectorAll('[required]');
+                let isValid = true;
+
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        field.classList.add('is-invalid');
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+
+                if (isValid) {
+                    this.submit();
+                } else {
+                    alert('Please fill in all required fields.');
+                }
+            });
+        }
+
+        // Apply to all forms
+        validateForm('create-listing');
+        validateForm('view-listing-form');
+        validateForm('create-service'); // Add this line
+        validateForm('add-dentist-form');
+        validateForm('add-secretary-form');
+        validateForm('edit-dentist-form');
+        validateForm('edit-secretary-form')
+
+        function printAppointment(appointmentId) {
+            const content = document.getElementById(`appointment-printable-${appointmentId}`).innerHTML;
+            const printWindow = window.open('', '', 'width=800,height=600');
+            printWindow.document.write('<html><head><title>Appointment Details</title>');
+            printWindow.document.write('<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">'); // Add your CSS if needed
+            printWindow.document.write('</head><body>');
+            printWindow.document.write(content);
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+
+            printWindow.onload = function() {
+                printWindow.focus();
+                printWindow.print();
+                // Remove auto-close; let the user close the window after printing if desired
+                // If you really want auto-close, you can uncomment the line below:
+                // printWindow.close();
+            };
+        }
+
+        printWindow.onafterprint = function() {
+            printWindow.close();
+        };
     </script>
 </body>
 

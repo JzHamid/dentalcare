@@ -117,17 +117,13 @@ class AccountController extends Controller
         }
     }
 
-
-
     public function update(Request $request)
     {
         $user = User::find(Auth::user()->id);
 
         if ($request->hasFile('profile')) {
             $file = $request->file('profile');
-
             $filename = time() . '_' . $file->getClientOriginalName();
-
             $destinationPath = public_path('profile_images');
 
             if (!file_exists($destinationPath)) {
@@ -135,7 +131,6 @@ class AccountController extends Controller
             }
 
             $file->move($destinationPath, $filename);
-
             $user->image_path = 'profile_images/' . $filename;
         }
 
@@ -152,6 +147,15 @@ class AccountController extends Controller
         $user->phone = $request->phone;
         $user->email = $request->email;
 
+        // Handle Specialty
+        if ($request->specialty === "Other") {
+            $user->specialty = "Other";
+            $user->custom_specialty = $request->custom_specialty;
+        } else {
+            $user->specialty = $request->specialty;
+            $user->custom_specialty = null;
+        }
+
         $user->save();
 
         if (Auth::user()->status == 0) {
@@ -160,6 +164,7 @@ class AccountController extends Controller
             return redirect('/admin')->with(['page' => 8, 'success' => 'Successfully updated profile!']);
         }
     }
+
 
     public function availability(Request $request)
     {

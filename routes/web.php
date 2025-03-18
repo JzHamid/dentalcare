@@ -70,6 +70,8 @@ Route::get('/statistics/data', [StatisticsController::class, 'getStatistics'])->
 Route::post('/health-records', [HealthRecordController::class, 'store'])->name('health-records.store');
 Route::get('/users/{user}/records', [HealthRecordController::class, 'index'])->name('users.records');
 
+Route::put('/unassign-secretary/{userId}', [AdminController::class, 'unassignSecretary'])->name('unassign.secretary');
+
 Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::get('/admin', [PageController::class, 'admin'])->name('admin');
 
@@ -88,6 +90,7 @@ Route::group(['middleware' => 'auth', 'admin'], function () {
     Route::post('/create-secretary', [AdminController::class, 'create_secretary'])->name('create.secretary');
     Route::get('/get-secretary/{id}', [AdminController::class, 'get_secretary'])->name('get.secretary');
     Route::put('/update-secretary', [AdminController::class, 'update_secretary'])->name('update.secretary');
+    Route::delete('/secretary/{id}', [AdminController::class, 'destroy_secretary'])->name('secretary.destroy');
 
     // Patient
     Route::get('/get-patient/{id}', [AdminController::class, 'get_patient'])->name('get.patient');

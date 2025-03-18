@@ -414,6 +414,21 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
+    <!-- Alerts - Always on top -->
+@if (session('success'))
+    <div id="success-alert" class="alert alert-success alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-4 custom-alert" role="alert" style="z-index: 9999; width: auto;">
+        <div class="d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="me-2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <span>{{ session('success') }}</span>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+
     <!-- Navbar -->
     <nav class="navbar">
         <div class="container-fluid px-4">
@@ -657,7 +672,7 @@
                                                 class="btn btn-primary"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#rescheduleModal"
-                                                @if(in_array($appointment->status, ['Done', 'Deny', 'Upcoming'])) disabled @endif>
+                                                @if(in_array($appointment->status, ['Done', 'Upcoming'])) disabled @endif>
                                                 <i class="bi bi-calendar-plus me-1"></i> Reschedule
                                             </button>
                                         </div>
@@ -700,7 +715,7 @@
 
                                     <div class="mb-3 p-3 bg-light rounded">
                                         <p class="mb-1"><strong>Service Price:</strong> ₱<span id="servicePrice">{{ $appointment->service->price_start }}</span></p>
-                                        <p class="mb-0"><strong>Discounted Service Price:</strong> ₱<span id="servicePriceDiscounted">{{ $appointment->service->price_start }}</span></p>
+                                        <p class="mb-0"><strong>Service Price after Discount:</strong> ₱<span id="servicePriceDiscounted">{{ $appointment->service->price_start }}</span></p>
                                     </div>
 
                                     <div id="fee-container">
@@ -956,6 +971,13 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script>
+        function change_status(value) {
+            const status = document.getElementById('status');
+            const form = document.getElementById('status-form');
+            status.value = value;
+            form.submit();
+        }
+
         // Initialize flatpickr for the schedule input in the form.
         document.addEventListener("DOMContentLoaded", function() {
             flatpickr('#schedule', {

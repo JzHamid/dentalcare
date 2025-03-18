@@ -115,6 +115,8 @@ class AppointmentController extends Controller
         $appointment->save();
 
         return redirect()->back()->with('success', 'Record saved successfully.');
+
+
     }
 
 
